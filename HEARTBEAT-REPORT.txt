@@ -1,0 +1,33 @@
+HEARTBEAT REPORT — cmt-dash, bejo profile
+Date: 2026-11-24 (2nd heartbeat this session)
+Goal: Laravel rebuild to full parity. SC-001 pentest clean + SC-002 parity 100% per stop condition.
+Stop condition: Parity checklist 100% + SC-001 pentest clean + cutover complete (PRD §9)
+Stop condition status: NOT MET — two blockers
+
+BLOCKER 1 — SC-001 pentest (NFR-001):
+  Laravel authenticated pentest (2026-11-24, commit c6976bcd):
+  - CRITICAL (default creds admin:admin/superadmin:superadmin): VERIFIED FIXED — weak creds rejected, login throttled throttle:5,1 at routes/web.php:17
+  - MEDIUM CMT-2026-001 (CVSS 5.3): code FIXED — APP_DEBUG=false in .env line 4, sortDir default fixed in LedgerController::detail(). PENDING VERIFICATION: Laravel dev server restart at http://127.0.0.1:8002 + curl probe GET /ledger/detail?k=1 confirms generic 500 error, no stack trace/paths/SQL leak recorded.
+  - LOW CMT-2026-002: OWNER-ACCEPTED — KG-3 parity risk (§5.4); recorded leader decision (bejo), heartbeat 2026-11-24. No CSRF token added; risk accepted as /set-lang is public POST per Python app design.
+  Gate result: BLOCKED — MEDIUM CMT-2026-001 verification pending; Critical verified fixed; LOW accepted per owner decision.
+  Fix needed: APP_DEBUG=false + APP_ENV=production applied; sortDir default applied. Remaining: restart dev server, run verification probe, record evidence (card t_009b8736). Assignee: developer (yervant).
+  Motion t_12b0978d adopted by leader bejo — Fix SC-001 blocker CMT-2026-001 verified pending probe; task dispatched to developer (yervant). No other active motions.
+
+BLOCKER 2 — Parity checklist not 100% (P5 gate incomplete):
+  P5 (Parallel run): Setup ready — Python baseline harness + committed python.json (10 captures), tools/compare_parity.py + gates pipeline ready. MISSING: Laravel parity capture harness (emits Laravel-side capture JSON).
+  P6 (Cutover): Not started — blocked on P5 parity + SC-001 pentest.
+  Kanban todo items pending (todo state): execute-sc001-authenticated-pentest, implement-laravel-parity-capture-harness, decide-second-layer-report-scope, finance-bs-is-tb-queries, filament-invoices-default-sort-inert, ar-ap-receipt-payment-report-pages, ar-ap-aging-report-pages, extend-prd-scope-gate-for-report-inventory, projects-jobs-report-pages, gross-profit-and-loss-report.
+  F-22/F-23 (Projects/Jobs): parity via 18-table sync. F-24/F-25 (A/R A/P aging): unblocked by Q-11 Option A 26-table ingest. F-26 (Finance reports): GL/Trial Balance/Balance Sheet/IS not yet ported per PRD P2b2 partial.
+  F-27 (Statement of Account): pending derivation from invoices + A/R receipts. F-28 (Listing Reference): Rate by Destination page exists; verify coverage. F-29 (Performance Tracker): not yet ported. F-30 (Miscellaneous views): some blocked on legacy .DOC artifacts.
+  F-31 (Ship Finance & AR/AP Journalism): open scope pending Q-11/Q-10 owner decision; Tier A 26-table ingest already landed. F-32 (Volume/Lifting/Gross Profit): enumeration-level, blocked on legacy .DOC artifacts.
+
+MOTIONS: t_12b0978d adopted (leader bejo) — Fix SC-001 blocker CMT-2026-001; verification pending (dev server restart + curl probe). No other active motions (total=1).
+
+TEAM: bejo (leader), afnan (architect), bunda (reviewer), hasna (devops), inem (writer),
+      yervant (developer), yevna (tester).
+
+CONFIRMED: stop condition NOT met. Project continues active phase. No PROJECT_COMPLETE.
+
+Next: yervant performs verification (restart Laravel dev server at 8002, curl probe GET /ledger/detail?k=1); once CLEAN re-run Strix authenticated pentest;
+      implement Laravel parity capture harness (P5 dependency); complete F-22..F-32 parity;
+      then P6 cutover planning.

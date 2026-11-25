@@ -71,8 +71,6 @@ laravel-dev.log
 *.db-sync
 *.bak
 *.log
-*.txt
-!*.md
 hermes_heartbeat_*.txt
 strix_*.log
 strix_*/
@@ -87,3 +85,17 @@ kanban/*.tmp
 *.tar.gz
 PROMPTS/
 laravel/.dev-ini/
+
+# Internal agent configs (personal, not shared)
+.agents/
+.claude/
+.specify/
+
+# Test DBF fixtures (external binary files)
+laravel/tests/fixtures/dbf/
+
+# Runtime prompt/setup scripts
+SETUP_WORKFLOW_PROMPT.md
+restore_*.py
+check_*.py
+compare_*.py
