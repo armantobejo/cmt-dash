@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="mb-0">{{ _t('User Management') }}</h4>
+    <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#userForm"
+            aria-expanded="{{ 'true' if editing else 'false' }}">
+        <i class="bi bi-plus-lg me-1"></i>{{ _t('Add User') }}
+    </button>
+</div>
+
+{% if error %}
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ error }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endif %}
+
+<!-- Create / Edit form -->
+<div class="collapse {{ 'show' if editing }}" id="userForm">
+    <div class="card mb-4">
+        <div class="card-header">
+            {{ _t('Edit User') if editing else _t('New User') }}
+        </div>
+        <div class="card-body">
+            {% if editing %}
+            <form method="post" action="/users/{{ editing.id }}/edit">
+            {% else %}
+            <form method="post" action="/users/new">
+            {% endif %}
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label class="form-label">{{ _t('Username') }}</label>
+                        {% if editing %}
+                        <input type="text" class="form-control" value="{{ editing.username }}" disabled>
+                        {% else %}
+                        <input type="text" class="form-control" name="username" required autofocus>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">{{ _t('Display Name') }}</label>
+                        <input type="text" class="form-control" name="display_name"
+                               value="{{ editing.display_name if editing else '' }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">{{ _t('Role') }}</label>
+                        <select class="form-select" name="role">
+                            {% set current_role = editing.role if editing else 'staff' %}
+                            {% for r in ['superadmin', 'admin', 'management', 'staff', 'customer'] %}
+                            <option value="{{ r }}" {{ 'selected' if r == current_role }}>{{ r }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">{{ _t('Password') }}{% if editing %} ({{ _t('leave blank to keep') }}){% endif %}</label>
+                        <input type="password" class="form-control" name="password"
+                               {{ '' if editing else 'required' }}>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">{{ _t('Company') }}</label>
+                        <input type="text" class="form-control" name="customer_company"
+                               list="company-list"
+                               value="{{ editing.customer_company if editing and editing.customer_company else '' }}"
+                               placeholder="{{ _t('for customer role') }}">
+                        <datalist id="company-list">
+                        {% for name in companies %}
+                            <option value="{{ name }}">
+                        {% endfor %}
+                        </datalist>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        {{ _t('Save') }}
+                    </button>
+                    {% if editing %}
+                    <a href="/users" class="btn btn-sm btn-secondary ms-1">{{ _t('Cancel') }}</a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- User table -->
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>{{ _t('Username') }}</th>
+                <th>{{ _t('Display Name') }}</th>
+                <th>{{ _t('Role') }}</th>
+                <th>{{ _t('Company') }}</th>
+                <th>{{ _t('Created') }}</th>
+                <th class="text-end">{{ _t('Actions') }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.display_name or '—' }}</td>
+                <td>
+                    <span class="badge
+                        {% if u.role == 'superadmin' %}bg-danger
+                        {% elif u.role == 'admin' %}bg-warning text-dark
+                        {% elif u.role == 'management' %}bg-info text-dark
+                        {% elif u.role == 'staff' %}bg-secondary
+                        {% else %}bg-light text-dark{% endif %}">
+                        {{ u.role }}
+                    </span>
+                </td>
+                <td>{{ u.customer_company or '—' }}</td>
+                <td>{{ u.created_at[:10] if u.created_at else '—' }}</td>
+                <td class="text-end">
+                    <a href="/users/{{ u.id }}/edit" class="btn btn-sm btn-outline-primary" title="{{ _t('Edit') }}" aria-label="{{ _t('Edit') }}">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    {% if user.role == 'superadmin' and u.username != user.username %}
+                    <form method="post" action="/users/{{ u.id }}/delete" class="d-inline"
+                          onsubmit="return confirm('{{ _t('Delete this user?') }}')">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" title="{{ _t('Delete') }}" aria-label="{{ _t('Delete') }}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not users %}
+            <tr>
+                <td colspan="7" class="text-center text-body-secondary py-4">{{ _t('No users found.') }}</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

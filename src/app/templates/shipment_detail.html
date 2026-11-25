@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block content %}
+{# ── Header ─────────────────────────────────────────────── #}
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <a href="/shipments" class="text-body-secondary text-decoration-none small"><i class="bi bi-arrow-left me-1"></i>{{ _t('Shipments') }}</a>
+        <h3 class="mb-0 mt-1">{{ ref }}</h3>
+    </div>
+    <div class="text-end">
+        {% if detail.header.KIND == 'I' %}
+            <span class="badge badge-import">{{ _t('Import') }}</span>
+        {% elif detail.header.KIND == 'E' %}
+            <span class="badge badge-export">{{ _t('Export') }}</span>
+        {% elif detail.header.KIND == 'D' %}
+            <span class="badge badge-domestic">{{ _t('Domestic') }}</span>
+        {% else %}
+            <span class="badge">{{ detail.header.KIND }}</span>
+        {% endif %}
+    </div>
+</div>
+
+{# ── Manifest (second-layer) ─────────────────────────────── #}
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">{{ _t('Manifest') }}</span>
+        <span class="small text-body-secondary">{{ _t('Source table') }}: {{ detail.manifest_source_table }}</span>
+    </div>
+    <div class="card-body">
+        {% if detail.manifest_status == 'pending ingest' %}
+        <p class="text-muted-custom mb-1">{{ _t('Status') }}: {{ _t('pending ingest') }}</p>
+        <p class="small text-body-secondary mb-0">{{ _t('Blocking dependency') }}: {{ detail.manifest_dependency }}</p>
+        {% elif detail.manifest_status == 'no rows' %}
+        <p class="text-muted-custom mb-0">{{ _t('No manifest rows for this shipment.') }}</p>
+        {% else %}
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>{{ _t('Number') }}</th>
+                        <th>{{ _t('Date') }}</th>
+                        <th>{{ _t('Vessel') }}</th>
+                        <th>{{ _t('Container') }}</th>
+                        <th>{{ _t('Shipping Line') }}</th>
+                        <th>{{ _t('Agent') }}</th>
+                        <th>{{ _t('ETD') }}</th>
+                        <th>{{ _t('ETA') }}</th>
+                        <th>{{ _t('Terms') }}</th>
+                        <th>{{ _t('Note') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in detail.manifest %}
+                    <tr>
+                        <td>{{ m.NOMOR or '-' }}</td>
+                        <td>{{ m.DATE or '-' }}</td>
+                        <td>{{ m.VESSEL or '-' }}</td>
+                        <td>{{ m.CONTAINERN or '-' }}</td>
+                        <td>{{ m.SHIPPINGLI or '-' }}</td>
+                        <td>{{ m.AGENT or '-' }}</td>
+                        <td>{{ m.ETD_1 or '-' }}</td>
+                        <td>{{ m.ETA_1 or '-' }}</td>
+                        <td>{{ m.TERMS or '-' }}</td>
+                        <td>{{ m.NOTE or '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+        <span>{{ _t('Shipment Info') }}</span>
+        {% if detail.header.GP_RP is not none %}
+        <span class="fs-6 {% if detail.header.GP_RP >= 0 %}text-success{% else %}text-danger{% endif %}">
+            {{ _t('Gross Profit') }}: Rp {{ "{:,.0f}".format(detail.header.GP_RP|float) }}
+        </span>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Customer') }}</div>
+                <div>{{ detail.header.CUSTOMER or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Consignee') }}</div>
+                <div>{{ detail.header.CONSIGNEE_NAME or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Shipper') }}</div>
+                <div>{{ detail.header.SHIPPER_NAME or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Date') }}</div>
+                <div>{{ detail.header.DATE or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('BL No') }}</div>
+                <div>{{ detail.header.BLNO3 or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('House BL') }}</div>
+                <div>{{ detail.header.BL_NO or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Master BL') }}</div>
+                <div>{{ detail.header.MBL_NO or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Container') }}</div>
+                <div>{{ detail.header.CONTAINERN or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Said to Contain') }}</div>
+                <div>{{ detail.header.SAIDTOCONT or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Port of Load') }}</div>
+                <div>{{ detail.header.PORTOFLOAD or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Port of Discharge') }}</div>
+                <div>{{ detail.header.PORTOFDISC or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('ETD') }}</div>
+                <div>{{ detail.header.ETD or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('ETA') }}</div>
+                <div>{{ detail.header.ETA or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('ATA') }}</div>
+                <div>{{ detail.header.ATA or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Vessel') }}</div>
+                <div>{% if detail.header.VESSEL_NAME %}{{ detail.header.VESSEL_NAME }}{% if detail.header.EXVOYAGE %} ({{ detail.header.EXVOYAGE }}){% endif %}{% else %}-{% endif %}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Agent') }}</div>
+                <div>{{ detail.header.AGENT_NAME or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Shipping Line') }}</div>
+                <div>{{ detail.header.SHIPPINGMA or '-' }}</div>
+            </div>
+            {% if detail.header.DESCRIPTION %}
+            <div class="col-12">
+                <div class="small text-body-secondary">{{ _t('Description') }}</div>
+                <div>{{ detail.header.DESCRIPTION }}</div>
+            </div>
+            {% endif %}
+        </div>
+            </div>
+        </div>
+
+        {# ── Shared line-item section macro ───────────────────────── #}
+        {# Renders a card: title + source-table badge + grouped parent→lines tables. #}
+        {# `groups`: list of dicts {label, sub?, total?, items: []}.            #}
+        {# `cols`: list of {key, label, align?, fmt?, cur_key?}.                #}
+        {#   fmt: 'text'|'usd'|'idr'|'auto' (auto uses cur_key for currency).    #}
+        {% macro line_section(title, source_table, groups, cols) %}
+        <div class="card mb-4">
+          <div class="card-header fw-semibold d-flex justify-content-between align-items-center">
+            <span>{{ title }}</span>
+            <span class="small text-body-secondary">
+              {{ _t('Source table') }}: <code>{{ source_table }}</code>
+            </span>
+          </div>
+          <div class="card-body p-0">
+            {% if not groups %}
+            <p class="text-muted-custom p-3 mb-0">{{ _t('No lines.') }}</p>
+            {% else %}
+            {% for g in groups %}
+            <div class="border-bottom last-border-0 px-3 py-2">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <div class="fw-semibold">{{ g.label }}{% if g.sub %} <span class="small text-body-secondary">{{ g.sub }}</span>{% endif %}</div>
+                {% if g.total is not none %}<div class="text-end">{{ g.total }}</div>{% endif %}
+              </div>
+              {% if g.lines %}
+              <table class="table table-sm mb-0">
+                <thead><tr>{% for c in cols %}<th class="{{ 'text-end' if c.align=='right' }}">{{ c.label }}</th>{% endfor %}</tr></thead>
+                <tbody>
+                  {% for it in g.lines %}
+                  <tr>
+                    {% for c in cols %}
+                    {% set v = it[c.key] %}
+                    <td class="{{ 'text-end' if c.align=='right' }}">
+                      {% if v is none %}-
+                      {% elif c.fmt == 'auto' and c.cur_key %}{{ (v|money('idr')) if (it[c.cur_key] or '') == 'RP' else (v|money('usd')) }}
+                      {% elif c.fmt == 'usd' %}{{ v|money('usd') }}
+                      {% elif c.fmt == 'idr' %}{{ v|money('idr') }}
+                      {% else %}{{ v }}{% endif %}
+                    </td>
+                    {% endfor %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              {% endif %}
+            </div>
+            {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+        {% endmacro %}
+
+        {# ── 1. Invoice (line) ────────────────────────────────────── #}
+        {% set inv_cols = [
+            {'key': 'JENISCOST', 'label': _t('Cost Type')},
+            {'key': 'DESCRIPTIO', 'label': _t('Description')},
+            {'key': 'CURRENCY', 'label': _t('Currency')},
+            {'key': 'QTY', 'label': _t('Qty'), 'align': 'right'},
+            {'key': 'SELLING', 'label': _t('Unit Price'), 'align': 'right', 'fmt': 'auto', 'cur_key': 'CURRENCY'},
+            {'key': 'JUMLAH', 'label': _t('Amount'), 'align': 'right', 'fmt': 'auto', 'cur_key': 'CURRENCY'},
+        ] %}
+        {% set inv_groups = [] %}
+        {% for inv in detail.invoices %}
+          {% set items = detail.inv_items.get(inv.NOINVOICE, []) %}
+          {% set _ = inv_groups.append({
+              'label': inv.NOINVOICE,
+              'sub': (inv.DATEOFISSU or '') + ((' · ' + inv.SHIPPER_CODE) if inv.SHIPPER_CODE else ''),
+              'total': ((inv.GRAND_USD * inv.EXRATE) if (inv.GRAND_USD is not none and inv.GRAND_USD != 0 and inv.EXRATE) else inv.GRAND_RP) if (inv.GRAND_USD is not none or inv.GRAND_RP is not none) else none,
+              'lines': items
+          }) %}
+        {% endfor %}
+        {{ line_section(_t('Invoice (line)'), 'INVOICE_R', inv_groups, inv_cols) }}
+
+        {# ── 2. Operational Cost (line) ────────────────────────────── #}
+        {# Decision: op-cost lines feed from OPRCOST_R, not NA_D.       #}
+        {# See docs/decisions/na-d-vs-oprcost-r.md (zero key overlap).  #}
+        {% set opr_cols = [
+            {'key': 'JENISCOST', 'label': _t('Cost Type')},
+            {'key': 'DESCRIPTIO', 'label': _t('Description')},
+            {'key': 'CURRENCY', 'label': _t('Currency')},
+            {'key': 'QTY', 'label': _t('Qty'), 'align': 'right'},
+            {'key': 'TSRATE', 'label': _t('Rate'), 'align': 'right', 'fmt': 'auto', 'cur_key': 'CURRENCY'},
+            {'key': 'JUMLAH', 'label': _t('Amount'), 'align': 'right', 'fmt': 'auto', 'cur_key': 'CURRENCY'},
+            {'key': 'INVOICE_NO', 'label': _t('Invoice No')},
+        ] %}
+        {% set opr_groups = [] %}
+        {% for opr in detail.opr_headers %}
+          {% set items = detail.opr_items.get(opr.UOPRCOST, []) %}
+          {% set _ = opr_groups.append({
+              'label': opr.NOMOR or opr.UOPRCOST,
+              'sub': opr.TANGGAL or '',
+              'total': ((opr.GRAND_USD * opr.EXRATE) if (opr.GRAND_USD is not none and opr.GRAND_USD != 0 and opr.EXRATE) else opr.GRAND_RP) if (opr.GRAND_USD is not none or opr.GRAND_RP is not none) else none,
+              'lines': items
+          }) %}
+        {% endfor %}
+        {{ line_section(_t('Operational Cost (line)'), 'OPRCOST_R', opr_groups, opr_cols) }}
+
+        {# ── 3. DR/CN FCL (line) ───────────────────────────────────── #}
+        {% set drcn_fcl_cols = [
+            {'key': 'JENISCOST', 'label': _t('Cost Type')},
+            {'key': 'DESCRIPTIO', 'label': _t('Description')},
+            {'key': 'CURRENCY', 'label': _t('Currency')},
+            {'key': 'QTY', 'label': _t('Qty'), 'align': 'right'},
+            {'key': 'UNITPRICE', 'label': _t('Unit Price'), 'align': 'right', 'fmt': 'auto', 'cur_key': 'CURRENCY'},
+            {'key': 'JUMLAH', 'label': _t('Amount'), 'align': 'right', 'fmt': 'auto', 'cur_key': 'CURRENCY'},
+        ] %}
+        {% set drcn_fcl_groups = [] %}
+        {% for dn in detail.debit_notes_fcl %}
+          {% set items = detail.dr_items.get(dn.UNIK, []) %}
+          {% set _ = drcn_fcl_groups.append({
+              'label': dn.NO_REF,
+              'sub': (dn.TANGGAL or '') + ((' · ' + dn.BLNO) if dn.BLNO else ''),
+              'total': ((dn.TOTAL * dn.EXRATE) if (dn.TOTAL is not none and dn.TOTAL != 0 and dn.EXRATE) else dn.TOTAL_IDR) if (dn.TOTAL is not none or dn.TOTAL_IDR is not none) else none,
+              'lines': items
+          }) %}
+        {% endfor %}
+        {% for cn in detail.credit_notes_fcl %}
+          {% set items = detail.dr_items.get(cn.UNIK, []) %}
+          {% set _ = drcn_fcl_groups.append({
+              'label': cn.NO_REF,
+              'sub': (cn.TANGGAL or '') + ((' · ' + cn.BLNO) if cn.BLNO else ''),
+              'total': ((cn.TOTAL * cn.EXRATE) if (cn.TOTAL is not none and cn.TOTAL != 0 and cn.EXRATE) else cn.TOTAL_IDR) if (cn.TOTAL is not none or cn.TOTAL_IDR is not none) else none,
+              'lines': items
+          }) %}
+        {% endfor %}
+        {{ line_section(_t('DR/CN FCL (line)'), 'DRCRFULL_R', drcn_fcl_groups, drcn_fcl_cols) }}
+
+        {# ── 4. DR/CN LCL (line) ───────────────────────────────────── #}
+        {% set drcn_lcl_cols = [
+            {'key': 'JENISCOST', 'label': _t('Cost Type')},
+            {'key': 'DESCRIPTIO', 'label': _t('Description')},
+            {'key': 'CURRENCY', 'label': _t('Currency')},
+            {'key': 'QTY', 'label': _t('Qty'), 'align': 'right'},
+            {'key': 'UNITPRICE', 'label': _t('Unit Price'), 'align': 'right', 'fmt': 'auto', 'cur_key': 'CURRENCY'},
+            {'key': 'JUMLAH', 'label': _t('Amount'), 'align': 'right', 'fmt': 'auto', 'cur_key': 'CURRENCY'},
+        ] %}
+        {% set drcn_lcl_groups = [] %}
+        {% for dn in detail.debit_notes_lcl %}
+          {% set items = detail.dr_items.get(dn.UNIK, []) %}
+          {% set _ = drcn_lcl_groups.append({
+              'label': dn.NO_REF,
+              'sub': (dn.TANGGAL or '') + ((' · ' + dn.BLNO) if dn.BLNO else ''),
+              'total': ((dn.TOTAL * dn.EXRATE) if (dn.TOTAL is not none and dn.TOTAL != 0 and dn.EXRATE) else dn.TOTAL_IDR) if (dn.TOTAL is not none or dn.TOTAL_IDR is not none) else none,
+              'lines': items
+          }) %}
+        {% endfor %}
+        {% for cn in detail.credit_notes_lcl %}
+          {% set items = detail.dr_items.get(cn.UNIK, []) %}
+          {% set _ = drcn_lcl_groups.append({
+              'label': cn.NO_REF,
+              'sub': (cn.TANGGAL or '') + ((' · ' + cn.BLNO) if cn.BLNO else ''),
+              'total': ((cn.TOTAL * cn.EXRATE) if (cn.TOTAL is not none and cn.TOTAL != 0 and cn.EXRATE) else cn.TOTAL_IDR) if (cn.TOTAL is not none or cn.TOTAL_IDR is not none) else none,
+              'lines': items
+          }) %}
+        {% endfor %}
+        {{ line_section(_t('DR/CN LCL (line)'), 'DRCRFULL_R', drcn_lcl_groups, drcn_lcl_cols) }}
+
+        {# ── Empty state ──────────────────────────────────────────── #}
+        {% if not detail.opr_headers and not detail.invoices and not detail.debit_notes_fcl and not detail.debit_notes_lcl and not detail.credit_notes_fcl and not detail.credit_notes_lcl %}
+        <div class="card mb-4">
+            <div class="card-body text-center p-4 text-muted-custom">
+                {{ _t('No detail data available.') }}
+            </div>
+        </div>
+        {% endif %}
+        {% endblock %}

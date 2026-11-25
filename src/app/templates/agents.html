@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-3 align-items-center">
+  <div class="col"><h3 class="mb-0">{{ _t('List Agent') }}</h3><span class="text-body-secondary small">{{ agents.total }} rows</span></div>
+</div>
+<div class="card">
+  {% from 'macros.html' import filter_bar, paginator %}
+  <div class="card-header d-flex justify-content-between align-items-center gap-2">
+      <span>{{ _t('Agents') }}</span>
+      {{ filter_bar(action='/agents', search_value=search, search_placeholder=_t('Search code or name'), sort=sort, sort_dir=sort_dir) }}
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead><tr>
+        {% macro sort_header(key, label) %}
+        {% set next_dir = 'asc' if (sort == key and sort_dir == 'desc') else 'desc' %}
+        <th scope="col">
+          <a href="?q={{ search|urlencode }}&sort={{ key }}&dir={{ next_dir }}" class="text-decoration-none text-reset">
+            {{ label }}
+            {% if sort == key %}<i class="bi bi-chevron-{% if sort_dir == 'desc' %}down{% else %}up{% endif %} small"></i>{% endif %}
+          </a>
+        </th>
+        {% endmacro %}
+        {{ sort_header('code', _t('Code')) }}
+        {{ sort_header('name', _t('Name')) }}
+        {{ sort_header('agent', _t('Agent')) }}
+        <th>{{ _t('Tel') }}</th>
+        <th>{{ _t('Account') }}</th>
+      </tr></thead>
+      <tbody>
+        {% for r in agents.rows %}
+        <tr>
+          <td class="font-monospace">{{ r.CODE }}</td>
+          <td>{{ r.NAME or '-' }}</td>
+          <td>
+            <a href="/performance?group_by=agent" class="text-reset" style="color: inherit">
+              {{ r.AGENT or '-' }}
+            </a>
+          </td>
+          <td>{{ r.TELP or '-' }}</td>
+          <td>{{ r.KD_ACCOUNT or '-' }}</td>
+        </tr>
+        {% endfor %}
+        {% if not agents.rows %}<tr><td colspan="5" class="text-center text-body-secondary py-4">{{ _t('No data') }}</td></tr>{% endif %}
+      </tbody>
+    </table>
+  </div>
+  {% if agents.pages > 1 %}
+  <div class="card-footer d-flex justify-content-between align-items-center">
+    <span class="text-body-secondary small">{{ _t('Page') }} {{ agents.page }} / {{ agents.pages }}</span>
+    {{ paginator(agents.page, agents.pages, page_nums, q=search, sort=sort, sort_dir=sort_dir) }}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

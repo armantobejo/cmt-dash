@@ -1,0 +1,69 @@
+{
+    "guest_statuses": {
+        "/": 303,
+        "/data-quality": 303,
+        "/invoices": 303,
+        "/ledger": 303,
+        "/sales": 303,
+        "/shipments": 303,
+        "/users": 303
+    },
+    "role_matrix": {
+        "/": {
+            "_min_role": "auth",
+            "admin": 200,
+            "customer": 200,
+            "management": 200,
+            "staff": 200,
+            "superadmin": 200
+        },
+        "/data-quality": {
+            "_min_role": "superadmin",
+            "admin": 403,
+            "customer": 403,
+            "management": 403,
+            "staff": 403,
+            "superadmin": 200
+        },
+        "/invoices": {
+            "_min_role": "auth",
+            "admin": 200,
+            "customer": 200,
+            "management": 200,
+            "staff": 200,
+            "superadmin": 200
+        },
+        "/ledger": {
+            "_min_role": "management",
+            "admin": 200,
+            "customer": 403,
+            "management": 200,
+            "staff": 403,
+            "superadmin": 200
+        },
+        "/sales": {
+            "_min_role": "auth",
+            "admin": 200,
+            "customer": 200,
+            "management": 200,
+            "staff": 200,
+            "superadmin": 200
+        },
+        "/shipments": {
+            "_min_role": "auth",
+            "admin": 200,
+            "customer": 200,
+            "management": 200,
+            "staff": 200,
+            "superadmin": 200
+        },
+        "/users": {
+            "_min_role": "admin",
+            "admin": 200,
+            "customer": 403,
+            "management": 403,
+            "staff": 403,
+            "superadmin": 200
+        }
+    }
+}

@@ -1,0 +1,83 @@
+/*
+ * DESIGN.md -> Filament token map (PRD §1.2 / §6; decision record
+ * docs/decisions/filament-view-layer.md).
+ *
+ * Filament's components read their colours, type and motion from CSS custom
+ * properties, so "DESIGN.md remains binding" is implemented by assigning the
+ * DESIGN.md values to those properties. Filament's own theme stylesheet is
+ * preserved (it is loaded first); the token map overrides CSS variables and,
+ * as the single deliberate exception, suppresses shadows on seven Filament
+ * component classes with `!important` because DESIGN.md forbids shadows and
+ * Filament's own utilities are specificity-scoped. Loaded after the panel's
+ * own theme stylesheet.
+ *
+ * Selector note: Filament emits its colour palette in a <style> block that
+ * comes AFTER this file, so the palette overrides are declared on
+ * `html.dark:root` — higher specificity, so source order cannot win. They are
+ * scoped to dark mode because DESIGN.md defines a dark-first palette only;
+ * the light theme keeps Filament's own palette.
+ *
+ * Every value below is a DESIGN.md token. Nothing here invents a token.
+ */
+
+/* ── typography.fontFamily (display, body, label: IBM Plex Sans) ─────────── */
+:root {
+    --font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ── typography.mono.fontFamily (money/code cells) ───────────────────────── */
+:root {
+    --font-mono: SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* ── motion: "no animation beyond 120ms" ────────────────────────────────── */
+:root {
+    --default-transition-duration: 120ms;
+}
+
+/* ── colors.* mapped onto Filament's gray scale, dark theme ─────────────── */
+html.dark:root {
+    /* surfaces */
+    --gray-900: #212631; /* colors.surface */
+    --gray-800: #323a49; /* colors.surface-raised */
+    --gray-700: #323a49; /* colors.border */
+    --gray-600: #2a303d; /* colors.surface-subtle */
+
+    /* text: DESIGN gives exactly three levels */
+    --gray-200: rgba(255, 255, 255, 0.87); /* colors.text */
+    --gray-400: rgba(255, 255, 255, 0.6);  /* colors.text-muted */
+    --gray-500: rgba(255, 255, 255, 0.38); /* colors.text-faint */
+}
+
+/*
+ * rounded.sm/md/lg are 4px/6px/8px, which is exactly what Filament ships
+ * (--radius-sm .25rem / --radius-md .375rem / --radius-lg .5rem): recorded in
+ * the decision record as already-equal, so there is no override to drift.
+ */
+
+/* ── "no shadows" — elevation comes from surface + border, not shadow ───── */
+:root {
+    --cmt-elevation: none;
+}
+
+.fi-sidebar,
+.fi-topbar,
+.fi-section,
+.fi-ta-ctn,
+.fi-wi-stats-overview-stat,
+.fi-dropdown-panel,
+.fi-modal-window {
+    box-shadow: var(--cmt-elevation) !important;
+}
+
+/* ── typography.mono.fontFeature: tnum on numeric cells ─────────────────── */
+.fi-ta-table td,
+.fi-ta-table th {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── components.table.rowDensity: compact ───────────────────────────────── */
+.fi-ta-cell,
+.fi-ta-header-cell {
+    padding-block: 0.35rem;
+}

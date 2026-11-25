@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-3 align-items-center">
+  <div class="col"><h3 class="mb-0">{{ _t('List Shipper/ Forwarder') }}</h3><span class="text-body-secondary small">{{ shippers.total }} rows</span></div>
+</div>
+<div class="card">
+  {% from 'macros.html' import filter_bar, paginator %}
+  <div class="card-header d-flex justify-content-between align-items-center gap-2">
+      <span>{{ _t('Shippers') }}</span>
+      {{ filter_bar(action='/shippers', search_value=search, search_placeholder=_t('Search code or name'), sort=sort, sort_dir=sort_dir) }}
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead><tr>
+        {% macro sort_header(key, label) %}
+        {% set next_dir = 'asc' if (sort == key and sort_dir == 'desc') else 'desc' %}
+        <th scope="col">
+          <a href="?q={{ search|urlencode }}&sort={{ key }}&dir={{ next_dir }}" class="text-decoration-none text-reset">
+            {{ label }}
+            {% if sort == key %}<i class="bi bi-chevron-{% if sort_dir == 'desc' %}down{% else %}up{% endif %} small"></i>{% endif %}
+          </a>
+        </th>
+        {% endmacro %}
+        {{ sort_header('code', _t('Code')) }}
+        {{ sort_header('name', _t('Name')) }}
+        <th>{{ _t('Tel') }}</th>
+        <th>{{ _t('Account') }}</th>
+        <th>{{ _t('NPWP') }}</th>
+      </tr></thead>
+      <tbody>
+        {% for r in shippers.rows %}
+        <tr><td class="font-monospace">{{ r.KD_SHIPPER }}</td><td>{{ r.NAME or '-' }}</td><td>{{ r.TELP or '-' }}</td><td>{{ r.KD_ACCOUNT or '-' }}</td><td>{{ r.NPWP or '-' }}</td></tr>
+        {% endfor %}
+        {% if not shippers.rows %}<tr><td colspan="5" class="text-center text-body-secondary py-4">{{ _t('No data') }}</td></tr>{% endif %}
+      </tbody>
+    </table>
+  </div>
+  {% if shippers.pages > 1 %}
+  <div class="card-footer d-flex justify-content-between align-items-center">
+    <span class="text-body-secondary small">{{ _t('Page') }} {{ shippers.page }} / {{ shippers.pages }}</span>
+    {{ paginator(shippers.page, shippers.pages, page_nums, q=search, sort=sort, sort_dir=sort_dir) }}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

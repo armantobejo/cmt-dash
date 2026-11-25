@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0.0",
+  "meta": {
+    "source": "laravel",
+    "generator": "php artisan parity:capture",
+    "checklist": "docs/parity-checklist.yaml",
+    "gate": "PRD section 8, phase P5",
+    "roles": [
+      "staff"
+    ],
+    "domains": [
+      "auth",
+      "rbac",
+      "dashboard",
+      "shipments",
+      "shipment_detail",
+      "invoices",
+      "ledger_sales",
+      "data_quality",
+      "apis"
+    ],
+    "captured_at": "2026-11-21T13:00:00Z",
+    "content_hash": "1dec9768d868a55d3c12cb6abc61da7b7ba5113358f77824722d3a1d0c204b1e"
+  },
+  "domains": {
+    "auth": {
+      "default": {
+        "status": 200,
+        "error": null,
+        "data_strings": [
+          "Auth entry point"
+        ]
+      }
+    },
+    "rbac": {
+      "default": {
+        "status": 200,
+        "error": null,
+        "data_strings": [
+          "RBAC flow entry"
+        ]
+      }
+    },
+    "dashboard": {
+      "default": {
+        "status": 200,
+        "error": null,
+        "data_strings": [
+          "Dashboard home"
+        ]
+      }
+    },
+    "shipments": {
+      "default": {
+        "status": 200,
+        "error": null,
+        "data_strings": [
+          "Shipments listing"
+        ]
+      }
+    },
+    "shipment_detail": {
+      "default": {
+        "status": 200,
+        "error": null,
+        "data_strings": [
+          "Shipment detail view"
+        ]
+      }
+    },
+    "invoices": {
+      "default": {
+        "status": 200,
+        "error": null,
+        "data_strings": [
+          "Invoices listing"
+        ]
+      }
+    },
+    "ledger_sales": {
+      "default": {
+        "status": 200,
+        "error": null,
+        "data_strings": [
+          "Sales ledger"
+        ]
+      }
+    },
+    "data_quality": {
+      "default": {
+        "status": 200,
+        "error": null,
+        "data_strings": [
+          "Data quality checks"
+        ]
+      }
+    },
+    "apis": {
+      "default": {
+        "status": 200,
+        "error": null,
+        "data_strings": [
+          "API endpoints"
+        ]
+      }
+    }
+  }
+}

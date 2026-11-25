@@ -1,0 +1,55 @@
+{
+    "denial_bodies": {
+        "/data-quality": {
+            "detail": "Requires role >= superadmin"
+        },
+        "/ledger": {
+            "detail": "Requires role >= management"
+        },
+        "/users": {
+            "detail": "Requires role >= admin"
+        }
+    },
+    "panel_access": {
+        "anonymous": false,
+        "authenticated": true,
+        "panel_id": "admin"
+    },
+    "role_levels": {
+        "admin": 4,
+        "customer": 1,
+        "management": 3,
+        "staff": 2,
+        "superadmin": 5
+    },
+    "route_minimum_roles": {
+        "GET /": "auth",
+        "GET /data-quality": "superadmin",
+        "GET /data-quality/detail": "superadmin",
+        "GET /invoices": "auth",
+        "GET /invoices/detail": "auth",
+        "GET /ledger": "management",
+        "GET /ledger/detail": "management",
+        "GET /ledger/entries": "management",
+        "GET /ledger/entries/{id}": "management",
+        "GET /ledger/{id}": "management",
+        "GET /sales": "auth",
+        "GET /shipments": "auth",
+        "GET /shipments/detail": "auth",
+        "GET /users": "admin",
+        "GET /users/{user_id}/edit": "admin",
+        "POST /ledger": "management",
+        "POST /sync": "management",
+        "POST /users/new": "admin",
+        "POST /users/{user_id}/delete": "superadmin",
+        "POST /users/{user_id}/edit": "admin"
+    },
+    "user_levels": {
+        "admin": 4,
+        "anonymous": 0,
+        "customer": 1,
+        "management": 3,
+        "staff": 2,
+        "superadmin": 5
+    }
+}

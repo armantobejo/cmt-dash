@@ -1,0 +1,36 @@
+# Build context for src/Dockerfile and tools/Dockerfile.
+# The images only need src/ + tools/, so keep everything else out of context.
+
+# VCS / tooling
+.git
+.gitignore
+.hermes
+.specify
+.code-review-graph
+.pytest_cache
+__pycache__
+*.pyc
+
+# Local env
+.venv
+venv
+
+# Data (mounted at runtime via docker-compose volumes, never baked in)
+data
+DBF
+*.db
+*.db-sync
+*.db-wal
+*.db-shm
+
+# Docs / specs / tests (not copied into images)
+docs
+specs
+tests
+schema.yaml
+
+# Root-level analysis scripts (not part of the app)
+analyze_dbf.py
+dump_fields.py
+na_cargo_column_analysis.json
+cookies.txt

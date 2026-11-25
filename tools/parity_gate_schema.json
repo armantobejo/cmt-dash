@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cmt-dash.local/schemas/parity-capture.schema.json",
+  "title": "Parity capture artifact (meta block + domains)",
+  "description": "Envelope written by `php artisan parity:capture` (Laravel) and by the Python parity harness. The meta block describes the capture run; `domains` carries the per-domain signatures compared against the committed baseline. `content_hash` is sha256 over the canonical JSON of `domains` (keys sorted recursively, UTF-8, no insignificant whitespace, unescaped slashes/unicode) — recomputed by the gate before any diff.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "meta", "domains"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d+)$",
+      "description": "Artifact format version (semver). Gate rejects candidate when its major version exceeds the baseline's major version (VERSION_SKEW_FATAL)."
+    },
+    "meta": { "$ref": "#/$defs/meta" },
+    "domains": { "$ref": "#/$defs/domains" }
+  },
+  "$defs": {
+    "meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "generator",
+        "checklist",
+        "gate",
+        "roles",
+        "domains",
+        "captured_at",
+        "content_hash"
+      ],
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["python-fastapi", "laravel"],
+          "description": "Producing app. Baseline is python-fastapi; candidate is laravel."
+        },
+        "generator": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Command that produced the artifact, e.g. 'php artisan parity:capture'."
+        },
+        "checklist": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Repo-relative path of the human-readable checklist this run maps to."
+        },
+        "gate": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Gate identifier, e.g. 'PRD section 8, phase P5'."
+        },
+        "roles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Role names exercised by the capture; must match the checklist role matrix."
+        },
+        "domains": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 },
+          "description": "Declared domain keys. Gate invariant: exactly equals Object.keys(domains)."
+        },
+        "captured_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 capture time. Gate invariant: within the artifact TTL (default 24h) when the gate runs."
+        },
+        "content_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "sha256 hex over canonical JSON of the `domains` value. Checksum check recomputes it; mismatch = CHECKSUM_MISMATCH."
+        },
+        "normalization": {
+          "type": "string",
+          "description": "Human-readable normalization contract applied to signatures (noise keys, tokenization, float rounding)."
+        },
+        "features_covered": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^F-\\d+[a-z]?$" }
+        },
+        "known_gaps": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Defect-for-defect parity items (KG-n) intentionally reproduced."
+        },
+        "fixed_bugs": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Previously known gaps that the baseline now captures as fixed behavior."
+        },
+        "baseline_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional git ref / file path of the baseline this artifact was last compared against."
+        }
+      }
+    },
+    "domains": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "minProperties": 1,
+        "additionalProperties": { "$ref": "#/$defs/domain" },
+        "description": "fixture key -> capture signature"
+      },
+      "description": "Domain key -> fixture key -> capture signature. Domain key set must equal meta.domains."
+    },
+    "domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": ["integer", "null"],
+          "minimum": 100,
+          "maximum": 599,
+          "description": "HTTP status. null only when error is set (capture failed / unknown domain)."
+        },
+        "location": {
+          "type": "string",
+          "description": "Redirect target, normalized to path only."
+        },
+        "sets_cookie": { "type": "boolean" },
+        "has_session_cookie": { "type": "boolean" },
+        "json": {
+          "type": "object",
+          "description": "Normalized JSON body (noise keys stripped, floats rounded to 4dp)."
+        },
+        "data_strings": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Whitespace-collapsed visible text nodes for 200 HTML responses."
+        },
+        "rows_sample": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "description": "First table's first 10 rows, td cells only."
+        },
+        "error": {
+          "type": ["string", "null"],
+          "description": "Non-null marks a failed capture (status must then be null)."
+        }
+      }
+    }
+  }
+}

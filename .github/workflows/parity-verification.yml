@@ -1,0 +1,78 @@
+name: Parity Verification
+
+on:
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 2 * * 1'
+
+jobs:
+  parity:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        laravel-version: ['10.x', '11.x']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring,intl
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer
+          key: parity-composer-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            parity-composer-${{ runner.os }}-
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist --no-dev
+
+      - name: Generate Laravel application key
+        run: php artisan key:generate
+
+      - name: Capture parity snapshot
+        run: php artisan parity:capture
+
+      - name: Get new content hash
+        id: newhash
+        run: |
+          HASH=$(python3 -c "import json; print(json.loads(open('/d/PROJECTS/cmt-dash/laravel/storage/app/parity/laravel.json').read())['meta']['content_hash'])")
+          echo "hash=$HASH" >> $GITHUB_OUTPUT
+
+      - name: Get baseline content hash
+        id: baselinehash
+        run: |
+          HASH=$(python3 -c "import json; print(json.loads(open('/d/PROJECTS/cmt-dash/tests/parity/baseline/laravel.json').read())['meta']['content_hash'])")
+          echo "hash=$HASH" >> $GITHUB_OUTPUT
+
+      - name: Check parity hash against baseline
+        run: |
+          if [ "${{ steps.newhash.outputs.hash }}" != "${{ steps.baselinehash.outputs.hash }}" ]; then
+            echo "::error ::Parity content hash mismatch — detected regression (variance > 0%)"
+            exit 1
+          else
+            echo "Parity content hash matches baseline — no variance detected"
+          fi
+
+      - name: Generate diff report
+        run: |
+          if [ "${{ steps.newhash.outputs.hash }}" != "${{ steps.baselinehash.outputs.hash }}" ]; then
+            python tools/compare_parity.py \
+              /d/PROJECTS/cmt-dash/laravel/storage/app/parity/laravel.json \
+              /d/PROJECTS/cmt-dash/tests/parity/baseline/laravel.json \
+              > /tmp/parity-diff.txt || true
+          else
+            echo "No parity variance — diff report not generated" > /tmp/parity-diff.txt
+          fi
+
+      - name: Upload diff report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-diff-${{ matrix.laravel-version }}
+          path: /tmp/parity-diff.txt

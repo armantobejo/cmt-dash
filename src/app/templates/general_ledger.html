@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-3 align-items-center">
+    <div class="col">
+        <h3 class="mb-0">{{ _t('Chart of Accounts') }}</h3>
+        <span class="text-body-secondary small">{{ accounts.total }} {{ _t('accounts') }}</span>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <span>{{ _t('Accounts') }}</span>
+        <form method="get" action="/ledger" class="d-flex gap-2 m-0">
+            <select name="type" class="form-select form-select-sm" style="width:auto" onchange="this.form.submit()">
+                <option value="" {{ 'selected' if not type_filter }}>{{ _t('All Types') }}</option>
+                <option value="detail" {{ 'selected' if type_filter == 'detail' }}>{{ _t('Detail') }}</option>
+                <option value="group" {{ 'selected' if type_filter == 'group' }}>{{ _t('Group') }}</option>
+            </select>
+            <input type="hidden" name="sort" value="{{ sort }}">
+            <input type="hidden" name="dir" value="{{ sort_dir }}">
+            <div class="input-group input-group-sm" style="max-width:260px">
+                <input type="text" name="q" class="form-control" placeholder="{{ _t('Search code or name') }}…" value="{{ search }}">
+                <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    {% macro sort_header(key, label) %}
+                    {% set next_dir = 'asc' if (sort == key and sort_dir == 'desc') else 'desc' %}
+                    <th>
+                        <a href="?q={{ search|urlencode }}&sort={{ key }}&dir={{ next_dir }}{% if type_filter %}&type={{ type_filter }}{% endif %}"
+                           class="text-decoration-none text-body">
+                            {{ label }}
+                            {% if sort == key %}<i class="bi bi-chevron-{% if sort_dir == 'desc' %}down{% else %}up{% endif %} small"></i>{% endif %}
+                        </a>
+                    </th>
+                    {% endmacro %}
+                    {{ sort_header('code', _t('Code')) }}
+                    {{ sort_header('name', _t('Name')) }}
+                    {{ sort_header('type', _t('Type')) }}
+                    {{ sort_header('balance', _t('Normal Bal')) }}
+                    <th class="text-center">{{ _t('Active') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for acct in accounts.rows %}
+                <tr onclick="window.location='/ledger/detail?k={{ acct.KD_ACCOUNT|urlencode }}'" style="cursor:pointer">
+                    <td class="font-monospace"><a href="/ledger/detail?k={{ acct.KD_ACCOUNT|urlencode }}" class="text-decoration-none" onclick="event.stopPropagation()">{{ acct.KD_ACCOUNT }}</a></td>
+                    <td>{{ acct.NM_ACCOUNT or '-' }}</td>
+                    <td>
+                        {% if acct.TYPE == 'G' %}
+                            <span class="badge bg-secondary-subtle text-secondary">{{ _t('Group') }}</span>
+                        {% else %}
+                            <span class="badge bg-info-subtle text-info">{{ _t('Detail') }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ acct.SLD_NORMAL or '-' }}</td>
+                    <td class="text-center">
+                        {% if acct.ACTIVE == 'Y' %}
+                            <span class="badge bg-success-subtle text-success">{{ _t('Active') }}</span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-danger">{{ _t('Inactive') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% if not accounts.rows %}
+                <tr><td colspan="5" class="text-center text-body-secondary py-4">{{ _t('No accounts found.') }}</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    {% if accounts.pages > 1 %}
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <span class="text-body-secondary small">
+            {{ _t('Page') }} {{ accounts.page }} / {{ accounts.pages }}
+        </span>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {% for p in page_nums %}
+                <li class="page-item {{ 'active' if p == accounts.page }}">
+                    <a class="page-link" href="?page={{ p }}&q={{ search|urlencode }}&sort={{ sort }}&dir={{ sort_dir }}{% if type_filter %}&type={{ type_filter }}{% endif %}">{{ p }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

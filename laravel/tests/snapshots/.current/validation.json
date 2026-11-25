@@ -1,0 +1,49 @@
+{
+    "ledger_missing_account_code": {
+        "error_keys": [
+            "account_code"
+        ],
+        "first_message": "The account code field is required.",
+        "status": 422
+    },
+    "ledger_valid_payload": {
+        "account_code": "1101",
+        "debit": "42.50",
+        "reference": "REF-TRISCO-001",
+        "status": 201,
+        "transaction_date": "2026-01-07"
+    },
+    "ledger_zero_amount": {
+        "errors": {
+            "credit": [
+                "At least one of debit or credit must be greater than zero."
+            ],
+            "debit": [
+                "At least one of debit or credit must be greater than zero."
+            ]
+        }
+    },
+    "login_missing_fields": [
+        {
+            "input": null,
+            "loc": [
+                "body",
+                "username"
+            ],
+            "msg": "Field required",
+            "type": "missing"
+        },
+        {
+            "input": null,
+            "loc": [
+                "body",
+                "password"
+            ],
+            "msg": "Field required",
+            "type": "missing"
+        }
+    ],
+    "user_invalid_role": {
+        "error": "Invalid role"
+    }
+}

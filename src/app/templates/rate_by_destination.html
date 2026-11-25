@@ -1,0 +1,130 @@
+{% extends "base.html" %}{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+  <div>
+    <h4 class="m-0">{{ _t('Rate by Destination') }}</h4>
+    <small class="text-body-secondary">{{ _t('Agent rates per destination from quotation register') }}</small>
+  </div>
+</div>
+<div class="card mb-3"><div class="card-body">
+  <form id="filters" class="row g-2">
+    <div class="col-auto"><label class="form-label form-label-sm">{{ _t('Search') }}</label><input type="text" name="search" class="form-control form-control-sm" value="{{ search }}"></div>
+    <div class="col-auto d-flex align-items-end"><button type="submit" class="btn btn-primary btn-sm">{{ _t('Apply') }}</button></div>
+  </form></div></div>
+<div id="state" class="text-body-secondary small mb-2"></div>
+<div class="table-responsive"><table class="table table-sm table-hover align-middle mb-0" id="rbd-table">
+<thead><tr>
+  <th><a href="#" class="sort-link text-decoration-none text-body" data-sort="code">{{ _t('Agent Code') }}</a></th>
+  <th><a href="#" class="sort-link text-decoration-none text-body" data-sort="code">{{ _t('Agent Name') }}</a></th>
+  <th><a href="#" class="sort-link text-decoration-none text-body" data-sort="city">{{ _t('City Code') }}</a></th>
+  <th><a href="#" class="sort-link text-decoration-none text-body" data-sort="city">{{ _t('City Name') }}</a></th>
+  <th class="text-end">{{ _t('LCL (m³)') }}</th>
+  <th class="text-end">{{ _t('MIN') }}</th>
+  <th class="text-end">{{ _t('D20') }}</th>
+  <th class="text-end">{{ _t('D40') }}</th>
+  <th class="text-end">{{ _t('D40HQ') }}</th>
+  <th class="text-end">{{ _t('D45') }}</th>
+</tr></thead>
+<tbody id="rows"><tr><td colspan="10" class="text-center text-body-secondary">{{ _t('Loading…') }}</td></tr></tbody></table></div>
+<p class="small text-body-secondary mt-2" id="rate-unit">{{ _t('Rate unit: per container (LCL = per m³, MIN/D20/D40/D40HQ/D45 = per container)') }}</p>
+<div class="d-flex align-items-center justify-content-between mt-2">
+  <div id="pageinfo" class="small text-body-secondary"></div>
+  <ul class="pagination pagination-sm mb-0">
+    <li class="page-item" id="prev"><a href="#" class="page-link">{{ _t('Previous') }}</a></li>
+    <li class="page-item" id="next"><a href="#" class="page-link">{{ _t('Next') }}</a></li>
+  </ul>
+</div>
+<script>
+function esc(v){const d=document.createElement('div');d.textContent=v==null?'':String(v);return d.innerHTML;}
+const form=document.getElementById('filters');const state=document.getElementById('state');const rowsEl=document.getElementById('rows');
+const pageInfo=document.getElementById('pageinfo');const prevEl=document.getElementById('prev');const nextEl=document.getElementById('next');
+const COLS=10;
+const qs0=new URLSearchParams(location.search);
+let query={
+  search:form.search.value,
+  page:parseInt(qs0.get('page')||'1',10),
+  per_page:parseInt(qs0.get('per_page')||'50',10),
+  sort:qs0.get('sort')||'code',
+  sort_dir:qs0.get('sort_dir')||'asc',
+};
+async function load(){
+  state.textContent='{{ _t("Loading…") }}';
+  rowsEl.innerHTML='<tr><td colspan="'+COLS+'" class="text-center text-body-secondary">{{ _t("Loading…") }}</td></tr>';
+  pageInfo.textContent='';
+  prevEl.classList.add('disabled');nextEl.classList.add('disabled');
+  const params={};
+  for(const [k,v] of Object.entries(query)){ if(v!=='' && v!=null) params[k]=v; }
+  const qs=new URLSearchParams(params);
+  try{
+    const r=await fetch('/api/reports/rate-by-destination?'+qs.toString(),{credentials:'same-origin'});
+    if(!r.ok){
+      let detail='HTTP '+r.status;
+      try{const j=await r.json();if(j.detail) detail=typeof j.detail==='string'?j.detail:(j.detail.error||detail);}catch(_){}
+      throw new Error(detail);
+    }
+    render(await r.json());
+  }catch(e){
+    state.textContent='{{ _t("Error") }}: '+e.message;
+    rowsEl.innerHTML='<tr><td colspan="'+COLS+'" class="text-center text-danger">{{ _t("Failed to load") }}</td></tr>';
+  }
+}
+function render(data){
+  const items=data.rows||[];
+  if(!items.length){
+    rowsEl.innerHTML='<tr><td colspan="'+COLS+'" class="text-center text-body-secondary">{{ _t("No data") }}</td></tr>';
+    state.textContent='{{ _t("No data") }}';
+  }else{
+    rowsEl.innerHTML=items.map(r=>
+      '<tr>'+
+      '<td>'+esc(r.CODE_AGENT||'')+'</td>'+
+      '<td>'+esc(r.agent_name||'-')+'</td>'+
+      '<td>'+esc(r.KD_CITY||'')+'</td>'+
+      '<td>'+esc(r.city_label||'-')+'</td>'+
+      '<td class="text-end">'+esc(r.LCL===''||r.LCL===null?'':r.LCL)+'</td>'+
+      '<td class="text-end">'+esc(r.MIN===''||r.MIN===null?'':r.MIN)+'</td>'+
+      '<td class="text-end">'+esc(r.D20===''||r.D20===null?'':r.D20)+'</td>'+
+      '<td class="text-end">'+esc(r.D40===''||r.D40===null?'':r.D40)+'</td>'+
+      '<td class="text-end">'+esc(r.D40HQ===''||r.D40HQ===null?'':r.D40HQ)+'</td>'+
+      '<td class="text-end">'+esc(r.D45===''||r.D45===null?'':r.D45)+'</td>'+
+      '</tr>'
+    ).join('');
+    state.textContent=data.total+' {{ _t("total") }}';
+  }
+  const page=data.page||1, ps=data.per_page||50, total=data.total||0;
+  const pages=Math.max(1,Math.ceil(total/ps));
+  pageInfo.textContent='{{ _t("Page") }} '+page+' / '+pages;
+  prevEl.classList.toggle('disabled',page<=1);
+  nextEl.classList.toggle('disabled',page>=pages);
+  if(page<=1) prevEl.classList.add('disabled'); else prevEl.classList.remove('disabled');
+  if(page>=pages) nextEl.classList.add('disabled'); else nextEl.classList.remove('disabled');
+}
+form.addEventListener('submit',(e)=>{
+  e.preventDefault();
+  query.search=form.search.value;
+  query.page=1;
+  load();
+});
+document.querySelectorAll('.sort-link').forEach(a=>{
+  a.addEventListener('click',(e)=>{
+    e.preventDefault();
+    const f=a.dataset.sort;
+    query.sort_dir=(query.sort===f && query.sort_dir==='desc')?'asc':'desc';
+    query.sort=f;
+    query.page=1;
+    load();
+  });
+});
+prevEl.addEventListener('click',(e)=>{
+  e.preventDefault();
+  if(prevEl.classList.contains('disabled')) return;
+  query.page=Math.max(1,parseInt(query.page,10)-1);
+  load();
+});
+nextEl.addEventListener('click',(e)=>{
+  e.preventDefault();
+  if(nextEl.classList.contains('disabled')) return;
+  query.page=parseInt(query.page,10)+1;
+  load();
+});
+load();
+</script>
+{% endblock %}

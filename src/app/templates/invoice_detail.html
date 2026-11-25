@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block content %}
+{# ── Header ─────────────────────────────────────────────── #}
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+        <a href="/invoices" class="text-body-secondary text-decoration-none small"><i class="bi bi-arrow-left me-1"></i>{{ _t('Invoices') }}</a>
+        <h3 class="mb-0 mt-1">{{ detail.header.NOINVOICE }}</h3>
+    </div>
+    <div class="text-end">
+        {% if detail.header.EI == 'I' %}
+            <span class="badge badge-import">{{ _t('Import') }}</span>
+        {% elif detail.header.EI == 'E' %}
+            <span class="badge badge-export">{{ _t('Export') }}</span>
+        {% else %}
+            <span class="badge">{{ detail.header.EI or '?' }}</span>
+        {% endif %}
+        {% set paid_usd = detail.header.BYR_USD or 0 %}
+        {% set paid_idr = detail.header.BYR_RP or 0 %}
+        {% if paid_usd > 0 or paid_idr > 0 %}
+            <span class="badge bg-success-subtle text-success ms-1">{{ _t('Paid') }}</span>
+        {% else %}
+            <span class="badge bg-warning-subtle text-warning ms-1">{{ _t('Unpaid') }}</span>
+        {% endif %}
+    </div>
+</div>
+
+{# ── Invoice Info Card ──────────────────────────────────── #}
+<div class="card mb-4">
+    <div class="card-header fw-semibold">{{ _t('Invoice Info') }}</div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Customer') }}</div>
+                <div>{{ detail.header.CUSTOMER or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Shipper') }}</div>
+                <div>{% if detail.header.SHIPPER_CODE %}{{ detail.header.SHIPPER_CODE }}{% if detail.header.SHIPPER_NAME %} · {{ detail.header.SHIPPER_NAME }}{% endif %}{% else %}-{% endif %}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Date') }}</div>
+                <div>{{ detail.header.DATEOFISSU or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Ref.') }}</div>
+                <div><a href="/shipments/detail?ref={{ detail.header.REFSHITMEN|urlencode }}">{{ detail.header.REFSHITMEN or '-' }}</a></div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('BL No') }}</div>
+                <div>{{ detail.header.BLNO or detail.header.BLNO3 or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Container') }}</div>
+                <div>{{ detail.header.CONTAINERN or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Vessel') }}</div>
+                <div>{{ detail.header.VESSELNAME or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Port of Load') }}</div>
+                <div>{{ detail.header.PORTOFLOAD or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Port of Discharge') }}</div>
+                <div>{{ detail.header.PORTOFDISC or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('ETD') }}</div>
+                <div>{{ detail.header.ETDDATE or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('ETA') }}</div>
+                <div>{{ detail.header.ETADATE or '-' }}</div>
+            </div>
+            <div class="col-md-4">
+                <div class="small text-body-secondary">{{ _t('Exchange Rate') }}</div>
+                <div>{{ detail.header.EXRATE|money('idr') if detail.header.EXRATE else '-' }}</div>
+            </div>
+            {% if detail.header.REMARK %}
+            <div class="col-12">
+                <div class="small text-body-secondary">{{ _t('Remark') }}</div>
+                <div>{{ detail.header.REMARK }}</div>
+            </div>
+            {% endif %}
+            {% if detail.header.NOTEINV %}
+            <div class="col-12">
+                <div class="small text-body-secondary">{{ _t('Note') }}</div>
+                <div>{{ detail.header.NOTEINV }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{# ── Line Items ─────────────────────────────────────────── #}
+<div class="card mb-4">
+    <div class="card-header fw-semibold">{{ _t('Line Items') }}</div>
+    {% if detail.line_items %}
+    <div class="table-responsive">
+        <table class="table table-sm mb-0">
+            <thead>
+                <tr>
+                    <th>{{ _t('Cost Type') }}</th>
+                    <th>{{ _t('Description') }}</th>
+                    <th>{{ _t('Currency') }}</th>
+                    <th class="text-end">{{ _t('Qty') }}</th>
+                    <th>{{ _t('Unit') }}</th>
+                    <th class="text-end">{{ _t('Rate') }}</th>
+                    <th class="text-end">{{ _t('Amount') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in detail.line_items %}
+                <tr>
+                    <td>{{ item.JENISCOST or '-' }}</td>
+                    <td>{{ item.DESCRIPTIO or item.NOTE or '-' }}</td>
+                    <td>{{ item.CURRENCY or '-' }}</td>
+                    <td class="text-end">{{ item.QTY if item.QTY is not none else '-' }}</td>
+                    <td>{{ item.SATUAN_NAME or item.KD_SATUAN or '-' }}</td>
+                    <td class="text-end">{{ item.SELLING|money('usd') if item.CURRENCY != 'RP' else item.SELLING|money('idr') }}</td>
+                    <td class="text-end">{{ item.JUMLAH|money('usd') if item.CURRENCY != 'RP' else item.JUMLAH|money('idr') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="card-body text-center p-4 text-muted-custom">{{ _t('No line items.') }}</div>
+    {% endif %}
+</div>
+
+{# ── Payment Summary ────────────────────────────────────── #}
+<div class="card mb-4">
+    <div class="card-header fw-semibold">{{ _t('Payment') }}</div>
+    <div class="card-body">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <div class="small text-body-secondary">{{ _t('Amount (USD)') }}</div>
+                <div class="num">{{ detail.header.GRAND_USD|money('usd') }}</div>
+            </div>
+            <div class="col-md-3">
+                <div class="small text-body-secondary">{{ _t('Amount (IDR)') }}</div>
+                <div class="num">
+                    {% set inv_rp = (detail.header.GRAND_USD * detail.header.EXRATE) if (detail.header.GRAND_USD is not none and detail.header.GRAND_USD != 0 and detail.header.EXRATE) else detail.header.GRAND_RP %}
+                    {{ inv_rp|money('idr') }}
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="small text-body-secondary">{{ _t('Paid (USD)') }}</div>
+                <div class="num">{{ (detail.header.BYR_USD or 0)|money('usd') }}{% if detail.header.DIRPKAN %} + {{ detail.header.DIRPKAN|money('usd') }}{% endif %}</div>
+            </div>
+            <div class="col-md-3">
+                <div class="small text-body-secondary">{{ _t('Paid (IDR)') }}</div>
+                <div class="num">{{ (detail.header.BYR_RP or 0)|money('idr') }}{% if detail.header.DIUSDKAN %} + {{ detail.header.DIUSDKAN|money('idr') }}{% endif %}</div>
+            </div>
+        </div>
+        {% if detail.header.SELISIH_US or detail.header.SELISIH_ID %}
+        <hr class="my-3">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="small text-body-secondary">{{ _t('Difference (USD)') }}</div>
+                <div class="num">{{ detail.header.SELISIH_US|money('usd') }}</div>
+            </div>
+            <div class="col-md-6">
+                <div class="small text-body-secondary">{{ _t('Difference (IDR)') }}</div>
+                <div class="num">{{ detail.header.SELISIH_ID|money('idr') }}</div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

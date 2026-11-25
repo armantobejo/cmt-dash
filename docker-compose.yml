@@ -1,0 +1,36 @@
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: src/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/data
+      - ./DBF:/data/dbf:ro
+    environment:
+      - DATABASE_URL=/data/CMT.db
+      - DATA_DIR=/data
+      - DBF_DIR=/data/dbf
+      - CMT_COOKIE_SECURE=${CMT_COOKIE_SECURE:-0}
+      - CMT_USERS=${CMT_USERS}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  sync:
+    build:
+      context: .
+      dockerfile: tools/Dockerfile
+    volumes:
+      - ./DBF:/data/dbf:ro
+      - ./data:/data
+    environment:
+      - DBF_DIR=/data/dbf
+      - DATABASE_URL=/data/CMT.db
+      - DATA_DIR=/data
+    restart: "no"

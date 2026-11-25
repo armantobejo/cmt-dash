@@ -1,0 +1,24 @@
+{
+    "channels": {
+        "channels": [
+            "mail",
+            "database"
+        ]
+    },
+    "panel_user_contract": {
+        "authenticatable": true,
+        "avatar_is_inline_svg": true,
+        "broadcast_channel": null,
+        "filament_name": "Manager1"
+    },
+    "payload": {
+        "array_payload": {
+            "event": "parity_snapshot",
+            "user": "parity@example.test"
+        },
+        "mail_lines": [
+            "Snapshot fixture for the notification contract."
+        ],
+        "mail_subject": "Parity notification"
+    }
+}

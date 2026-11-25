@@ -1,0 +1,37 @@
+{
+    "aliases": {
+        "cmt.auth": "App\\Http\\Middleware\\CmtRole",
+        "cmt.role": "App\\Http\\Middleware\\CmtRole"
+    },
+    "company_db_resolution": {
+        "active": "CMT"
+    },
+    "guest_redirect": {
+        "location": "/login",
+        "status": 303
+    },
+    "locale_mapping": {
+        "en": "en",
+        "id": "id",
+        "xx": "id",
+        "zh": "zh_CN"
+    },
+    "role_gate_body": {
+        "detail": "Requires role >= admin"
+    },
+    "security_headers": {
+        "csp_prefix": "default-src 'self'; scri",
+        "x_content_type_options": "nosniff",
+        "x_frame_options": "SAMEORIGIN"
+    },
+    "session_resolution": {
+        "authenticated": true,
+        "role": "management",
+        "username": "manager1"
+    },
+    "web_group_app_middleware": [
+        "App\\Http\\Middleware\\ResolveCompanyDb",
+        "App\\Http\\Middleware\\CmtSession",
+        "App\\Http\\Middleware\\AddSecurityHeaders"
+    ]
+}

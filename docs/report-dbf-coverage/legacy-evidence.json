@@ -1,0 +1,2288 @@
+{
+  "cited_facts": [
+    {
+      "desc": "report menu tables",
+      "must_contain": [
+        "MENU2",
+        "MENU20"
+      ]
+    },
+    {
+      "desc": "report menu is identical across companies",
+      "must_contain": [
+        "identical in all five companies"
+      ]
+    },
+    {
+      "desc": "no report layouts shipped",
+      "must_contain": [
+        "no `.FRX`",
+        "packed"
+      ]
+    },
+    {
+      "desc": "NA_D resolves to NA",
+      "must_contain": [
+        "99.96%",
+        "NA_D.UNIK",
+        "104 078",
+        "9 728",
+        "4 orphans"
+      ]
+    },
+    {
+      "desc": "NA_D does not overlap OPRCOST_R",
+      "must_contain": [
+        "overlap with `OPRCOST_R.UOPRCOST` = 0"
+      ]
+    },
+    {
+      "desc": "OPRCOST_R orphan count",
+      "must_contain": [
+        "66 of 9560"
+      ]
+    },
+    {
+      "desc": "NA_D allocates more slots than it holds rows",
+      "must_contain": [
+        "201 898",
+        "97 807"
+      ]
+    },
+    {
+      "desc": "Track Performance candidate columns (CMT)",
+      "must_contain": [
+        "10 794",
+        "9 715",
+        "1 075"
+      ]
+    },
+    {
+      "desc": "COST carries no rates",
+      "must_contain": [
+        "0 non-zero `COST` cells and 0 non-zero `SELLING` cells"
+      ]
+    },
+    {
+      "desc": "RC is a payment header",
+      "must_contain": [
+        "`JENIS_BYR`",
+        "`KD_BANK`",
+        "`TGL_KLIRIN`"
+      ]
+    },
+    {
+      "desc": "SAGING buckets",
+      "must_contain": [
+        "1, 30, 31, 60, 61, 90, 90"
+      ]
+    },
+    {
+      "desc": "SOA_D carries a real invoice link",
+      "must_contain": [
+        "SOA_D",
+        "2401-I/00012/SHG/JK"
+      ]
+    },
+    {
+      "desc": "no inferred evidence cell survives",
+      "must_contain": [
+        "unverified-locally"
+      ]
+    },
+    {
+      "desc": "report menu vs PRD \u00a73.2 candidate counts",
+      "must_contain": [
+        "31 matched by name, 1 near, 0 unmatched candidates"
+      ]
+    },
+    {
+      "desc": "UPD_DN.PRG join AR_AGENT->AR_AGENT_D",
+      "must_contain": [
+        "`AR_AGENT`",
+        "`AR_AGENT_D`"
+      ]
+    },
+    {
+      "desc": "UPD_DN.PRG join AP_AGENT_D->AP_AGENT",
+      "must_contain": [
+        "`AP_AGENT_D`",
+        "`AP_AGENT`"
+      ]
+    },
+    {
+      "desc": "UPD_INV.PRG join ARS->ARS_R",
+      "must_contain": [
+        "`ARS`",
+        "`ARS_R`"
+      ]
+    },
+    {
+      "desc": "UPD_OC.PRG join AP_R->AP",
+      "must_contain": [
+        "`AP_R`",
+        "`AP`"
+      ]
+    }
+  ],
+  "companies": [
+    "CME",
+    "CMT",
+    "CSM",
+    "MAL",
+    "SBY"
+  ],
+  "dbf_dir": "DBF",
+  "evidence_levels": [
+    "measured",
+    "in-app-sql",
+    "legacy-menu",
+    "legacy-source",
+    "unverified-locally"
+  ],
+  "generated_at_utc": "2026-11-20T23:11:30Z",
+  "legacy_artifacts": {
+    "app_menu_table": "MENU3",
+    "executables": [
+      {
+        "path": "CME\\DATA\\DATA.exe",
+        "printable_ratio_first_8k": 0.0
+      },
+      {
+        "path": "CME\\INIT\\34984.APP",
+        "printable_ratio_first_8k": 0.371
+      },
+      {
+        "path": "CME\\INIT\\5057.APP",
+        "printable_ratio_first_8k": 0.378
+      },
+      {
+        "path": "CME\\INIT\\7911.APP",
+        "printable_ratio_first_8k": 0.364
+      },
+      {
+        "path": "CME\\INIT\\INIT.exe",
+        "printable_ratio_first_8k": 0.0
+      },
+      {
+        "path": "CMT\\INIT\\34984.APP",
+        "printable_ratio_first_8k": 0.371
+      },
+      {
+        "path": "CMT\\INIT\\5057.APP",
+        "printable_ratio_first_8k": 0.378
+      },
+      {
+        "path": "CMT\\INIT\\7911.APP",
+        "printable_ratio_first_8k": 0.364
+      },
+      {
+        "path": "CSM\\DATA\\DATA.exe",
+        "printable_ratio_first_8k": 0.0
+      },
+      {
+        "path": "CSM\\INIT\\34984.APP",
+        "printable_ratio_first_8k": 0.371
+      },
+      {
+        "path": "CSM\\INIT\\5057.APP",
+        "printable_ratio_first_8k": 0.378
+      },
+      {
+        "path": "CSM\\INIT\\7911.APP",
+        "printable_ratio_first_8k": 0.364
+      },
+      {
+        "path": "CSM\\INIT\\INIT.exe",
+        "printable_ratio_first_8k": 0.0
+      },
+      {
+        "path": "MAL\\DATA\\DATA.exe",
+        "printable_ratio_first_8k": 0.0
+      },
+      {
+        "path": "MAL\\INIT\\34984.APP",
+        "printable_ratio_first_8k": 0.371
+      },
+      {
+        "path": "MAL\\INIT\\5057.APP",
+        "printable_ratio_first_8k": 0.378
+      },
+      {
+        "path": "MAL\\INIT\\7911.APP",
+        "printable_ratio_first_8k": 0.364
+      },
+      {
+        "path": "MAL\\INIT\\INIT.exe",
+        "printable_ratio_first_8k": 0.0
+      },
+      {
+        "path": "SBY\\DATA\\DATA.exe",
+        "printable_ratio_first_8k": 0.0
+      },
+      {
+        "path": "SBY\\INIT\\34984.APP",
+        "printable_ratio_first_8k": 0.371
+      },
+      {
+        "path": "SBY\\INIT\\5057.APP",
+        "printable_ratio_first_8k": 0.378
+      },
+      {
+        "path": "SBY\\INIT\\7911.APP",
+        "printable_ratio_first_8k": 0.364
+      },
+      {
+        "path": "SBY\\INIT\\DATA\\DATA.exe",
+        "printable_ratio_first_8k": 0.0
+      },
+      {
+        "path": "SBY\\INIT\\INIT\\34984.APP",
+        "printable_ratio_first_8k": 0.371
+      },
+      {
+        "path": "SBY\\INIT\\INIT\\5057.APP",
+        "printable_ratio_first_8k": 0.378
+      },
+      {
+        "path": "SBY\\INIT\\INIT\\7911.APP",
+        "printable_ratio_first_8k": 0.364
+      },
+      {
+        "path": "SBY\\INIT\\INIT\\INIT.exe",
+        "printable_ratio_first_8k": 0.0
+      },
+      {
+        "path": "SBY\\INIT\\INIT.exe",
+        "printable_ratio_first_8k": 0.0
+      }
+    ],
+    "print_formats": [
+      "DRCR_FCL_O_P",
+      "DRCR_FCL_P",
+      "DRCR_FCL_P_MOHA",
+      "FAKTURPS_PK",
+      "FAKTURPS_PM",
+      "INVOICE",
+      "INVOICE_CSM",
+      "INVOICE_HATI",
+      "INVOICE_MBL",
+      "INVOICE_MOHA",
+      "INVOICE_V",
+      "INV_PRE_BDO",
+      "MARKETING1",
+      "MARKETING2",
+      "PEB",
+      "PEB DHP",
+      "QUOTATION_C_P",
+      "QUOTATION_D_P",
+      "QUOTATION_P"
+    ],
+    "programs": [
+      {
+        "file": "UPD_DN.PRG",
+        "identical_across_companies": true,
+        "joins": [
+          {
+            "from": "AR_AGENT",
+            "join": "AR_AGENT_D",
+            "on": "Ar_agent.uar_agent = Ar_agent_d.uar_agent",
+            "where": "Ar_agent_d.utrans= pUnik"
+          },
+          {
+            "from": "AP_AGENT_D",
+            "join": "AP_AGENT",
+            "on": "Ap_agent_d.uap_agent = Ap_agent.uap_agent",
+            "where": "Ap_agent_d.utrans= pUnik"
+          }
+        ],
+        "md5_12": [
+          "c48cd960b871"
+        ]
+      },
+      {
+        "file": "UPD_INV.PRG",
+        "identical_across_companies": true,
+        "joins": [
+          {
+            "from": "ARS",
+            "join": "ARS_R",
+            "on": "Ars.uars = Ars_r.uars",
+            "where": "Ars_r.k_invoice= pUnik"
+          }
+        ],
+        "md5_12": [
+          "9c03d419bd15"
+        ]
+      },
+      {
+        "file": "UPD_OC.PRG",
+        "identical_across_companies": true,
+        "joins": [
+          {
+            "from": "AP_R",
+            "join": "AP",
+            "on": "AP_R.UAP = AP.UAP",
+            "where": "AP_R.Unik= pUnik"
+          }
+        ],
+        "md5_12": [
+          "1ab1f6ece231"
+        ]
+      }
+    ],
+    "report_layouts": [],
+    "report_layouts_absent": true,
+    "report_menu": {
+      "MENU2": {
+        "identical_across_companies": true,
+        "labels": [
+          {
+            "label": "Volume",
+            "module_type": "",
+            "nomor": "01"
+          },
+          {
+            "label": "Lifting",
+            "module_type": "",
+            "nomor": "02"
+          },
+          {
+            "label": "Status B/L & Invoice",
+            "module_type": "",
+            "nomor": "03"
+          },
+          {
+            "label": "Sales",
+            "module_type": "",
+            "nomor": "04"
+          },
+          {
+            "label": "Operational Cost",
+            "module_type": "",
+            "nomor": "06"
+          },
+          {
+            "label": "Refund Cost",
+            "module_type": "",
+            "nomor": "07"
+          },
+          {
+            "label": "Gross Profit & Loss",
+            "module_type": "",
+            "nomor": "08"
+          },
+          {
+            "label": "Aging A/R - Invoive",
+            "module_type": "",
+            "nomor": "10"
+          },
+          {
+            "label": "Aging A/R - Debit Note",
+            "module_type": "",
+            "nomor": "11"
+          },
+          {
+            "label": "Contra Bond - In",
+            "module_type": "",
+            "nomor": "12"
+          },
+          {
+            "label": "Receipt A/R - Invoice",
+            "module_type": "",
+            "nomor": "13"
+          },
+          {
+            "label": "Discrepancy - Invoice",
+            "module_type": "",
+            "nomor": "14"
+          },
+          {
+            "label": "Receipt - Cash/ Bank",
+            "module_type": "",
+            "nomor": "15"
+          },
+          {
+            "label": "Aging A/P - Operational Cost",
+            "module_type": "",
+            "nomor": "17"
+          },
+          {
+            "label": "Aging A/P - Credit Note",
+            "module_type": "",
+            "nomor": "18"
+          },
+          {
+            "label": "Contra Bond - Out",
+            "module_type": "",
+            "nomor": "19"
+          },
+          {
+            "label": "Payment A/P - Vendor",
+            "module_type": "",
+            "nomor": "20"
+          },
+          {
+            "label": "Payment A/P - Agent",
+            "module_type": "",
+            "nomor": "21"
+          },
+          {
+            "label": "Payment A/P - Refund Cost",
+            "module_type": "",
+            "nomor": "22"
+          },
+          {
+            "label": "Payment - Cash/ Bank",
+            "module_type": "",
+            "nomor": "23"
+          },
+          {
+            "label": "Listing Journal",
+            "module_type": "",
+            "nomor": "25"
+          },
+          {
+            "label": "General Ledger",
+            "module_type": "",
+            "nomor": "26"
+          },
+          {
+            "label": "Trial Balance",
+            "module_type": "",
+            "nomor": "27"
+          },
+          {
+            "label": "Income Statement",
+            "module_type": "",
+            "nomor": "28"
+          },
+          {
+            "label": "Balance Sheet",
+            "module_type": "",
+            "nomor": "29"
+          },
+          {
+            "label": "Statement Of Account",
+            "module_type": "",
+            "nomor": "31"
+          },
+          {
+            "label": "List Agent",
+            "module_type": "",
+            "nomor": "32"
+          },
+          {
+            "label": "List Shipper/ Forwarder",
+            "module_type": "",
+            "nomor": "33"
+          },
+          {
+            "label": "Rate By Destination",
+            "module_type": "",
+            "nomor": "34"
+          },
+          {
+            "label": "List Consignee/ Notify",
+            "module_type": "",
+            "nomor": "35"
+          },
+          {
+            "label": "List Account",
+            "module_type": "",
+            "nomor": "36"
+          },
+          {
+            "label": "Track Performance",
+            "module_type": "",
+            "nomor": "37"
+          }
+        ],
+        "per_company_row_count": {
+          "CME": 100,
+          "CMT": 100,
+          "CSM": 100,
+          "MAL": 100,
+          "SBY": 100
+        }
+      },
+      "MENU20": {
+        "identical_across_companies": true,
+        "labels": [
+          {
+            "label": "Volume",
+            "module_type": "",
+            "nomor": "01"
+          },
+          {
+            "label": "Lifting",
+            "module_type": "",
+            "nomor": "02"
+          },
+          {
+            "label": "Status B/L & Invoice",
+            "module_type": "",
+            "nomor": "03"
+          },
+          {
+            "label": "Sales",
+            "module_type": "",
+            "nomor": "04"
+          },
+          {
+            "label": "Operational Cost",
+            "module_type": "",
+            "nomor": "06"
+          },
+          {
+            "label": "Refund Cost",
+            "module_type": "",
+            "nomor": "07"
+          },
+          {
+            "label": "Gross Profit & Loss",
+            "module_type": "",
+            "nomor": "08"
+          },
+          {
+            "label": "Aging A/R - Invoive",
+            "module_type": "",
+            "nomor": "10"
+          },
+          {
+            "label": "Aging A/R - Debit Note Agent",
+            "module_type": "",
+            "nomor": "11"
+          },
+          {
+            "label": "Contra Bond - In",
+            "module_type": "",
+            "nomor": "12"
+          },
+          {
+            "label": "Receipt A/R - Invoice",
+            "module_type": "",
+            "nomor": "13"
+          },
+          {
+            "label": "Discrepancy - Invoice",
+            "module_type": "",
+            "nomor": "14"
+          },
+          {
+            "label": "Receipt - Cash/ Bank",
+            "module_type": "",
+            "nomor": "15"
+          },
+          {
+            "label": "Aging A/P - Operational Cost",
+            "module_type": "",
+            "nomor": "17"
+          },
+          {
+            "label": "Aging A/P - Credit Note Agent",
+            "module_type": "",
+            "nomor": "18"
+          },
+          {
+            "label": "Contra Bond - Out",
+            "module_type": "",
+            "nomor": "19"
+          },
+          {
+            "label": "Payment A/P - Vendor",
+            "module_type": "",
+            "nomor": "20"
+          },
+          {
+            "label": "Payment A/P - Agent",
+            "module_type": "",
+            "nomor": "21"
+          },
+          {
+            "label": "Payment A/P - Refund Cost",
+            "module_type": "",
+            "nomor": "22"
+          },
+          {
+            "label": "Payment - Cash/ Bank",
+            "module_type": "",
+            "nomor": "23"
+          },
+          {
+            "label": "Listing Journal",
+            "module_type": "",
+            "nomor": "25"
+          },
+          {
+            "label": "General Ledger",
+            "module_type": "",
+            "nomor": "26"
+          },
+          {
+            "label": "Trial Balance",
+            "module_type": "",
+            "nomor": "27"
+          },
+          {
+            "label": "Income Statement",
+            "module_type": "",
+            "nomor": "28"
+          },
+          {
+            "label": "Balance Sheet",
+            "module_type": "",
+            "nomor": "29"
+          },
+          {
+            "label": "Statement Of Account",
+            "module_type": "",
+            "nomor": "31"
+          },
+          {
+            "label": "List Agent",
+            "module_type": "",
+            "nomor": "32"
+          },
+          {
+            "label": "List Shipper/ Forwarder",
+            "module_type": "",
+            "nomor": "33"
+          },
+          {
+            "label": "Rate By Destination",
+            "module_type": "",
+            "nomor": "34"
+          },
+          {
+            "label": "List Consignee/ Notify",
+            "module_type": "",
+            "nomor": "35"
+          },
+          {
+            "label": "List Account",
+            "module_type": "",
+            "nomor": "36"
+          },
+          {
+            "label": "Track Performance",
+            "module_type": "",
+            "nomor": "37"
+          }
+        ],
+        "per_company_row_count": {
+          "CME": 100,
+          "CMT": 100,
+          "CSM": 100,
+          "MAL": 100,
+          "SBY": 100
+        }
+      }
+    },
+    "report_menu_tables": [
+      "MENU2",
+      "MENU20"
+    ],
+    "word_report_modules": [
+      "ATTACHMENT: ATTACHMENT",
+      "DRCR_FCL: DRCR NOTE FCL",
+      "DRCR_LCL: DRCR NOTE LCL",
+      "GROSSPROFIT: REPORT GROSS & PROFIT",
+      "LIFTING_R: REPORT LIFTING",
+      "MANIFEST_P: MANIFEST",
+      "VOLUME_R: REPORT VOLUME"
+    ]
+  },
+  "measured_facts": {
+    "cost_population": {
+      "CME": {
+        "COST": 2,
+        "COST_nonzero": 0,
+        "GROUP": 2,
+        "GROUP_nonzero": 0,
+        "JENISCOST": 272,
+        "JENISCOST_nonzero": 0,
+        "SELLING": 0,
+        "SELLING_nonzero": 0,
+        "UNIK": 175,
+        "UNIK_nonzero": 0,
+        "rows": 272
+      },
+      "CMT": {
+        "COST": 2,
+        "COST_nonzero": 0,
+        "GROUP": 2,
+        "GROUP_nonzero": 0,
+        "JENISCOST": 529,
+        "JENISCOST_nonzero": 0,
+        "SELLING": 0,
+        "SELLING_nonzero": 0,
+        "UNIK": 432,
+        "UNIK_nonzero": 0,
+        "rows": 529
+      },
+      "CSM": {
+        "COST": 2,
+        "COST_nonzero": 0,
+        "GROUP": 2,
+        "GROUP_nonzero": 0,
+        "JENISCOST": 335,
+        "JENISCOST_nonzero": 0,
+        "SELLING": 0,
+        "SELLING_nonzero": 0,
+        "UNIK": 238,
+        "UNIK_nonzero": 0,
+        "rows": 335
+      },
+      "MAL": {
+        "COST": 2,
+        "COST_nonzero": 0,
+        "GROUP": 2,
+        "GROUP_nonzero": 0,
+        "JENISCOST": 497,
+        "JENISCOST_nonzero": 0,
+        "SELLING": 0,
+        "SELLING_nonzero": 0,
+        "UNIK": 401,
+        "UNIK_nonzero": 0,
+        "rows": 497
+      },
+      "SBY": {
+        "COST": 2,
+        "COST_nonzero": 0,
+        "GROUP": 2,
+        "GROUP_nonzero": 0,
+        "JENISCOST": 284,
+        "JENISCOST_nonzero": 0,
+        "SELLING": 0,
+        "SELLING_nonzero": 0,
+        "UNIK": 187,
+        "UNIK_nonzero": 0,
+        "rows": 284
+      }
+    },
+    "cost_totals": {
+      "COST": 0,
+      "SELLING": 0
+    },
+    "discrepancy_invoice_candidates": {
+      "CME": {
+        "ARS_R.SELISIH": {
+          "nonzero": 7,
+          "rows": 471
+        },
+        "AR_AGENT_D.SELISIH": {
+          "nonzero": 0,
+          "rows": 2
+        },
+        "DRCRFULL.SELISIH": {
+          "nonzero": 0,
+          "rows": 1
+        },
+        "INVOICE.SELISIH_ID": {
+          "nonzero": 0,
+          "rows": 108
+        },
+        "INVOICE.SELISIH_US": {
+          "nonzero": 0,
+          "rows": 108
+        }
+      },
+      "CMT": {
+        "ARS_R.SELISIH": {
+          "nonzero": 2147,
+          "rows": 13507
+        },
+        "AR_AGENT_D.SELISIH": {
+          "nonzero": 84,
+          "rows": 1386
+        },
+        "DRCRFULL.SELISIH": {
+          "nonzero": 85,
+          "rows": 5225
+        },
+        "INVOICE.SELISIH_ID": {
+          "nonzero": 1705,
+          "rows": 10794
+        },
+        "INVOICE.SELISIH_US": {
+          "nonzero": 417,
+          "rows": 10794
+        }
+      },
+      "CSM": {
+        "ARS_R.SELISIH": {
+          "nonzero": 859,
+          "rows": 3193
+        },
+        "AR_AGENT_D.SELISIH": {
+          "nonzero": 7,
+          "rows": 216
+        },
+        "DRCRFULL.SELISIH": {
+          "nonzero": 5,
+          "rows": 608
+        },
+        "INVOICE.SELISIH_ID": {
+          "nonzero": 848,
+          "rows": 2792
+        },
+        "INVOICE.SELISIH_US": {
+          "nonzero": 1,
+          "rows": 2792
+        }
+      },
+      "MAL": {
+        "ARS_R.SELISIH": {
+          "nonzero": 2214,
+          "rows": 20562
+        },
+        "AR_AGENT_D.SELISIH": {
+          "nonzero": 98,
+          "rows": 2683
+        },
+        "DRCRFULL.SELISIH": {
+          "nonzero": 76,
+          "rows": 7450
+        },
+        "INVOICE.SELISIH_ID": {
+          "nonzero": 2078,
+          "rows": 15743
+        },
+        "INVOICE.SELISIH_US": {
+          "nonzero": 106,
+          "rows": 15743
+        }
+      },
+      "SBY": {
+        "ARS_R.SELISIH": {
+          "nonzero": 87,
+          "rows": 547
+        },
+        "AR_AGENT_D.SELISIH": {
+          "nonzero": 0,
+          "rows": 1
+        },
+        "DRCRFULL.SELISIH": {
+          "nonzero": 0,
+          "rows": 6
+        },
+        "INVOICE.SELISIH_ID": {
+          "nonzero": 73,
+          "rows": 136
+        },
+        "INVOICE.SELISIH_US": {
+          "nonzero": 0,
+          "rows": 136
+        }
+      }
+    },
+    "na_d_slot_allocation": {
+      "NA": {
+        "deleted": 2,
+        "empty_slots": 0,
+        "header_slots": 9748,
+        "live": 9746
+      },
+      "NA_D": {
+        "deleted": 13,
+        "empty_slots": 97807,
+        "header_slots": 201898,
+        "live": 104078
+      },
+      "OPRCOST": {
+        "deleted": 0,
+        "empty_slots": 0,
+        "header_slots": 9494,
+        "live": 9494
+      },
+      "OPRCOST_R": {
+        "deleted": 95,
+        "empty_slots": 0,
+        "header_slots": 65767,
+        "live": 65672
+      }
+    },
+    "na_d_vs_oprcost_r": {
+      "CME": {
+        "na_d_lines": 29,
+        "na_d_parents": 4,
+        "na_d_rows": 29,
+        "na_rows": 3,
+        "oprcost_r_orphans": 66,
+        "oprcost_r_parents": 71,
+        "oprcost_r_rows": 120,
+        "oprcost_rows": 5,
+        "orphans": 1,
+        "overlap_na_d_unik_with_oprcost_r_uoprcost": 0,
+        "overlap_na_d_unikr_with_oprcost_r_unik": 0,
+        "resolve_pct": 75.0
+      },
+      "CMT": {
+        "na_d_lines": 104078,
+        "na_d_parents": 9728,
+        "na_d_rows": 104078,
+        "na_rows": 9746,
+        "oprcost_r_orphans": 66,
+        "oprcost_r_parents": 9560,
+        "oprcost_r_rows": 65672,
+        "oprcost_rows": 9494,
+        "orphans": 4,
+        "overlap_na_d_unik_with_oprcost_r_uoprcost": 0,
+        "overlap_na_d_unikr_with_oprcost_r_unik": 0,
+        "resolve_pct": 99.96
+      },
+      "CSM": {
+        "na_d_lines": 14467,
+        "na_d_parents": 1646,
+        "na_d_rows": 14467,
+        "na_rows": 1680,
+        "oprcost_r_orphans": 3,
+        "oprcost_r_parents": 2507,
+        "oprcost_r_rows": 14008,
+        "oprcost_rows": 2505,
+        "orphans": 0,
+        "overlap_na_d_unik_with_oprcost_r_uoprcost": 0,
+        "overlap_na_d_unikr_with_oprcost_r_unik": 0,
+        "resolve_pct": 100.0
+      },
+      "MAL": {
+        "na_d_lines": 76754,
+        "na_d_parents": 10088,
+        "na_d_rows": 76754,
+        "na_rows": 10951,
+        "oprcost_r_orphans": 26,
+        "oprcost_r_parents": 11310,
+        "oprcost_r_rows": 75420,
+        "oprcost_rows": 11284,
+        "orphans": 9,
+        "overlap_na_d_unik_with_oprcost_r_uoprcost": 0,
+        "overlap_na_d_unikr_with_oprcost_r_unik": 0,
+        "resolve_pct": 99.91
+      },
+      "SBY": {
+        "na_d_lines": 451,
+        "na_d_parents": 61,
+        "na_d_rows": 451,
+        "na_rows": 63,
+        "oprcost_r_orphans": 66,
+        "oprcost_r_parents": 188,
+        "oprcost_r_rows": 902,
+        "oprcost_rows": 122,
+        "orphans": 1,
+        "overlap_na_d_unik_with_oprcost_r_uoprcost": 0,
+        "overlap_na_d_unikr_with_oprcost_r_unik": 0,
+        "resolve_pct": 98.36
+      }
+    },
+    "rc_rcreq": {
+      "CME": {
+        "rc_d_invoice_lines": 29,
+        "rc_d_orphan_parents": 20,
+        "rc_d_rows": 35,
+        "rc_has_payment_header_shape": true,
+        "rc_rows": 1,
+        "rc_total_bayar_nonzero": 0,
+        "rcreq_applicant": 0,
+        "rcreq_approve2_column_filled": 0,
+        "rcreq_approve_column_filled": 0,
+        "rcreq_d_orphan_parents": 3,
+        "rcreq_d_profitloss_nonzero": 6,
+        "rcreq_d_rows": 6,
+        "rcreq_rows": 0,
+        "rcreq_tot_idr_nonzero": 0
+      },
+      "CMT": {
+        "rc_d_invoice_lines": 749,
+        "rc_d_orphan_parents": 20,
+        "rc_d_rows": 758,
+        "rc_has_payment_header_shape": true,
+        "rc_rows": 272,
+        "rc_total_bayar_nonzero": 265,
+        "rcreq_applicant": 495,
+        "rcreq_approve2_column_filled": 379,
+        "rcreq_approve_column_filled": 0,
+        "rcreq_d_orphan_parents": 3,
+        "rcreq_d_profitloss_nonzero": 1970,
+        "rcreq_d_rows": 1991,
+        "rcreq_rows": 498,
+        "rcreq_tot_idr_nonzero": 494
+      },
+      "CSM": {
+        "rc_d_invoice_lines": 236,
+        "rc_d_orphan_parents": 0,
+        "rc_d_rows": 236,
+        "rc_has_payment_header_shape": true,
+        "rc_rows": 82,
+        "rc_total_bayar_nonzero": 82,
+        "rcreq_applicant": 130,
+        "rcreq_approve2_column_filled": 97,
+        "rcreq_approve_column_filled": 0,
+        "rcreq_d_orphan_parents": 0,
+        "rcreq_d_profitloss_nonzero": 247,
+        "rcreq_d_rows": 259,
+        "rcreq_rows": 130,
+        "rcreq_tot_idr_nonzero": 130
+      },
+      "MAL": {
+        "rc_d_invoice_lines": 3370,
+        "rc_d_orphan_parents": 2,
+        "rc_d_rows": 3372,
+        "rc_has_payment_header_shape": true,
+        "rc_rows": 387,
+        "rc_total_bayar_nonzero": 366,
+        "rcreq_applicant": 486,
+        "rcreq_approve2_column_filled": 403,
+        "rcreq_approve_column_filled": 2,
+        "rcreq_d_orphan_parents": 0,
+        "rcreq_d_profitloss_nonzero": 3351,
+        "rcreq_d_rows": 3609,
+        "rcreq_rows": 488,
+        "rcreq_tot_idr_nonzero": 395
+      },
+      "SBY": {
+        "rc_d_invoice_lines": 29,
+        "rc_d_orphan_parents": 20,
+        "rc_d_rows": 34,
+        "rc_has_payment_header_shape": false,
+        "rc_rows": 0,
+        "rc_total_bayar_nonzero": 0,
+        "rcreq_applicant": 8,
+        "rcreq_approve2_column_filled": 6,
+        "rcreq_approve_column_filled": 0,
+        "rcreq_d_orphan_parents": 3,
+        "rcreq_d_profitloss_nonzero": 15,
+        "rcreq_d_rows": 17,
+        "rcreq_rows": 8,
+        "rcreq_tot_idr_nonzero": 8
+      }
+    },
+    "saging": {
+      "CME": {
+        "AGING1": "1",
+        "AGING2": "30",
+        "AGING3": "31",
+        "AGING4": "60",
+        "AGING5": "61",
+        "AGING6": "90",
+        "AGING7": "90"
+      },
+      "CMT": {
+        "AGING1": "1",
+        "AGING2": "30",
+        "AGING3": "31",
+        "AGING4": "60",
+        "AGING5": "61",
+        "AGING6": "90",
+        "AGING7": "90"
+      },
+      "CSM": {
+        "AGING1": "1",
+        "AGING2": "30",
+        "AGING3": "31",
+        "AGING4": "60",
+        "AGING5": "61",
+        "AGING6": "90",
+        "AGING7": "90"
+      },
+      "MAL": {
+        "AGING1": "1",
+        "AGING2": "30",
+        "AGING3": "31",
+        "AGING4": "60",
+        "AGING5": "61",
+        "AGING6": "90",
+        "AGING7": "90"
+      },
+      "SBY": {
+        "AGING1": "1",
+        "AGING2": "30",
+        "AGING3": "31",
+        "AGING4": "60",
+        "AGING5": "61",
+        "AGING6": "90",
+        "AGING7": "90"
+      }
+    },
+    "statement_of_account": {
+      "CMT": {
+        "soa_d_has_invoice_link": true,
+        "soa_d_invoice_no": [
+          "2401-I/00012/SHG/JK"
+        ],
+        "soa_d_rows": 2,
+        "soa_ref_no": [
+          "*"
+        ],
+        "soa_rows": 1
+      },
+      "MAL": {
+        "soa_d_has_invoice_link": true,
+        "soa_d_invoice_no": [
+          "2312-I/00062/XIA/JK",
+          "2312-I/00067/SHA/JK",
+          "2401-I/00004/SHA/JK"
+        ],
+        "soa_d_rows": 3,
+        "soa_ref_no": [
+          "8"
+        ],
+        "soa_rows": 1
+      }
+    },
+    "track_performance_candidates": {
+      "CME": {
+        "CARGO": {
+          "missing": [
+            "KD_SHIPLIN"
+          ],
+          "nonblank": {
+            "AGENT": 2,
+            "SHIPPER": 117
+          },
+          "present": [
+            "AGENT",
+            "SHIPPER"
+          ],
+          "rows": 119
+        },
+        "INVOICE": {
+          "missing": [
+            "KD_SHIPPER"
+          ],
+          "nonblank": {
+            "SHIPPER": 108
+          },
+          "present": [
+            "SHIPPER"
+          ],
+          "rows": 108
+        },
+        "NA": {
+          "missing": [],
+          "nonblank": {
+            "AGENT": 0,
+            "CONSIGNEE": 2,
+            "KD_SHIPPER": 3
+          },
+          "present": [
+            "AGENT",
+            "KD_SHIPPER",
+            "CONSIGNEE"
+          ],
+          "rows": 3
+        },
+        "VENDOR": {
+          "missing": [],
+          "nonblank": {
+            "KD_SHIPLIN": 920,
+            "NAME": 907
+          },
+          "present": [
+            "KD_SHIPLIN",
+            "NAME"
+          ],
+          "rows": 921
+        },
+        "VESSEL": {
+          "missing": [],
+          "nonblank": {
+            "NM_VESSEL": 4524
+          },
+          "present": [
+            "NM_VESSEL"
+          ],
+          "rows": 4536
+        }
+      },
+      "CMT": {
+        "CARGO": {
+          "missing": [
+            "KD_SHIPLIN"
+          ],
+          "nonblank": {
+            "AGENT": 537,
+            "SHIPPER": 1085
+          },
+          "present": [
+            "AGENT",
+            "SHIPPER"
+          ],
+          "rows": 1102
+        },
+        "INVOICE": {
+          "missing": [
+            "KD_SHIPPER"
+          ],
+          "nonblank": {
+            "SHIPPER": 10794
+          },
+          "present": [
+            "SHIPPER"
+          ],
+          "rows": 10794
+        },
+        "NA": {
+          "missing": [],
+          "nonblank": {
+            "AGENT": 4624,
+            "CONSIGNEE": 9715,
+            "KD_SHIPPER": 9742
+          },
+          "present": [
+            "AGENT",
+            "KD_SHIPPER",
+            "CONSIGNEE"
+          ],
+          "rows": 9746
+        },
+        "VENDOR": {
+          "missing": [],
+          "nonblank": {
+            "KD_SHIPLIN": 1075,
+            "NAME": 1062
+          },
+          "present": [
+            "KD_SHIPLIN",
+            "NAME"
+          ],
+          "rows": 1075
+        },
+        "VESSEL": {
+          "missing": [],
+          "nonblank": {
+            "NM_VESSEL": 5069
+          },
+          "present": [
+            "NM_VESSEL"
+          ],
+          "rows": 5081
+        }
+      },
+      "CSM": {
+        "CARGO": {
+          "missing": [
+            "KD_SHIPLIN"
+          ],
+          "nonblank": {
+            "AGENT": 281,
+            "SHIPPER": 1087
+          },
+          "present": [
+            "AGENT",
+            "SHIPPER"
+          ],
+          "rows": 1102
+        },
+        "INVOICE": {
+          "missing": [
+            "KD_SHIPPER"
+          ],
+          "nonblank": {
+            "SHIPPER": 2792
+          },
+          "present": [
+            "SHIPPER"
+          ],
+          "rows": 2792
+        },
+        "NA": {
+          "missing": [],
+          "nonblank": {
+            "AGENT": 857,
+            "CONSIGNEE": 1651,
+            "KD_SHIPPER": 1676
+          },
+          "present": [
+            "AGENT",
+            "KD_SHIPPER",
+            "CONSIGNEE"
+          ],
+          "rows": 1680
+        },
+        "VENDOR": {
+          "missing": [],
+          "nonblank": {
+            "KD_SHIPLIN": 960,
+            "NAME": 948
+          },
+          "present": [
+            "KD_SHIPLIN",
+            "NAME"
+          ],
+          "rows": 961
+        },
+        "VESSEL": {
+          "missing": [],
+          "nonblank": {
+            "NM_VESSEL": 4269
+          },
+          "present": [
+            "NM_VESSEL"
+          ],
+          "rows": 4277
+        }
+      },
+      "MAL": {
+        "CARGO": {
+          "missing": [
+            "KD_SHIPLIN"
+          ],
+          "nonblank": {
+            "AGENT": 2147,
+            "SHIPPER": 3358
+          },
+          "present": [
+            "AGENT",
+            "SHIPPER"
+          ],
+          "rows": 3376
+        },
+        "INVOICE": {
+          "missing": [
+            "KD_SHIPPER"
+          ],
+          "nonblank": {
+            "SHIPPER": 15742
+          },
+          "present": [
+            "SHIPPER"
+          ],
+          "rows": 15743
+        },
+        "NA": {
+          "missing": [],
+          "nonblank": {
+            "AGENT": 3377,
+            "CONSIGNEE": 10843,
+            "KD_SHIPPER": 10890
+          },
+          "present": [
+            "AGENT",
+            "KD_SHIPPER",
+            "CONSIGNEE"
+          ],
+          "rows": 10951
+        },
+        "VENDOR": {
+          "missing": [],
+          "nonblank": {
+            "KD_SHIPLIN": 881,
+            "NAME": 879
+          },
+          "present": [
+            "KD_SHIPLIN",
+            "NAME"
+          ],
+          "rows": 881
+        },
+        "VESSEL": {
+          "missing": [],
+          "nonblank": {
+            "NM_VESSEL": 3057
+          },
+          "present": [
+            "NM_VESSEL"
+          ],
+          "rows": 3064
+        }
+      },
+      "SBY": {
+        "CARGO": {
+          "missing": [
+            "KD_SHIPLIN"
+          ],
+          "nonblank": {
+            "AGENT": 5,
+            "SHIPPER": 62
+          },
+          "present": [
+            "AGENT",
+            "SHIPPER"
+          ],
+          "rows": 62
+        },
+        "INVOICE": {
+          "missing": [
+            "KD_SHIPPER"
+          ],
+          "nonblank": {
+            "SHIPPER": 136
+          },
+          "present": [
+            "SHIPPER"
+          ],
+          "rows": 136
+        },
+        "NA": {
+          "missing": [],
+          "nonblank": {
+            "AGENT": 7,
+            "CONSIGNEE": 62,
+            "KD_SHIPPER": 63
+          },
+          "present": [
+            "AGENT",
+            "KD_SHIPPER",
+            "CONSIGNEE"
+          ],
+          "rows": 63
+        },
+        "VENDOR": {
+          "missing": [],
+          "nonblank": {
+            "KD_SHIPLIN": 934,
+            "NAME": 921
+          },
+          "present": [
+            "KD_SHIPLIN",
+            "NAME"
+          ],
+          "rows": 935
+        },
+        "VESSEL": {
+          "missing": [],
+          "nonblank": {
+            "NM_VESSEL": 4550
+          },
+          "present": [
+            "NM_VESSEL"
+          ],
+          "rows": 4562
+        }
+      }
+    }
+  },
+  "menu_gaps_vs_prd_3_2": {
+    "matched_by_name": [
+      "Volume",
+      "Lifting",
+      "Status B/L & Invoice",
+      "Sales",
+      "Operational Cost",
+      "Refund Cost",
+      "Gross Profit & Loss",
+      "Aging A/R - Debit Note",
+      "Contra Bond - In",
+      "Receipt A/R - Invoice",
+      "Discrepancy - Invoice",
+      "Receipt - Cash/ Bank",
+      "Aging A/P - Operational Cost",
+      "Aging A/P - Credit Note",
+      "Contra Bond - Out",
+      "Payment A/P - Vendor",
+      "Payment A/P - Agent",
+      "Payment A/P - Refund Cost",
+      "Payment - Cash/ Bank",
+      "Listing Journal",
+      "General Ledger",
+      "Trial Balance",
+      "Income Statement",
+      "Balance Sheet",
+      "Statement Of Account",
+      "List Agent",
+      "List Shipper/ Forwarder",
+      "Rate By Destination",
+      "List Consignee/ Notify",
+      "List Account",
+      "Track Performance"
+    ],
+    "near_match": [
+      {
+        "jaccard": 0.5,
+        "label": "Aging A/R - Invoive",
+        "nearest_prd_line": "| Aging A/R \u2014 Invoice | Outstanding invoice aging |"
+      }
+    ],
+    "unmatched_candidates": []
+  },
+  "retired_levels": [
+    "inferred"
+  ],
+  "source_snapshot": {
+    "files": [
+      {
+        "bytes": 59523,
+        "company": "CME",
+        "mtime_ns": 1776214627110226000,
+        "table": "ARS_R"
+      },
+      {
+        "bytes": 838,
+        "company": "CME",
+        "mtime_ns": 1776214645598416000,
+        "table": "AR_AGENT_D"
+      },
+      {
+        "bytes": 156117,
+        "company": "CME",
+        "mtime_ns": 1793763122697213700,
+        "table": "CARGO"
+      },
+      {
+        "bytes": 25349,
+        "company": "CME",
+        "mtime_ns": 1793247576826413700,
+        "table": "CONVWORD"
+      },
+      {
+        "bytes": 18473,
+        "company": "CME",
+        "mtime_ns": 1654149143328000000,
+        "table": "COST"
+      },
+      {
+        "bytes": 1718,
+        "company": "CME",
+        "mtime_ns": 1776214755355446000,
+        "table": "DRCRFULL"
+      },
+      {
+        "bytes": 59829,
+        "company": "CME",
+        "mtime_ns": 1793763686396284500,
+        "table": "INVOICE"
+      },
+      {
+        "bytes": 7721,
+        "company": "CME",
+        "mtime_ns": 1079615492000000000,
+        "table": "MENU2"
+      },
+      {
+        "bytes": 7721,
+        "company": "CME",
+        "mtime_ns": 1051590330000000000,
+        "table": "MENU20"
+      },
+      {
+        "bytes": 5865,
+        "company": "CME",
+        "mtime_ns": 1086343114000000000,
+        "table": "MENU3"
+      },
+      {
+        "bytes": 2249,
+        "company": "CME",
+        "mtime_ns": 1458705139281000000,
+        "table": "MODULWORD"
+      },
+      {
+        "bytes": 3054,
+        "company": "CME",
+        "mtime_ns": 1776214831739679700,
+        "table": "NA"
+      },
+      {
+        "bytes": 9882020,
+        "company": "CME",
+        "mtime_ns": 1776214832040479200,
+        "table": "NA_D"
+      },
+      {
+        "bytes": 1391,
+        "company": "CME",
+        "mtime_ns": 1776214842592555100,
+        "table": "OPRCOST"
+      },
+      {
+        "bytes": 26104,
+        "company": "CME",
+        "mtime_ns": 1776214856508580700,
+        "table": "OPRCOST_R"
+      },
+      {
+        "bytes": 1307,
+        "company": "CME",
+        "mtime_ns": 1776214896681469800,
+        "table": "RC"
+      },
+      {
+        "bytes": 904,
+        "company": "CME",
+        "mtime_ns": 1776214908099848800,
+        "table": "RCREQ"
+      },
+      {
+        "bytes": 1110,
+        "company": "CME",
+        "mtime_ns": 1776214913029966000,
+        "table": "RCREQ_D"
+      },
+      {
+        "bytes": 4425,
+        "company": "CME",
+        "mtime_ns": 1776214916037971000,
+        "table": "RC_D"
+      },
+      {
+        "bytes": 11808,
+        "company": "CME",
+        "mtime_ns": 1654306619562000000,
+        "table": "REPORTBL"
+      },
+      {
+        "bytes": 1305,
+        "company": "CME",
+        "mtime_ns": 1198045928000000000,
+        "table": "REPORT_LOV"
+      },
+      {
+        "bytes": 536,
+        "company": "CME",
+        "mtime_ns": 1458705252281000000,
+        "table": "SAGING"
+      },
+      {
+        "bytes": 776,
+        "company": "CME",
+        "mtime_ns": 1458705307125000000,
+        "table": "SOA"
+      },
+      {
+        "bytes": 680,
+        "company": "CME",
+        "mtime_ns": 1458705307187000000,
+        "table": "SOA_D"
+      },
+      {
+        "bytes": 376545,
+        "company": "CME",
+        "mtime_ns": 1710395208952271300,
+        "table": "VENDOR"
+      },
+      {
+        "bytes": 531137,
+        "company": "CME",
+        "mtime_ns": 1792993856802102500,
+        "table": "VESSEL"
+      },
+      {
+        "bytes": 1691899,
+        "company": "CMT",
+        "mtime_ns": 1795153979038505600,
+        "table": "ARS_R"
+      },
+      {
+        "bytes": 154574,
+        "company": "CMT",
+        "mtime_ns": 1794804076954969700,
+        "table": "AR_AGENT_D"
+      },
+      {
+        "bytes": 1409443,
+        "company": "CMT",
+        "mtime_ns": 1795171873498920700,
+        "table": "CARGO"
+      },
+      {
+        "bytes": 25349,
+        "company": "CMT",
+        "mtime_ns": 1793247583409920100,
+        "table": "CONVWORD"
+      },
+      {
+        "bytes": 35435,
+        "company": "CMT",
+        "mtime_ns": 1794903085246821800,
+        "table": "COST"
+      },
+      {
+        "bytes": 1412199,
+        "company": "CMT",
+        "mtime_ns": 1795171430499820300,
+        "table": "DRCRFULL"
+      },
+      {
+        "bytes": 5798211,
+        "company": "CMT",
+        "mtime_ns": 1795174035666415700,
+        "table": "INVOICE"
+      },
+      {
+        "bytes": 7721,
+        "company": "CMT",
+        "mtime_ns": 1079615492000000000,
+        "table": "MENU2"
+      },
+      {
+        "bytes": 7721,
+        "company": "CMT",
+        "mtime_ns": 1051590330000000000,
+        "table": "MENU20"
+      },
+      {
+        "bytes": 5865,
+        "company": "CMT",
+        "mtime_ns": 1086343114000000000,
+        "table": "MENU3"
+      },
+      {
+        "bytes": 2249,
+        "company": "CMT",
+        "mtime_ns": 1458705139281250000,
+        "table": "MODULWORD"
+      },
+      {
+        "bytes": 4076465,
+        "company": "CMT",
+        "mtime_ns": 1795171440167395500,
+        "table": "NA"
+      },
+      {
+        "bytes": 20392283,
+        "company": "CMT",
+        "mtime_ns": 1795171440170712200,
+        "table": "NA_D"
+      },
+      {
+        "bytes": 1168539,
+        "company": "CMT",
+        "mtime_ns": 1795174720106342600,
+        "table": "OPRCOST"
+      },
+      {
+        "bytes": 13811975,
+        "company": "CMT",
+        "mtime_ns": 1795174705424595700,
+        "table": "OPRCOST_R"
+      },
+      {
+        "bytes": 58489,
+        "company": "CMT",
+        "mtime_ns": 1793178160484668200,
+        "table": "RC"
+      },
+      {
+        "bytes": 87059,
+        "company": "CMT",
+        "mtime_ns": 1795146672730573400,
+        "table": "RCREQ"
+      },
+      {
+        "bytes": 186088,
+        "company": "CMT",
+        "mtime_ns": 1794887632357707900,
+        "table": "RCREQ_D"
+      },
+      {
+        "bytes": 81787,
+        "company": "CMT",
+        "mtime_ns": 1793159115119017100,
+        "table": "RC_D"
+      },
+      {
+        "bytes": 11808,
+        "company": "CMT",
+        "mtime_ns": 1654306619562500000,
+        "table": "REPORTBL"
+      },
+      {
+        "bytes": 1305,
+        "company": "CMT",
+        "mtime_ns": 1198045928000000000,
+        "table": "REPORT_LOV"
+      },
+      {
+        "bytes": 536,
+        "company": "CMT",
+        "mtime_ns": 1458705252281250000,
+        "table": "SAGING"
+      },
+      {
+        "bytes": 924,
+        "company": "CMT",
+        "mtime_ns": 1734929730662933800,
+        "table": "SOA"
+      },
+      {
+        "bytes": 947,
+        "company": "CMT",
+        "mtime_ns": 1709624828978339300,
+        "table": "SOA_D"
+      },
+      {
+        "bytes": 439377,
+        "company": "CMT",
+        "mtime_ns": 1795076449440286300,
+        "table": "VENDOR"
+      },
+      {
+        "bytes": 594902,
+        "company": "CMT",
+        "mtime_ns": 1794911550288154100,
+        "table": "VESSEL"
+      },
+      {
+        "bytes": 400149,
+        "company": "CSM",
+        "mtime_ns": 1795148791118679800,
+        "table": "ARS_R"
+      },
+      {
+        "bytes": 24593,
+        "company": "CSM",
+        "mtime_ns": 1789102084687984900,
+        "table": "AR_AGENT_D"
+      },
+      {
+        "bytes": 1409443,
+        "company": "CSM",
+        "mtime_ns": 1795064343119596600,
+        "table": "CARGO"
+      },
+      {
+        "bytes": 25349,
+        "company": "CSM",
+        "mtime_ns": 1793247607222243300,
+        "table": "CONVWORD"
+      },
+      {
+        "bytes": 22631,
+        "company": "CSM",
+        "mtime_ns": 1790840420376103200,
+        "table": "COST"
+      },
+      {
+        "bytes": 165609,
+        "company": "CSM",
+        "mtime_ns": 1795085957865508900,
+        "table": "DRCRFULL"
+      },
+      {
+        "bytes": 1490501,
+        "company": "CSM",
+        "mtime_ns": 1795148803891254800,
+        "table": "INVOICE"
+      },
+      {
+        "bytes": 7721,
+        "company": "CSM",
+        "mtime_ns": 1079615492000000000,
+        "table": "MENU2"
+      },
+      {
+        "bytes": 7721,
+        "company": "CSM",
+        "mtime_ns": 1051590330000000000,
+        "table": "MENU20"
+      },
+      {
+        "bytes": 5865,
+        "company": "CSM",
+        "mtime_ns": 1086343114000000000,
+        "table": "MENU3"
+      },
+      {
+        "bytes": 2249,
+        "company": "CSM",
+        "mtime_ns": 1458705139281250000,
+        "table": "MODULWORD"
+      },
+      {
+        "bytes": 704041,
+        "company": "CSM",
+        "mtime_ns": 1794809103759789300,
+        "table": "NA"
+      },
+      {
+        "bytes": 1461751,
+        "company": "CSM",
+        "mtime_ns": 1793246323179105700,
+        "table": "NA_D"
+      },
+      {
+        "bytes": 308891,
+        "company": "CSM",
+        "mtime_ns": 1795068413606006500,
+        "table": "OPRCOST"
+      },
+      {
+        "bytes": 2830723,
+        "company": "CSM",
+        "mtime_ns": 1795068413599286800,
+        "table": "OPRCOST_R"
+      },
+      {
+        "bytes": 18399,
+        "company": "CSM",
+        "mtime_ns": 1795064355774670400,
+        "table": "RC"
+      },
+      {
+        "bytes": 23395,
+        "company": "CSM",
+        "mtime_ns": 1795169029309445800,
+        "table": "RCREQ"
+      },
+      {
+        "bytes": 24733,
+        "company": "CSM",
+        "mtime_ns": 1795169029333219100,
+        "table": "RCREQ_D"
+      },
+      {
+        "bytes": 25933,
+        "company": "CSM",
+        "mtime_ns": 1793610778257756000,
+        "table": "RC_D"
+      },
+      {
+        "bytes": 11809,
+        "company": "CSM",
+        "mtime_ns": 1637219567765625000,
+        "table": "REPORTBL"
+      },
+      {
+        "bytes": 1305,
+        "company": "CSM",
+        "mtime_ns": 1513152610265625000,
+        "table": "REPORT_LOV"
+      },
+      {
+        "bytes": 536,
+        "company": "CSM",
+        "mtime_ns": 1458705252281250000,
+        "table": "SAGING"
+      },
+      {
+        "bytes": 776,
+        "company": "CSM",
+        "mtime_ns": 1564202374218750000,
+        "table": "SOA"
+      },
+      {
+        "bytes": 680,
+        "company": "CSM",
+        "mtime_ns": 1458705307187500000,
+        "table": "SOA_D"
+      },
+      {
+        "bytes": 392865,
+        "company": "CSM",
+        "mtime_ns": 1794889249003463700,
+        "table": "VENDOR"
+      },
+      {
+        "bytes": 500834,
+        "company": "CSM",
+        "mtime_ns": 1790844730884799900,
+        "table": "VESSEL"
+      },
+      {
+        "bytes": 2571649,
+        "company": "MAL",
+        "mtime_ns": 1795174443095958000,
+        "table": "ARS_R"
+      },
+      {
+        "bytes": 298430,
+        "company": "MAL",
+        "mtime_ns": 1795075563794505300,
+        "table": "AR_AGENT_D"
+      },
+      {
+        "bytes": 4308793,
+        "company": "MAL",
+        "mtime_ns": 1795147618595728600,
+        "table": "CARGO"
+      },
+      {
+        "bytes": 25349,
+        "company": "MAL",
+        "mtime_ns": 1793247373367545500,
+        "table": "CONVWORD"
+      },
+      {
+        "bytes": 33323,
+        "company": "MAL",
+        "mtime_ns": 1794566943284698600,
+        "table": "COST"
+      },
+      {
+        "bytes": 2013219,
+        "company": "MAL",
+        "mtime_ns": 1795158735540137800,
+        "table": "DRCRFULL"
+      },
+      {
+        "bytes": 8392852,
+        "company": "MAL",
+        "mtime_ns": 1795174457339035300,
+        "table": "INVOICE"
+      },
+      {
+        "bytes": 7721,
+        "company": "MAL",
+        "mtime_ns": 1079669492000000000,
+        "table": "MENU2"
+      },
+      {
+        "bytes": 7721,
+        "company": "MAL",
+        "mtime_ns": 1051644330000000000,
+        "table": "MENU20"
+      },
+      {
+        "bytes": 5865,
+        "company": "MAL",
+        "mtime_ns": 1086397114000000000,
+        "table": "MENU3"
+      },
+      {
+        "bytes": 2249,
+        "company": "MAL",
+        "mtime_ns": 1310786504234375000,
+        "table": "MODULWORD"
+      },
+      {
+        "bytes": 4634074,
+        "company": "MAL",
+        "mtime_ns": 1795169134337622300,
+        "table": "NA"
+      },
+      {
+        "bytes": 7753951,
+        "company": "MAL",
+        "mtime_ns": 1795167654699497100,
+        "table": "NA_D"
+      },
+      {
+        "bytes": 1388832,
+        "company": "MAL",
+        "mtime_ns": 1795174454364009100,
+        "table": "OPRCOST"
+      },
+      {
+        "bytes": 15239179,
+        "company": "MAL",
+        "mtime_ns": 1795174454332279000,
+        "table": "OPRCOST_R"
+      },
+      {
+        "bytes": 82753,
+        "company": "MAL",
+        "mtime_ns": 1795081134400284400,
+        "table": "RC"
+      },
+      {
+        "bytes": 85329,
+        "company": "MAL",
+        "mtime_ns": 1794906581819263000,
+        "table": "RCREQ"
+      },
+      {
+        "bytes": 336190,
+        "company": "MAL",
+        "mtime_ns": 1794815589799734200,
+        "table": "RCREQ_D"
+      },
+      {
+        "bytes": 361484,
+        "company": "MAL",
+        "mtime_ns": 1793246243410144000,
+        "table": "RC_D"
+      },
+      {
+        "bytes": 12374,
+        "company": "MAL",
+        "mtime_ns": 1763004242223165300,
+        "table": "REPORTBL"
+      },
+      {
+        "bytes": 1161,
+        "company": "MAL",
+        "mtime_ns": 1088532654000000000,
+        "table": "REPORT_LOV"
+      },
+      {
+        "bytes": 536,
+        "company": "MAL",
+        "mtime_ns": 1310786512312500000,
+        "table": "SAGING"
+      },
+      {
+        "bytes": 924,
+        "company": "MAL",
+        "mtime_ns": 1734927831254195800,
+        "table": "SOA"
+      },
+      {
+        "bytes": 1079,
+        "company": "MAL",
+        "mtime_ns": 1752198526298233900,
+        "table": "SOA_D"
+      },
+      {
+        "bytes": 360225,
+        "company": "MAL",
+        "mtime_ns": 1795143560677968000,
+        "table": "VENDOR"
+      },
+      {
+        "bytes": 358913,
+        "company": "MAL",
+        "mtime_ns": 1795159718070472800,
+        "table": "VESSEL"
+      },
+      {
+        "bytes": 69399,
+        "company": "SBY",
+        "mtime_ns": 1795174585237715900,
+        "table": "ARS_R"
+      },
+      {
+        "bytes": 727,
+        "company": "SBY",
+        "mtime_ns": 1776214679011318100,
+        "table": "AR_AGENT_D"
+      },
+      {
+        "bytes": 83443,
+        "company": "SBY",
+        "mtime_ns": 1795071459518711700,
+        "table": "CARGO"
+      },
+      {
+        "bytes": 25349,
+        "company": "SBY",
+        "mtime_ns": 1793247603797135200,
+        "table": "CONVWORD"
+      },
+      {
+        "bytes": 19265,
+        "company": "SBY",
+        "mtime_ns": 1786077287688444200,
+        "table": "COST"
+      },
+      {
+        "bytes": 3069,
+        "company": "SBY",
+        "mtime_ns": 1794797156654325300,
+        "table": "DRCRFULL"
+      },
+      {
+        "bytes": 74865,
+        "company": "SBY",
+        "mtime_ns": 1795174598010666600,
+        "table": "INVOICE"
+      },
+      {
+        "bytes": 7721,
+        "company": "SBY",
+        "mtime_ns": 1079615492000000000,
+        "table": "MENU2"
+      },
+      {
+        "bytes": 7721,
+        "company": "SBY",
+        "mtime_ns": 1051590330000000000,
+        "table": "MENU20"
+      },
+      {
+        "bytes": 5865,
+        "company": "SBY",
+        "mtime_ns": 1086343114000000000,
+        "table": "MENU3"
+      },
+      {
+        "bytes": 2249,
+        "company": "SBY",
+        "mtime_ns": 1458705139281000000,
+        "table": "MODULWORD"
+      },
+      {
+        "bytes": 28135,
+        "company": "SBY",
+        "mtime_ns": 1794815131180019600,
+        "table": "NA"
+      },
+      {
+        "bytes": 9924643,
+        "company": "SBY",
+        "mtime_ns": 1794815131195442000,
+        "table": "NA_D"
+      },
+      {
+        "bytes": 15783,
+        "company": "SBY",
+        "mtime_ns": 1795175625770059900,
+        "table": "OPRCOST"
+      },
+      {
+        "bytes": 190745,
+        "company": "SBY",
+        "mtime_ns": 1795175625732801400,
+        "table": "OPRCOST_R"
+      },
+      {
+        "bytes": 1096,
+        "company": "SBY",
+        "mtime_ns": 1776214927949663600,
+        "table": "RC"
+      },
+      {
+        "bytes": 2289,
+        "company": "SBY",
+        "mtime_ns": 1794819555144736700,
+        "table": "RCREQ"
+      },
+      {
+        "bytes": 2134,
+        "company": "SBY",
+        "mtime_ns": 1794642023498807800,
+        "table": "RCREQ_D"
+      },
+      {
+        "bytes": 4318,
+        "company": "SBY",
+        "mtime_ns": 1776214945206578200,
+        "table": "RC_D"
+      },
+      {
+        "bytes": 11808,
+        "company": "SBY",
+        "mtime_ns": 1654306619562000000,
+        "table": "REPORTBL"
+      },
+      {
+        "bytes": 1305,
+        "company": "SBY",
+        "mtime_ns": 1198045928000000000,
+        "table": "REPORT_LOV"
+      },
+      {
+        "bytes": 536,
+        "company": "SBY",
+        "mtime_ns": 1770109061348120900,
+        "table": "SAGING"
+      },
+      {
+        "bytes": 776,
+        "company": "SBY",
+        "mtime_ns": 1458705307125000000,
+        "table": "SOA"
+      },
+      {
+        "bytes": 680,
+        "company": "SBY",
+        "mtime_ns": 1458705307187000000,
+        "table": "SOA_D"
+      },
+      {
+        "bytes": 382257,
+        "company": "SBY",
+        "mtime_ns": 1787023502413699800,
+        "table": "VENDOR"
+      },
+      {
+        "bytes": 534179,
+        "company": "SBY",
+        "mtime_ns": 1792644383897803800,
+        "table": "VESSEL"
+      }
+    ],
+    "snapshot_id": "a710a16b13e0",
+    "tables_observed": 130
+  }
+}

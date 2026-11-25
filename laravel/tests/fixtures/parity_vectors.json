@@ -1,0 +1,552 @@
+{
+  "_meta": {
+    "generated_by": "tools/gen_parity_vectors.py (runs the real Python stack)",
+    "python": "3.13.7",
+    "regenerate_with": [
+      "python",
+      "tools/gen_parity_vectors.py"
+    ],
+    "note": "Expected values are produced by executing the Python reference (app.auth, FastAPI, Starlette). The Laravel suite asserts equality with these values; PHP never derives an expected value from itself."
+  },
+  "constants": {
+    "pbkdf2_iterations": 200000,
+    "pbkdf2_dklen_bytes": 32,
+    "session_ttl_hours": 8.0,
+    "role_levels": {
+      "superadmin": 5,
+      "admin": 4,
+      "management": 3,
+      "staff": 2,
+      "customer": 1
+    }
+  },
+  "pbkdf2": [
+    {
+      "id": "ascii_basic",
+      "pw": "pw",
+      "salt": "4f0a",
+      "pw_bytes_hex": "7077",
+      "expected_hash": "0982733758b7db33f21cbe6bea6b569ae844b506f257035cfee5b737f516a949"
+    },
+    {
+      "id": "unicode_pw",
+      "pw": "pässwörd",
+      "salt": "0a0b0c0d",
+      "pw_bytes_hex": "70c3a4737377c3b67264",
+      "expected_hash": "0f4415b3599a28ccaf437a2a5208526b21d6f896a92a44b45530be99dba9fbb6"
+    },
+    {
+      "id": "long_pw",
+      "pw": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "salt": "00ff",
+      "pw_bytes_hex": "7878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878",
+      "expected_hash": "11fe39939c8bac3a4c671e8c633414a0a9702be4b4813a7c63ae9153a8ddd474"
+    },
+    {
+      "id": "empty_pw",
+      "pw": "",
+      "salt": "deadbeef",
+      "pw_bytes_hex": "",
+      "expected_hash": "dbed1fc3f7bb3f8d291233b879ea808b25f72ab935ba7ecbba8474d118f449cf"
+    },
+    {
+      "id": "salt_with_space",
+      "pw": "S3cret!",
+      "salt": "12 34 56 78",
+      "pw_bytes_hex": "53336372657421",
+      "expected_hash": "e8f7b2bb896d19b6d93c16df172746ef491230c0e5a2bbb5607c3d500371b051"
+    }
+  ],
+  "tokens": {
+    "urlsafe32": {
+      "length": 43,
+      "php_regex": "^[A-Za-z0-9_\\-]{43}$",
+      "note": "secrets.token_urlsafe(32) -> 43 url-safe base64 chars, no padding"
+    }
+  },
+  "timestamps": {
+    "iso_vectors": [
+      {
+        "id": "micros",
+        "utc_iso": "2026-09-22T13:45:12.123456+00:00",
+        "expected": "2026-09-22T13:45:12.123456+00:00"
+      },
+      {
+        "id": "zero_micros",
+        "utc_iso": "2026-01-01T00:00:00+00:00",
+        "expected": "2026-01-01T00:00:00+00:00",
+        "note": "Python omits '.000000' when microsecond==0; PHP .u always prints it. Only reachable in ~1e-6 of writes; string ordering comparisons are unaffected"
+      },
+      {
+        "id": "end_of_year",
+        "utc_iso": "1999-12-31T23:59:59.999999+00:00",
+        "expected": "1999-12-31T23:59:59.999999+00:00"
+      },
+      {
+        "id": "far_future",
+        "utc_iso": "2100-02-28T12:00:00.000001+00:00",
+        "expected": "2100-02-28T12:00:00.000001+00:00"
+      }
+    ],
+    "isoformat_shape_regex": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?\\+00:00$",
+    "sqlite_datetime_now_regex": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+  },
+  "capitalize": [
+    {
+      "input": "boss",
+      "expected": "Boss"
+    },
+    {
+      "input": "staff1",
+      "expected": "Staff1"
+    },
+    {
+      "input": "ADMIN",
+      "expected": "Admin"
+    },
+    {
+      "input": "über",
+      "expected": "Über"
+    },
+    {
+      "input": "žluťoučký",
+      "expected": "Žluťoučký"
+    },
+    {
+      "input": "x y",
+      "expected": "X y"
+    },
+    {
+      "input": "",
+      "expected": ""
+    }
+  ],
+  "money": [
+    {
+      "id": "usd_basic",
+      "value": 1171.5,
+      "currency": "usd",
+      "fmt": "full",
+      "expected": "$1,171.50"
+    },
+    {
+      "id": "usd_round",
+      "value": 1234.0,
+      "currency": "usd",
+      "fmt": "full",
+      "expected": "$1,234.00"
+    },
+    {
+      "id": "usd_negative",
+      "value": -1320.0,
+      "currency": "usd",
+      "fmt": "full",
+      "expected": "($1,320.00)"
+    },
+    {
+      "id": "usd_zero",
+      "value": 0.0,
+      "currency": "usd",
+      "fmt": "full",
+      "expected": "$0.00"
+    },
+    {
+      "id": "usd_small",
+      "value": 0.05,
+      "currency": "usd",
+      "fmt": "full",
+      "expected": "$0.05"
+    },
+    {
+      "id": "usd_thousands",
+      "value": 1234567.89,
+      "currency": "usd",
+      "fmt": "full",
+      "expected": "$1,234,567.89"
+    },
+    {
+      "id": "idr_basic",
+      "value": 2825370.4,
+      "currency": "idr",
+      "fmt": "full",
+      "expected": "Rp 2.825.370"
+    },
+    {
+      "id": "idr_negative",
+      "value": -2825370.4,
+      "currency": "idr",
+      "fmt": "full",
+      "expected": "(Rp 2.825.370)"
+    },
+    {
+      "id": "idr_zero",
+      "value": 0.0,
+      "currency": "idr",
+      "fmt": "full",
+      "expected": "Rp 0"
+    },
+    {
+      "id": "idr_fraction_dropped",
+      "value": 1.5,
+      "currency": "idr",
+      "fmt": "full",
+      "expected": "Rp 2"
+    },
+    {
+      "id": "usd_abbr_k",
+      "value": 1200.0,
+      "currency": "usd",
+      "fmt": "abbr",
+      "expected": "$1.2K"
+    },
+    {
+      "id": "usd_abbr_m",
+      "value": 1234567.0,
+      "currency": "usd",
+      "fmt": "abbr",
+      "expected": "$1.2M"
+    },
+    {
+      "id": "usd_abbr_thousand_edge",
+      "value": 999.99,
+      "currency": "usd",
+      "fmt": "abbr",
+      "expected": "$999.99"
+    },
+    {
+      "id": "idr_abbr_m",
+      "value": 1250000.0,
+      "currency": "idr",
+      "fmt": "abbr",
+      "expected": "Rp 1.2M"
+    },
+    {
+      "id": "idr_abbr_m_strip",
+      "value": 1200000.0,
+      "currency": "idr",
+      "fmt": "abbr",
+      "expected": "Rp 1.2M"
+    },
+    {
+      "id": "idr_abbr_k",
+      "value": 1200.0,
+      "currency": "idr",
+      "fmt": "abbr",
+      "expected": "Rp 1K"
+    },
+    {
+      "id": "idr_abbr_small",
+      "value": 999.0,
+      "currency": "idr",
+      "fmt": "abbr",
+      "expected": "Rp 999"
+    },
+    {
+      "id": "usd_abbr_negative",
+      "value": -1500.0,
+      "currency": "usd",
+      "fmt": "abbr",
+      "expected": "($1.5K)"
+    },
+    {
+      "id": "none_value",
+      "value": null,
+      "currency": "usd",
+      "fmt": "full",
+      "expected": ""
+    }
+  ],
+  "i18n": [
+    {
+      "key": "Dashboard",
+      "id": "Dasbor",
+      "en": "Dashboard",
+      "zh": "仪表板"
+    },
+    {
+      "key": "Ringkasan",
+      "id": "Ringkasan",
+      "en": "Ringkasan",
+      "zh": "Ringkasan"
+    },
+    {
+      "key": "Overview of system data",
+      "id": "Ringkasan data sistem",
+      "en": "Overview of system data",
+      "zh": "系统数据概览"
+    },
+    {
+      "key": "Total Shipments",
+      "id": "Total Pengiriman",
+      "en": "Total Shipments",
+      "zh": "总发货数"
+    },
+    {
+      "key": "Total Unpaid",
+      "id": "Total Belum Bayar",
+      "en": "Total Unpaid",
+      "zh": "总未付款"
+    },
+    {
+      "key": "Unpaid Shipments",
+      "id": "Pengiriman Belum Bayar",
+      "en": "Unpaid Shipments",
+      "zh": "未付款发货"
+    },
+    {
+      "key": "No unpaid shipments found.",
+      "id": "Tidak ada pengiriman belum bayar ditemukan.",
+      "en": "No unpaid shipments found.",
+      "zh": "未找到未付款发货。"
+    },
+    {
+      "key": "Shipments",
+      "id": "Pengiriman",
+      "en": "Shipments",
+      "zh": "发货"
+    },
+    {
+      "key": "All shipment data (Import & Export)",
+      "id": "Semua data pengiriman (Impor & Ekspor)",
+      "en": "All shipment data (Import & Export)",
+      "zh": "所有发货数据（进口和出口）"
+    },
+    {
+      "key": "All Types",
+      "id": "Semua Jenis",
+      "en": "All Types",
+      "zh": "所有类型"
+    },
+    {
+      "key": "Invoice Un-issued",
+      "id": "Faktur Belum Terbit",
+      "en": "Invoice Un-issued",
+      "zh": "未开票"
+    },
+    {
+      "key": "Invoice Issued & Unpaid",
+      "id": "Faktur Terbit & Belum Bayar",
+      "en": "Invoice Issued & Unpaid",
+      "zh": "已开票未付"
+    },
+    {
+      "key": "No shipments found.",
+      "id": "Tidak ada pengiriman ditemukan.",
+      "en": "No shipments found.",
+      "zh": "未找到发货记录。"
+    },
+    {
+      "key": "Invoices",
+      "id": "Faktur",
+      "en": "Invoices",
+      "zh": "发票"
+    },
+    {
+      "key": "results",
+      "id": "hasil",
+      "en": "results",
+      "zh": "结果"
+    },
+    {
+      "key": "Ref.",
+      "id": "Ref.",
+      "en": "Ref.",
+      "zh": "参考号"
+    },
+    {
+      "key": "No. Invoice",
+      "id": "No. Faktur",
+      "en": "No. Invoice",
+      "zh": "发票号"
+    },
+    {
+      "key": "Amount (USD)",
+      "id": "USD",
+      "en": "USD",
+      "zh": "金额 (USD)"
+    },
+    {
+      "key": "Paid (IDR)",
+      "id": "Lunas (IDR)",
+      "en": "Paid (IDR)",
+      "zh": "已付 (IDR)"
+    },
+    {
+      "key": "Status",
+      "id": "Status",
+      "en": "Status",
+      "zh": "状态"
+    },
+    {
+      "key": "Unpaid",
+      "id": "Belum Bayar",
+      "en": "Unpaid",
+      "zh": "未付"
+    },
+    {
+      "key": "No invoices.",
+      "id": "Tidak ada faktur.",
+      "en": "No invoices.",
+      "zh": "无发票。"
+    },
+    {
+      "key": "Data synced from FoxPro system",
+      "id": "Data disinkronkan dari sistem FoxPro",
+      "en": "Data synced from FoxPro system",
+      "zh": "数据从 FoxPro 系统同步"
+    },
+    {
+      "key": "Previous",
+      "id": "Sebelumnya",
+      "en": "Previous",
+      "zh": "上一页"
+    },
+    {
+      "key": "Next",
+      "id": "Selanjutnya",
+      "en": "Next",
+      "zh": "下一页"
+    },
+    {
+      "key": "Search",
+      "id": "Cari",
+      "en": "Search",
+      "zh": "搜索"
+    },
+    {
+      "key": "Contact admin if you don't have an account.",
+      "id": "Hubungi admin jika Anda tidak memiliki akun.",
+      "en": "Contact admin if you don't have an account.",
+      "zh": "如果您没有帐户，请联系管理员。"
+    }
+  ],
+  "json_dumps": [
+    {
+      "id": "ascii",
+      "obj": {
+        "user": "admin",
+        "role": "superadmin",
+        "active_db": "CMT"
+      },
+      "expected": "{\"user\":\"admin\",\"role\":\"superadmin\",\"active_db\":\"CMT\"}"
+    },
+    {
+      "id": "unicode",
+      "obj": {
+        "msg": "Pembayaran lunas",
+        "name": "PT. Trisco"
+      },
+      "expected": "{\"msg\":\"Pembayaran lunas\",\"name\":\"PT. Trisco\"}"
+    },
+    {
+      "id": "slash_amp",
+      "obj": {
+        "url": "http://x/?a=1&b=2",
+        "p": "/x/y"
+      },
+      "expected": "{\"url\":\"http://x/?a=1&b=2\",\"p\":\"/x/y\"}"
+    },
+    {
+      "id": "floats_common",
+      "obj": {
+        "a": 0.1,
+        "b": 1.0,
+        "c": 1234.5678,
+        "d": 3.14159265358979
+      },
+      "expected": "{\"a\":0.1,\"b\":1.0,\"c\":1234.5678,\"d\":3.14159265358979}",
+      "note": "Python emits int-valued floats as 1.0; PHP json_encode prints 1. Spellings differ, decoded value identical"
+    },
+    {
+      "id": "floats_edge",
+      "obj": {
+        "n": 1e+20
+      },
+      "expected": "{\"n\":1e+20}",
+      "note": "Python 1e+20 vs PHP 1.0e+20 exponent spelling; P5 capture normalizer rounds floats to 4dp"
+    },
+    {
+      "id": "null_bool",
+      "obj": {
+        "x": null,
+        "y": true,
+        "z": false
+      },
+      "expected": "{\"x\":null,\"y\":true,\"z\":false}"
+    },
+    {
+      "id": "nested",
+      "obj": {
+        "rows": [
+          {
+            "a": 1
+          },
+          {
+            "b": [
+              1,
+              2,
+              3
+            ]
+          }
+        ],
+        "total": 2
+      },
+      "expected": "{\"rows\":[{\"a\":1},{\"b\":[1,2,3]}],\"total\":2}"
+    }
+  ],
+  "cookies": [
+    {
+      "id": "session_cookie_set",
+      "kind": "set",
+      "name": "cmt_session",
+      "value": "tok",
+      "python_header": "cmt_session=tok; HttpOnly; Path=/; SameSite=lax"
+    },
+    {
+      "id": "session_cookie_secure",
+      "kind": "set",
+      "name": "cmt_session",
+      "value": "tok",
+      "python_header": "cmt_session=tok; HttpOnly; Path=/; SameSite=lax; Secure"
+    },
+    {
+      "id": "db_cookie_set",
+      "kind": "set",
+      "name": "cmt_db",
+      "value": "CME",
+      "python_header": "cmt_db=CME; Max-Age=31536000; Path=/; SameSite=lax"
+    },
+    {
+      "id": "db_cookie_delete",
+      "kind": "delete",
+      "name": "cmt_session",
+      "value": "",
+      "python_header": "cmt_session=\"\"; expires=<EXPIRES>; Max-Age=0; Path=/; SameSite=lax"
+    }
+  ],
+  "validation_422": {
+    "status": 422,
+    "body": {
+      "detail": [
+        {
+          "type": "missing",
+          "loc": [
+            "body",
+            "username"
+          ],
+          "msg": "Field required",
+          "input": null
+        },
+        {
+          "type": "missing",
+          "loc": [
+            "body",
+            "password"
+          ],
+          "msg": "Field required",
+          "input": null
+        }
+      ]
+    }
+  }
+}

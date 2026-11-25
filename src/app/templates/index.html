@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% macro dual(usd, idr) -%}
+    {% if usd is none and idr is none %}-
+    {% else %}
+        {% if usd is not none %}{{ usd|money }}{% else %}{{ idr|money('idr') }}{% endif %}
+        {% if usd is not none and idr is not none %}<br/><span class="text-muted-custom">{{ idr|money('idr') }}</span>{% endif %}
+    {% endif %}
+{%- endmacro %}
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col">
+        <h3>{{ _t('Dashboard') }}</h3>
+        <p class="text-muted-custom">{{ _t('Overview of system data') }}</p>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <span class="stat-value" style="color:var(--color-accent)">{{ summary.shipments }}</span>
+            <span class="stat-label">{{ _t('Total Shipments') }}</span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <span class="stat-value" style="color:var(--color-import)">{{ summary.imports }}</span>
+            <span class="stat-label">{{ _t('Imports') }}</span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <span class="stat-value" style="color:var(--color-export)">{{ summary.exports }}</span>
+            <span class="stat-label">{{ _t('Exports & Others') }}</span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <span class="stat-value" style="color:var(--color-domestic)">{{ summary.invoices }}</span>
+            <span class="stat-label">{{ _t('Invoices') }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <span class="stat-value" style="color:var(--color-accent)">{{ unpaid.total }}</span>
+            <span class="stat-label">{{ _t('Total Unpaid') }}</span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <span class="stat-value" style="color:var(--color-import)">{{ unpaid.total_usd|money('usd', 'abbr') }}</span>
+            <span class="stat-label">{{ _t('Total Unpaid USD') }}</span>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card">
+            <span class="stat-value" style="color:var(--color-export)">{{ unpaid.total_idr|money('idr', 'abbr') }}</span>
+            <span class="stat-label">{{ _t('Total Unpaid IDR') }}</span>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <span>{{ _t('Unpaid Shipments') }}</span>
+        <div class="d-flex align-items-center gap-2">
+            <form method="get" action="/" class="d-flex gap-2 m-0">
+                <input type="search" name="q" value="{{ search }}" class="form-control form-control-sm" style="width: 14rem" placeholder="{{ _t('Search') }}..." aria-label="{{ _t('Search') }}">
+                <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-search"></i></button>
+            </form>
+            <a href="/shipments" class="btn btn-sm btn-link">{{ _t('View All') }} <i class="bi bi-arrow-right"></i></a>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    {% macro sort_header(key, label) -%}
+                    {% set next_dir = 'asc' if (sort == key and sort_dir == 'desc') else 'desc' %}
+                    <th>
+                        <a href="?page=1&q={{ search|urlencode }}&sort={{ key }}&dir={{ next_dir }}" class="text-decoration-none text-body">
+                            {{ label }}
+                            {% if sort == key %}{% if sort_dir == 'asc' %}<i class="bi bi-caret-up-fill"></i>{% else %}<i class="bi bi-caret-down-fill"></i>{% endif %}{% endif %}
+                        </a>
+                    </th>
+                    {%- endmacro %}
+                    {% macro page_url(p) -%}?page={{ p }}&q={{ search|urlencode }}&sort={{ sort }}&dir={{ sort_dir }}{%- endmacro %}
+                    {{ sort_header('reference', _t('Reference')) }}
+                    <th>{{ _t('Kind') }}</th>
+                    {{ sort_header('customer', _t('Customer')) }}
+                    {% if user.role == 'customer' %}<th>{{ _t('Invoice No') }}</th>{% endif %}
+                    {{ sort_header('date', _t('Date')) }}
+                    {% if user.role != 'customer' %}<th class="text-end">{{ _t('Opr Cost') }}</th>{% endif %}
+                    <th class="text-end">{{ _t('Invoice') }}</th>
+                    <th class="text-end">{{ _t('Inv Payment') }}</th>
+                    {% if user.role != 'customer' %}
+                    <th class="text-end">DNCN</th>
+                    <th class="text-end">{{ _t('DNCN Settlement') }}</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in unpaid.rows %}
+                <tr{% if user.role != 'customer' %} onclick="window.location='/shipments/detail?ref={{ s.REFSHITMEN|urlencode }}'" style="cursor:pointer"{% endif %}>
+                    <td>{% if user.role != 'customer' %}<a href="/shipments/detail?ref={{ s.REFSHITMEN|urlencode }}" class="text-decoration-none" onclick="event.stopPropagation()">{{ s.REFSHITMEN or '-' }}</a>{% else %}{{ s.REFSHITMEN or '-' }}{% endif %}</td>
+                    <td>
+                        {% if s.KIND == 'I' %}<span class="badge badge-import">{{ _t('Import') }}</span>
+                        {% elif s.KIND == 'E' %}<span class="badge badge-export">{{ _t('Export') }}</span>
+                        {% elif s.KIND == 'D' %}<span class="badge badge-domestic">{{ _t('Domestic') }}</span>
+                        {% elif s.KIND == 'T' %}<span class="badge badge-trucking">{{ _t('Trucking') }}</span>
+                        {% elif s.KIND == 'B' %}<span class="badge badge-breakbulk">{{ _t('Breakbulk') }}</span>
+                        {% else %}<span class="badge">{{ s.KIND }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ s.CUSTOMER or '-' }}</td>
+                    {% if user.role == 'customer' %}<td>{{ s.NOINVOICE or '-' }}</td>{% endif %}
+                    <td>{{ s.DATE or '-' }}</td>
+                    {% if user.role != 'customer' %}
+                    <td class="text-end">
+                        {{ dual(s.OPR_USD, s.OPR_RP) }}
+                    </td>
+                    {% endif %}
+                    <td class="text-end">
+                        {{ dual(s.INV_USD, s.INV_RP) }}
+                    </td>
+                    <td class="text-end">
+                        {{ dual(s.INV_PAY_USD, s.INV_PAY_IDR) }}
+                    </td>
+                    {% if user.role != 'customer' %}
+                    <td class="text-end">
+                        {{ dual(s.DNCN_USD, s.DNCN_IDR) }}
+                    </td>
+                    <td class="text-end">
+                        {{ dual(s.DNCN_PAY_USD, s.DNCN_PAY_IDR) }}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% else %}
+                <tr><td colspan="{{ 9 if user.role != 'customer' else 7 }}" class="text-center text-body-secondary py-4">{{ _t('No unpaid shipments found.') }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if unpaid.pages > 1 %}
+        <nav aria-label="Unpaid shipments pagination">
+            <ul class="pagination pagination-sm justify-content-center my-2">
+                <li class="page-item {% if unpaid.page <= 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ page_url(unpaid.page - 1) }}">{{ _t('Previous') }}</a>
+                </li>
+                {% for p in page_nums %}
+                <li class="page-item {% if p == unpaid.page %}active{% endif %}">
+                    <a class="page-link" href="{{ page_url(p) }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                <li class="page-item {% if unpaid.page >= unpaid.pages %}disabled{% endif %}">
+                    <a class="page-link" href="{{ page_url(unpaid.page + 1) }}">{{ _t('Next') }}</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+        <div class="px-3 pb-2 small text-body-secondary">
+            {{ _t('Page') }} {{ unpaid.page }} / {{ unpaid.pages }} &middot; {{ unpaid.total }} {{ _t('shipments') }}
+        </div>
+    </div>
+</div>
+{% if top_customers %}
+<div class="row g-3 mt-2 mb-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">{{ _t('Top Import Customers') }}</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>#</th><th>{{ _t('Customer') }}</th><th class="text-end">{{ _t('Shipments') }}</th></tr></thead>
+                    <tbody>
+                    {% for row in top_customers.import %}
+                        <tr><td>{{ loop.index }}</td><td>{{ row.name }}</td><td class="text-end">{{ row.cnt }}</td></tr>
+                    {% else %}
+                        <tr><td colspan="3" class="text-center text-body-secondary py-3">{{ _t('No data.') }}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">{{ _t('Top Export Customers') }}</div>
+            <div class="card-body p-0">
+                <table class="table table-sm mb-0">
+                    <thead><tr><th>#</th><th>{{ _t('Customer') }}</th><th class="text-end">{{ _t('Shipments') }}</th></tr></thead>
+                    <tbody>
+                    {% for row in top_customers.export %}
+                        <tr><td>{{ loop.index }}</td><td>{{ row.name }}</td><td class="text-end">{{ row.cnt }}</td></tr>
+                    {% else %}
+                        <tr><td colspan="3" class="text-center text-body-secondary py-3">{{ _t('No data.') }}</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

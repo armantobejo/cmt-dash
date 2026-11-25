@@ -1,0 +1,24 @@
+{
+    "access_log_keys": {
+        "context_keys": [
+            "event",
+            "request_id",
+            "method",
+            "path",
+            "status",
+            "duration_ms",
+            "username"
+        ],
+        "level_name": "INFO",
+        "message": "request"
+    },
+    "listener_wiring": {
+        "listener_class": "App\\Listeners\\LogRequestCompleted",
+        "listeners": [
+            "Closure",
+            "App\\Listeners\\LogRequestCompleted",
+            "App\\Listeners\\LogRequestCompleted@handle"
+        ],
+        "registered_on_framework_event": true
+    }
+}

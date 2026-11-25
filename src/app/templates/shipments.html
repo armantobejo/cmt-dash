@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% macro dual(usd, idr) -%}
+    {% if usd is none and idr is none %}-
+    {% else %}
+        {% if usd is not none %}{{ usd|money }}{% else %}{{ idr|money('idr') }}{% endif %}
+        {% if usd is not none and idr is not none %}<br/><span class="text-muted-custom">{{ idr|money('idr') }}</span>{% endif %}
+    {% endif %}
+{%- endmacro %}
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col">
+        <h3>{{ _t('Shipments') }}</h3>
+        <p class="text-muted-custom">{{ _t('All shipment data (Import & Export)') }}</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <span>{{ _t('Shipments') }}</span>
+        <form method="get" action="/shipments" class="d-flex gap-2 m-0">
+            <select name="type" class="form-select form-select-sm" style="width: auto" onchange="this.form.submit()">
+                <option value="" {{ 'selected' if not type_filter }}>{{ _t('All Types') }}</option>
+                <option value="import" {{ 'selected' if type_filter == 'import' }}>{{ _t('Import') }}</option>
+                <option value="export" {{ 'selected' if type_filter == 'export' }}>{{ _t('Export') }}</option>
+                <option value="other" {{ 'selected' if type_filter == 'other' }}>{{ _t('Other') }}</option>
+            </select>
+            <select name="invoice" class="form-select form-select-sm" style="width: auto" onchange="this.form.submit()">
+                <option value="" {{ 'selected' if not invoice_filter }}>{{ _t('All Invoices') }}</option>
+                <option value="unissued" {{ 'selected' if invoice_filter == 'unissued' }}>{{ _t('Invoice Un-issued') }}</option>
+                <option value="issued" {{ 'selected' if invoice_filter == 'issued' }}>{{ _t('Invoice Issued') }}</option>
+                <option value="issued_unpaid" {{ 'selected' if invoice_filter == 'issued_unpaid' }}>{{ _t('Invoice Issued & Unpaid') }}</option>
+                <option value="paid" {{ 'selected' if invoice_filter == 'paid' }}>{{ _t('Invoice Paid') }}</option>
+            </select>
+            <input type="search" name="q" value="{{ search }}" class="form-control form-control-sm" style="width: 14rem" placeholder="{{ _t('Search') }}..." aria-label="{{ _t('Search') }}">
+            <button type="submit" class="btn btn-sm btn-outline-secondary"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+    <div class="card-body p-0">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    {% macro sort_header(key, label) -%}
+                    {% set next_dir = 'asc' if (sort == key and sort_dir == 'desc') else 'desc' %}
+                    <th>
+                        <a href="?page=1&q={{ search|urlencode }}&sort={{ key }}&dir={{ next_dir }}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if invoice_filter %}&invoice={{ invoice_filter }}{% endif %}" class="text-decoration-none text-body">
+                            {{ label }}
+                            {% if sort == key %}{% if sort_dir == 'asc' %}<i class="bi bi-caret-up-fill"></i>{% else %}<i class="bi bi-caret-down-fill"></i>{% endif %}{% endif %}
+                        </a>
+                    </th>
+                    {%- endmacro %}
+                    {% macro page_url(p) -%}?page={{ p }}&q={{ search|urlencode }}&sort={{ sort }}&dir={{ sort_dir }}{% if type_filter %}&type={{ type_filter }}{% endif %}{% if invoice_filter %}&invoice={{ invoice_filter }}{% endif %}{%- endmacro %}
+                    {{ sort_header('reference', _t('Reference')) }}
+                    <th>{{ _t('Kind') }}</th>
+                    {{ sort_header('customer', _t('Customer')) }}
+                    {% if user.role == 'customer' %}<th>{{ _t('Invoice No') }}</th>{% endif %}
+                    {{ sort_header('date', _t('Date')) }}
+                    {% if user.role != 'customer' %}<th class="text-end">{{ _t('Opr Cost') }}</th>{% endif %}
+                    <th class="text-end">{{ _t('Invoice') }}</th>
+                    <th class="text-end">{{ _t('Inv Payment') }}</th>
+                    {% if user.role != 'customer' %}
+                    <th class="text-end">DNCN</th>
+                    <th class="text-end">{{ _t('DNCN Settlement') }}</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in shipments.rows %}
+                <tr{% if user.role != 'customer' %} onclick="window.location='/shipments/detail?ref={{ s.REFSHITMEN|urlencode }}'" style="cursor:pointer"{% endif %}>
+                    <td>{% if user.role != 'customer' %}<a href="/shipments/detail?ref={{ s.REFSHITMEN|urlencode }}" class="text-decoration-none" onclick="event.stopPropagation()">{{ s.REFSHITMEN or '-' }}</a>{% else %}{{ s.REFSHITMEN or '-' }}{% endif %}</td>
+                    <td>
+                        {% if s.KIND == 'I' %}<span class="badge badge-import">{{ _t('Import') }}</span>
+                        {% elif s.KIND == 'E' %}<span class="badge badge-export">{{ _t('Export') }}</span>
+                        {% elif s.KIND == 'D' %}<span class="badge badge-domestic">{{ _t('Domestic') }}</span>
+                        {% elif s.KIND == 'T' %}<span class="badge badge-trucking">{{ _t('Trucking') }}</span>
+                        {% elif s.KIND == 'B' %}<span class="badge badge-breakbulk">{{ _t('Breakbulk') }}</span>
+                        {% else %}<span class="badge">{{ s.KIND }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ s.CUSTOMER or '-' }}</td>
+                    {% if user.role == 'customer' %}<td>{{ s.NOINVOICE or '-' }}</td>{% endif %}
+                    <td class="text-nowrap">{{ s.DATE or '-' }}</td>
+                    {% if user.role != 'customer' %}
+                    <td class="text-end">
+                        {{ dual(s.OPR_USD, s.OPR_RP) }}
+                    </td>
+                    {% endif %}
+                    <td class="text-end">
+                        {{ dual(s.INV_USD, s.INV_RP) }}
+                    </td>
+                    <td class="text-end">
+                        {{ dual(s.INV_PAY_USD, s.INV_PAY_IDR) }}
+                    </td>
+                    {% if user.role != 'customer' %}
+                    <td class="text-end">
+                        {{ dual(s.DNCN_USD, s.DNCN_IDR) }}
+                    </td>
+                    <td class="text-end">
+                        {{ dual(s.DNCN_PAY_USD, s.DNCN_PAY_IDR) }}
+                    </td>
+                    {% endif %}
+                </tr>
+                {% else %}
+                <tr><td colspan="{{ 9 if user.role != 'customer' else 7 }}" class="text-center text-body-secondary py-4">{{ _t('No shipments found.') }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if shipments.pages > 1 %}
+        <nav aria-label="Shipments pagination">
+            <ul class="pagination pagination-sm justify-content-center my-2">
+                <li class="page-item {% if shipments.page <= 1 %}disabled{% endif %}">
+                    <a class="page-link" href="{{ page_url(shipments.page - 1) }}">{{ _t('Previous') }}</a>
+                </li>
+                {% for p in page_nums %}
+                <li class="page-item {% if p == shipments.page %}active{% endif %}">
+                    <a class="page-link" href="{{ page_url(p) }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                <li class="page-item {% if shipments.page >= shipments.pages %}disabled{% endif %}">
+                    <a class="page-link" href="{{ page_url(shipments.page + 1) }}">{{ _t('Next') }}</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+        <div class="px-3 pb-2 small text-body-secondary">
+            {{ _t('Page') }} {{ shipments.page }} / {{ shipments.pages }} &middot; {{ shipments.total }} {{ _t('shipments') }}
+        </div>
+    </div>
+</div>
+{% endblock %}

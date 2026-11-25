@@ -1,0 +1,1055 @@
+meta:
+  id: cmt-laravel-parity
+  title: Parity Checklist - CMT Dashboard Laravel Rebuild
+  derived_from: PRD.md section 4 (feature parity inventory)
+  source_of_truth: src/app/main.py + src/app/queries.py @ feat/system-hardening, 2026-09-22
+  comparison_method: side-by-side, same SQLite DBs, per-role login
+  schema_gates:
+    - tests/parity/fixtures/real_schema.json = committed snapshot of the real data/*.db column sets 
+      (tools/dump_real_schema.py); the sync owns these schemas (DBF field metadata), tests must never widen them
+    - 'pytest tests/test_schema_gate.py: fixture-vs-DB fidelity, dataset ⊆ production shape, every query fn executes on production
+      shape (runs in the plain suite)'
+    - 'laravel/tests/Feature/ProductionSchemaTest.php: same gates for the PHP seed + query layer'
+    - 'tools/audit_production_queries.py + laravel/tools/audit_production_queries.php: every query fn x every branch executed
+      on COPIES of the real data/*.db, _safe_query un-swallowed (deeper than the default-args gates)'
+    - 'python tools/run_gates.py (= make gates): one command running ALL of the above; --fast (= make gates-fast / hosted
+      CI) skips the real-DB audits when data/ is absent'
+    - 'origin: both apps'' invoice detail 500''d on production INVOICE (no CONTAINERN) while tests passed against a wider
+      schema — see docs/decisions/invoice-container-schema-drift.md'
+  roles:
+    superadmin:
+      level: 5
+      note: full access incl. user delete + data-quality
+    admin:
+      level: 4
+      note: user create/edit, no delete, no data-quality
+    management:
+      level: 3
+      note: all data + sync trigger
+    staff:
+      level: 2
+      note: view all data, no sync
+    customer:
+      level: 1
+      note: seed CMT_USERS=customer:pw:customer:Trisco (customer_company=Trisco)
+  data_preconditions:
+    - All 5 company dirs synced via tools/sync_db.py; use CMT for comparisons
+    - At least one shipment WITH invoices and one WITHOUT (detail + filter tests)
+    - A customer-role user bound to company Trisco that owns at least one shipment
+    - A shipment NOT linked to Trisco (negative test for cross-company access)
+features:
+  F-01:
+    name: Login / logout / session cookie
+    prd_row: F-01, F-01b
+    steps:
+      s1:
+        step: GET /login returns 200 with the login form (both apps)
+        roles:
+          - anonymous
+      s2:
+        step: POST /login valid creds -> cookie (HttpOnly, SameSite=Lax, Secure iff secure-env) + 302 to /
+        roles:
+          - superadmin
+      s3:
+        step: POST /login bad creds -> login re-rendered with error, no session cookie set
+        roles:
+          - anonymous
+      s4:
+        step: POST /logout invalidates the server-side session; old cookie then redirects to /login
+        roles:
+          - staff
+      s5:
+        step: expired session (fast-forward expires_at) -> redirect to /login; session row cleaned up
+        roles:
+          - staff
+        note: Laravel side = database session driver, 8h TTL
+  F-02:
+    name: Env-based user seeding (CMT_USERS)
+    prd_row: F-02
+    steps:
+      s1:
+        step: Boot with CMT_USERS=a:pw1:superadmin,b:pw2:staff,c:pw3:customer:Trisco -> all three log in
+        roles:
+          - superadmin
+      s2:
+        step: 'password hashes are salted and per-user (users table: identical passwords never share a hash)'
+        roles:
+          - superadmin
+        expected_mismatch_note: hash FORMAT differs by design (PBKDF2 vs bcrypt) - compare salted-per-user property, not
+          hash values
+  F-03:
+    name: User management UI
+    prd_row: F-03
+    steps:
+      s1:
+        step: GET /users renders the user list for admin+; 403 for management and below
+        roles:
+          - admin
+          - management
+      s2:
+        step: POST /users/new creates a user; the new user can log in
+        roles:
+          - admin
+      s3:
+        step: POST /users/{id}/edit updates display_name/role/customer_company; empty password keeps current
+        roles:
+          - admin
+      s4:
+        step: POST /users/{id}/delete removes the user; admin gets 403 (superadmin-only); self-deletion blocked
+        roles:
+          - superadmin
+          - admin
+      s5:
+        step: deleting a user invalidates their live sessions (or their next request fails)
+        roles:
+          - superadmin
+        note: if the Python app has no session-kill, record as parity diff with note
+  F-04:
+    name: Dashboard (home)
+    prd_row: F-04
+    steps:
+      s1:
+        step: GET / summary card numbers are equal on both apps on the same DB
+        roles:
+          - staff
+      s2:
+        step: 'unpaid-shipments table: same rows, same order on both apps'
+        roles:
+          - staff
+      s3:
+        step: Top Customers panel hidden for customer role, present for staff+
+        roles:
+          - customer
+          - staff
+      s4:
+        step: 'customer role sees only own-company rows in the unpaid table (KG-6 fixed 2026-09-22: the filtered dashboard
+          renders normally)'
+        roles:
+          - customer
+  F-05:
+    name: Shipments list (unified, filters)
+    prd_row: F-05
+    steps:
+      s1:
+        step: 'GET /shipments default view: same rows, order, pagination on both apps'
+        roles:
+          - staff
+      s2:
+        step: type=import|export|other subsets match (TYPETRAN I / E / not-in-I,E)
+        roles:
+          - staff
+      s3:
+        step: invoice filter values unissued|issued|issued_unpaid|paid each match
+        roles:
+          - staff
+      s4:
+        step: q search hits REFSHITMEN, BLNO3, consignee/shipper names
+        roles:
+          - staff
+      s5:
+        step: customer sees only own-company shipments
+        roles:
+          - customer
+      s6:
+        step: sort combos (date|reference|customer x asc|desc) match on both apps
+        roles:
+          - staff
+  F-05d:
+    name: Shipment detail
+    prd_row: F-06
+    steps:
+      s1:
+        step: GET /shipments/detail?ref=<known_ref> renders header card + OPR costs + invoices + DN/CN notes
+        roles:
+          - staff
+      s2:
+        step: customer role + foreign-company ref -> 303 back to /shipments
+        roles:
+          - customer
+        expected_mismatch_note: 'KNOWN GAP (IA doc section 5.1): the Python app has NO customer guard here - staff+ can open
+          ANY shipment by ref. Reproduce defect-for-defect; the FR-005b fix is a post-cutover decision.'
+      s3:
+        step: unknown ref -> 303 to /shipments (both apps)
+        roles:
+          - staff
+      s4:
+        step: gross profit IDR conversion uses the per-document EXRATE (spot-check one shipment with non-1 EXRATE)
+        roles:
+          - staff
+  F-06:
+    name: Invoices list
+    prd_row: F-07
+    steps:
+      s1:
+        step: GET /invoices default view matches (rows, order, pagination)
+        roles:
+          - staff
+      s2:
+        step: q search hits NOINVOICE, REFSHITMEN, customer names
+        roles:
+          - staff
+      s3:
+        step: no status-filter control on /invoices in the Python app - parity means the same absence
+        roles:
+          - staff
+        note: status filters live on /shipments as the invoice param (see KG-4); PRD F-07 wording was corrected 
+          2026-09-22
+      s4:
+        step: customer sees only own-company invoices; a cross-company NOINVOICE search returns zero rows
+        roles:
+          - customer
+  F-06d:
+    name: Invoice detail
+    prd_row: F-08
+    steps:
+      s1:
+        step: 'GET /invoices/detail?k=<known_k> renders line items grouped by K_INVOICE + payment summary (KG-5 fixed 2026-09-22:
+          query function implemented)'
+        roles:
+          - staff
+      s2:
+        step: unknown k -> 303 to /invoices (both apps)
+        roles:
+          - staff
+      s3:
+        step: customer role + invoice whose CUSTOMER does not contain their company -> 303 to /invoices (substring guard
+          exists in Python)
+        roles:
+          - customer
+      s4:
+        step: corner totals convert USD at each document's own EXRATE
+        roles:
+          - staff
+      s5:
+        step: invoice detail returns 200 against a PRODUCTION-shaped INVOICE table (no CONTAINERN column); the Kontainer
+          card renders '-'
+        roles:
+          - staff
+        note: 'schema-gate regression (docs/decisions/invoice-container-schema-drift.md). Automated: pytest tests/test_schema_gate.py
+          (production-shape execution of every query fn) + laravel ProductionSchemaTest. A query selecting a column the sync
+          never creates must fail here, not only in production.'
+  F-07:
+    name: General Ledger list + detail
+    prd_row: F-09
+    note: NOT company-filtered by design (IA doc section 3 matrix) - every role sees the active DB's ledger
+    steps:
+      s1:
+        step: GET /ledger matches (accounts list, type filter D/G, search, sort)
+        roles:
+          - staff
+      s2:
+        step: GET /ledger/detail?k=<acct> matches (JE_D rows, from/to date range, newest-first default)
+        roles:
+          - staff
+      s3:
+        step: pre-2000 corrupted journal dates render without crashing
+        roles:
+          - staff
+  F-08:
+    name: Sales Dashboard
+    prd_row: F-10
+    steps:
+      s1:
+        step: 'GET /sales default (p=all) matches: summary, trend, top customers, top salesman'
+        roles:
+          - staff
+      s2:
+        step: p=month|year|round|all each match
+        roles:
+          - staff
+      s3:
+        step: customer sees own-company numbers only
+        roles:
+          - customer
+  F-09:
+    name: Data Quality (superadmin)
+    prd_row: F-11
+    steps:
+      s1:
+        step: GET /data-quality -> 200 for superadmin; 403 for admin and below
+        roles:
+          - superadmin
+          - admin
+      s2:
+        step: anomaly rollup counts match (unbalanced|orphan|bad_date|bad_dk) for the active company DB
+        roles:
+          - superadmin
+      s3:
+        step: GET /data-quality/detail?type=<X> matches for each type; type=bogus -> 303 back
+        roles:
+          - superadmin
+  F-10:
+    name: Company DB switcher
+    prd_row: F-13
+    steps:
+      s1:
+        step: POST /set-db with a valid company sets the cmt_db cookie; subsequent pages read that DB
+        roles:
+          - staff
+      s2:
+        step: POST /set-db with an invalid name falls back to the default DB
+        roles:
+          - staff
+      s3:
+        step: switcher is hidden when data/ contains at most one .db file
+        roles:
+          - staff
+      s4:
+        step: POST /set-db works without login (public endpoint - reproduce)
+        roles:
+          - anonymous
+        expected_mismatch_note: 'KNOWN GAP (IA section 5.3): public POST; reproduce for parity (KG-3)'
+  F-11:
+    name: Sync trigger + sync-status API
+    prd_row: F-14, F-17
+    steps:
+      s1:
+        step: 'POST /sync -> 200 JSON {ok: true, ...} for management; 403 for staff'
+        roles:
+          - management
+          - staff
+      s2:
+        step: POST /sync actually refreshes data (mtime of data/CMT.db advances; unified view rebuilt)
+        roles:
+          - management
+        note: slow test (minutes) - run once per parity cycle, not per role
+      s3:
+        step: GET /api/sync-status returns last_sync + stale flag consistent with the DB mtime
+        roles:
+          - staff
+  F-12:
+    name: Health API
+    prd_row: F-15
+    steps:
+      s1:
+        step: GET /api/health is public, returns status ok, requires no auth
+        roles:
+          - anonymous
+  F-13:
+    name: Summary API
+    prd_row: F-16
+    steps:
+      s1:
+        step: GET /api/summary requires login (anonymous gets the login redirect / 403)
+        roles:
+          - anonymous
+      s2:
+        step: GET /api/summary JSON shape and values match for staff on the same DB
+        roles:
+          - staff
+        expected_mismatch_note: 'KNOWN GAP (IA section 5.2): Python''s /api/summary is NOT company-filtered while GET / is.
+          Reproduce for parity (KG-2); post-cutover fix is a PRD decision.'
+  F-14:
+    name: i18n (id / en / zh)
+    prd_row: F-18
+    steps:
+      s1:
+        step: POST /set-lang with id|en|zh sets the cmt_lang cookie and UI strings change
+        roles:
+          - anonymous
+      s2:
+        step: no untranslated keys on any compared page (spot-check sidebar + table headers in all 3 languages)
+        roles:
+          - staff
+      s3:
+        step: POST /set-lang works without login (public endpoint - reproduce)
+        roles:
+          - anonymous
+        expected_mismatch_note: public POST by design (KG-3)
+  F-15:
+    name: Structured JSON logging
+    prd_row: F-19
+    steps:
+      s1:
+        step: request logs are JSON lines with method, path, status, duration_ms, user, request_id
+        roles:
+          - staff
+      s2:
+        step: auth events logged as user_login (ok/fail) and user_logout
+        roles:
+          - staff
+  F-16:
+    name: Custom 404
+    prd_row: F-20
+    steps:
+      s1:
+        step: GET /nonexistent renders the translated 404 page; logged-in chrome (sidebar) is preserved
+        roles:
+          - staff
+  F-17:
+    name: Read-only guarantee
+    prd_row: F-21
+    steps:
+      s1:
+        step: 'route audit: no POST/PUT/DELETE handler writes to business tables (only users/sessions); mirrored audit in
+          the Laravel app'
+        roles:
+          - superadmin
+  F-22:
+    name: Projects / Jobs — Summary
+    prd_row: F-22
+    steps:
+      s1:
+        step: GET /projects-jobs/summary renders merged CARGO+NA header view with B/L status, invoice, operational cost,
+          DR/CN FCL, DR/CN LCL columns
+        roles:
+          - staff
+      s2:
+        step: search q hits REFSHITMEN, BLNO3, consignee/shipper names
+        roles:
+          - staff
+      s3:
+        step: sort combos (date|reference|customer x asc|desc) match on both apps
+        roles:
+          - staff
+      s4:
+        step: customer sees only own-company rows
+        roles:
+          - customer
+      s5:
+        step: pagination defaults and page-size selector match
+        roles:
+          - staff
+  F-23:
+    name: Projects / Jobs — Detail
+    prd_row: F-23
+    steps:
+      s1:
+        step: GET /projects-jobs/detail?ref=<known_ref> renders manifest, invoice lines, operational cost lines, DR/CN 
+          FCL lines, DR/CN LCL lines
+        roles:
+          - staff
+      s2:
+        step: manifest section sources from MANIFEST (NOMOR, DATE, VESSEL, CONTAINERN, ETD_1, ETA_1) — second-layer 
+          table
+        roles:
+          - staff
+      s3:
+        step: invoice lines from INVOICE_R grouped by K_INVOICE with SATUAN resolution
+        roles:
+          - staff
+      s4:
+        step: operational cost lines from OPRCOST_R grouped by UOPRCOST
+        roles:
+          - staff
+      s5:
+        step: DR/CN FCL lines from DRCRFULL_R where KD_SHIPLIN is set
+        roles:
+          - staff
+      s6:
+        step: DR/CN LCL lines from DRCRFULL_R where KD_SHIPLIN is not set
+        roles:
+          - staff
+      s7:
+        step: container/dimension lines from CARGO_R and NA_R (second-layer, small tables)
+        roles:
+          - staff
+      s8:
+        step: import cost lines from NA_D (second-layer, child of NA, not duplicate of OPRCOST_R)
+        roles:
+          - staff
+      s9:
+        step: customer role + foreign-company ref -> 303 back to /projects-jobs/summary
+        roles:
+          - customer
+      s10:
+        step: unknown ref -> 303 to /projects-jobs/summary (both apps)
+        roles:
+          - staff
+  F-24:
+    name: Account Receivables reports
+    prd_row: F-24
+    steps:
+      s1:
+        step: 'Aging A/R — Invoice: buckets from SAGING (AGING1..7 = 1,30,31,60,61,90,90), rows from INVOICE (BYR_USD, DIRPKAN,
+          SELISIH_US, LUNAS, KB)'
+        roles:
+          - staff
+      s2:
+        step: 'Aging A/R — Debit Note: buckets from SAGING, rows from DRCRFULL/DRCRFULL_R (BAYAR, DIRPKAN, SELISIH, LUNAS)'
+        roles:
+          - staff
+      s3:
+        step: 'Contra Bond — In: AR_CONTRA/AR_CONTRA_R empty in all five companies — page renders zero rows with note'
+        roles:
+          - staff
+      s4:
+        step: 'Receipt A/R — Invoice: ARS_R (K_INVOICE, NOINVOICE, BAYAR, SELISIH) — second-layer table'
+        roles:
+          - staff
+      s5:
+        step: 'Discrepancy — Invoice: derived candidate fields ARS_R.SELISIH, INVOICE.SELISIH_US, INVOICE.SELISIH_ID, AR_AGENT_D.SELISIH,
+          DRCRFULL.SELISIH'
+        roles:
+          - staff
+      s6:
+        step: 'Receipt — Cash/Bank: ARS, TERIMA, TERIMA_R (JENIS_BYR, KD_BANK, NO_GBCEKTT, TGL_KLIRIN) — second-layer'
+        roles:
+          - staff
+      s7:
+        step: customer sees only own-company rows in all AR reports
+        roles:
+          - customer
+  F-25:
+    name: Account Payables reports
+    prd_row: F-25
+    steps:
+      s1:
+        step: 'Aging A/P — Operational Cost: buckets from SAGING, rows from OPRCOST/OPRCOST_R (BAYAR, DIRPKAN, SELISIH, LUNAS,
+          KD_SHIPLIN)'
+        roles:
+          - staff
+      s2:
+        step: 'Aging A/P — Credit Note: buckets from SAGING, rows from DRCRFULL/DRCRFULL_R'
+        roles:
+          - staff
+      s3:
+        step: 'Contra Bond — Out: AP_CONTRA/AP_CONTRA_R empty in all five — page renders zero rows with note'
+        roles:
+          - staff
+      s4:
+        step: 'Payment A/P — Vendor: AP/AP_R (KD_SHIPLIN, TGL_JT, TOT_BAYAR; AP_R.INVOICE_NO, BAYAR, SISA_USD) — second-layer'
+        roles:
+          - staff
+      s5:
+        step: 'Payment A/P — Agent: AP_AGENT/AP_AGENT_D (AGENT, CODE, TOTBAYAR) — second-layer'
+        roles:
+          - staff
+      s6:
+        step: 'Payment A/P — Refund Cost: RC/RC_D (NO_REF, JENIS_BYR, KD_BANK, TGL_KLIRIN, TOT_BAYAR; RC_D.UINVOICE_R) — second-layer'
+        roles:
+          - staff
+      s7:
+        step: 'Payment — Cash/Bank: BAYAR/BAYAR_R, TERIMA/TERIMA_R — second-layer'
+        roles:
+          - staff
+      s8:
+        step: customer sees only own-company rows in all AP reports
+        roles:
+          - customer
+  F-26:
+    name: Finance reports
+    prd_row: F-26
+    steps:
+      s1:
+        step: 'Listing Journal: JE, JE_D rendered as journal entries'
+        roles:
+          - staff
+      s2:
+        step: 'General Ledger: JE, JE_D, ACCOUNT with account type filter D/G, search, sort, pre-2000 corrupted dates handled'
+        roles:
+          - staff
+      s3:
+        step: 'Trial Balance — Mutation: JE, JE_D, ACCOUNT, SALDO_ACCT'
+        roles:
+          - staff
+      s4:
+        step: 'Trial Balance — Balance Sheet & Income Statement: derived from ACCOUNT (TYPE, GROUP, SLD_NORMAL) + SALDO_ACCT'
+        roles:
+          - staff
+      s5:
+        step: 'Balance Sheet: derived from ACCOUNT classification + SALDO_ACCT'
+        roles:
+          - staff
+      s6:
+        step: 'Income Statement: derived from ACCOUNT classification + SALDO_ACCT'
+        roles:
+          - staff
+      s7:
+        step: 'Other Finance Reports: catch-all bucket — parity means same absence on both apps'
+        roles:
+          - staff
+      s8:
+        step: NOT company-filtered by design (IA doc section 3 matrix) — every role sees the active DB's ledger
+        roles:
+          - staff
+          - customer
+  F-27:
+    name: Statement of Account
+    prd_row: F-27
+    steps:
+      s1:
+        step: 'Statement of Account: derived from INVOICE + A/R receipts; SOA/SOA_D is archive of issued statements, not working
+          source'
+        roles:
+          - staff
+      s2:
+        step: 'SOA_D rows link to invoice (confirmed 2024 example: 2401-I/00012/SHG/JK)'
+        roles:
+          - staff
+      s3:
+        step: customer sees only own-company statements
+        roles:
+          - customer
+  F-28:
+    name: Listing Reference
+    prd_row: F-28
+    steps:
+      s1:
+        step: 'Agent list: AGENT table (in-ingest)'
+        roles:
+          - staff
+      s2:
+        step: 'Shipper list: SHIPPER table (in-ingest)'
+        roles:
+          - staff
+      s3:
+        step: 'Rate by Destination: QUOTATION_R (CODE_AGENT, KD_CITY, DESC_CITY, LCL, MIN, D20, D40, D40HQ, D45) + QUOTATION
+          — second-layer'
+        roles:
+          - staff
+      s4:
+        step: 'Rate by Destination (vendor tariff): VENDOR_D (LCL, D20, D40, D40HC, D45, EXPIRED, TRANTIME) — second-layer'
+        roles:
+          - staff
+      s5:
+        step: 'Consignee/Notify: CONSIGNEE + KD_NOTIFY/NOTIFYPART on CARGO/NA (in-ingest)'
+        roles:
+          - staff
+      s6:
+        step: 'Account list: ACCOUNT table (in-ingest)'
+        roles:
+          - staff
+      s7:
+        step: customer sees only own-company data where applicable
+        roles:
+          - customer
+  F-29:
+    name: Performance Tracker
+    prd_row: F-29
+    steps:
+      s1:
+        step: 'By Shipper: derived from INVOICE.SHIPPER (100% filled) + SHIPPER + NA.SHIPPER'
+        roles:
+          - staff
+      s2:
+        step: 'By Shipping Lines: VENDOR (KD_SHIPLIN, NAME) as shipping-line master — second-layer, or derived from VESSEL.NM_VESSEL'
+        roles:
+          - staff
+      s3:
+        step: 'By Agent: CARGO.AGENT (sparse on export) + NA.AGENT + AGENT — derived, key sparsely populated'
+        roles:
+          - staff
+      s4:
+        step: 'By Consignee (Import only): NA.CONSIGNEE (99.7% filled) + CONSIGNEE — derived'
+        roles:
+          - staff
+      s5:
+        step: customer sees only own-company tracker data
+        roles:
+          - customer
+  F-30:
+    name: Miscellaneous views
+    prd_row: F-30
+    steps:
+      s1:
+        step: 'Petty Cash Request Listing: PERMOHONAN_E (CSM 318, MAL 403 rows only; empty in CME/CMT/SBY) — page renders
+          with company-specific note'
+        roles:
+          - staff
+      s2:
+        step: 'Refund Cost Request Listing: RCREQ/RCREQ_D (APPLICANT, TOT_IDR, PROFITLOSS, UINVOICE_R) — second-layer; CME
+          empty (0 rows) — page renders with note'
+        roles:
+          - staff
+      s3:
+        step: 'Recurring Costs: COST is a cost-type dictionary (JENISCOST filled, COST/SELLING all zero in all five) — page
+          renders as dictionary view with note, not a rate table'
+        roles:
+          - staff
+      s4:
+        step: customer sees only own-company data where applicable
+        roles:
+          - customer
+  F-31:
+    name: Ship Finance & AR/AP Journalism
+    prd_row: F-31
+    note: 'open scope — pending owner decision (Q-10/Q-11). Data-bearing: ARS/ARS_R, AR_AGENT/AR_AGENT_D, AP/AP_R, AP_AGENT/AP_AGENT_D,
+      BAYAR/BAYAR_R, TERIMA/TERIMA_R, CLEARING_D, SI/SI_D, CRDRNOTE/CRDRNOTE_R/CRDRNOTE_S, SAGING, QUOTATION/QUOTATION_R,
+      VENDOR/VENDOR_D, MANIFEST, COST, RC/RC_D, RCREQ/RCREQ_D. Vestigial (empty in all five): AR, AR_D, AR_CONTRA/R, AP_CONTRA/R,
+      CLEARING, SALDO_VENDOR, SALDO_AGENT, PERMOHONAN/D, VENDOR_MAR_D/S — Contra Bond In/Out cannot be reproduced from current
+      data.'
+    steps:
+      s1:
+        step: owner decision required before parity steps can be written — feature is enumeration-level only
+        roles:
+          - superadmin
+        status: pending
+  F-32:
+    name: Volume, Lifting & Gross Profit reports (menu-reconciled)
+    prd_row: F-32
+    note: enumeration-level, not parity-ready — Volume and Lifting column sets are unverified-locally (TEMPLATE 
+      VOLUME.DOC / LIFTING.DOC not shipped, report programs packed). Gross Profit & Loss is derived from INVOICE minus 
+      OPRCOST (both in 18-table ingest). Sales from same menu block is covered by F-10.
+    steps:
+      s1:
+        step: 'Volume report: period aggregates over CARGO/NA (container, measurement, weight fields) — BLOCKED on TEMPLATE
+          VOLUME.DOC or legacy screenshot'
+        roles:
+          - staff
+        status: pending
+      s2:
+        step: 'Lifting report: period aggregates over CARGO/NA — BLOCKED on TEMPLATE LIFTING.DOC or legacy screenshot'
+        roles:
+          - staff
+        status: pending
+      s3:
+        step: 'Gross Profit & Loss: INVOICE minus OPRCOST over date pair — derived, no template needed, parity-ready once
+          query defined'
+        roles:
+          - staff
+        status: pending
+role_matrix:
+  superadmin:
+    - F-01
+    - F-02
+    - F-03
+    - F-04
+    - F-05
+    - F-05d
+    - F-06
+    - F-06d
+    - F-07
+    - F-08
+    - F-09
+    - F-10
+    - F-11
+    - F-12
+    - F-13
+    - F-14
+    - F-15
+    - F-16
+    - F-17
+    - F-22
+    - F-23
+    - F-24
+    - F-25
+    - F-26
+    - F-27
+    - F-28
+    - F-29
+    - F-30
+    - F-31
+    - F-32
+  admin:
+    - F-01
+    - F-03
+    - F-04
+    - F-05
+    - F-05d
+    - F-06
+    - F-06d
+    - F-07
+    - F-08
+    - F-10
+    - F-11
+    - F-12
+    - F-13
+    - F-14
+    - F-15
+    - F-16
+    - F-22
+    - F-23
+    - F-24
+    - F-25
+    - F-26
+    - F-27
+    - F-28
+    - F-29
+    - F-30
+    - F-32
+  management:
+    - F-01
+    - F-04
+    - F-05
+    - F-05d
+    - F-06
+    - F-06d
+    - F-07
+    - F-08
+    - F-10
+    - F-11
+    - F-12
+    - F-13
+    - F-14
+    - F-16
+    - F-22
+    - F-23
+    - F-24
+    - F-25
+    - F-26
+    - F-27
+    - F-28
+    - F-29
+    - F-30
+    - F-32
+  staff:
+    - F-01
+    - F-04
+    - F-05
+    - F-05d
+    - F-06
+    - F-06d
+    - F-07
+    - F-08
+    - F-10
+    - F-11
+    - F-12
+    - F-13
+    - F-14
+    - F-15
+    - F-16
+    - F-22
+    - F-23
+    - F-24
+    - F-25
+    - F-26
+    - F-27
+    - F-28
+    - F-29
+    - F-30
+    - F-32
+  customer:
+    - F-01
+    - F-04
+    - F-05
+    - F-05d
+    - F-06
+    - F-06d
+    - F-14
+    - F-16
+    - F-22
+    - F-23
+    - F-24
+    - F-25
+    - F-26
+    - F-27
+    - F-28
+    - F-29
+    - F-30
+    - F-32
+  anonymous:
+    - F-01
+    - F-10
+    - F-12
+    - F-13
+    - F-14
+known_gaps:
+  - id: KG-1
+    title: Shipment detail has no customer-role guard (invoice detail DOES)
+    detail: 'GET /shipments/detail is login-gated but never checks customer_company, so a customer user can open another company''s
+      shipment by guessing ref. /invoices/detail checks via substring match on the CUSTOMER header field and redirects 303
+      to /invoices when it does not contain the user''s company. Parity: reproduce the asymmetry exactly; decide the FR-005b
+      fix post-cutover.'
+  - id: KG-2
+    title: /api/summary is not company-filtered
+    detail: 'Python /api/summary calls get_summary() with no company_filter while the GET / page filters the same query. Parity:
+      reproduce; flag for post-cutover fix.'
+  - id: KG-3
+    title: /set-lang and /set-db are public POST endpoints
+    detail: 'No login required (preference cookies only, low risk). Parity: reproduce.'
+  - id: KG-4
+    title: Invoice status filters live on /shipments, not /invoices
+    detail: 'get_invoices() has no status filter; the unissued|issued|issued_unpaid|paid filter is a /shipments query param
+      (invoice=). The changelog originally placed these on the invoices page. Parity: reproduce the placement exactly.'
+  - id: KG-5
+    title: (FIXED 2026-09-22) /invoices/detail used to return 500 (missing query function)
+    detail: 'main.py:380 called q.get_invoice_detail() but queries.py never defined it (verified via AST scan 2026-09-22).
+      Owner chose fix-in-Python: get_invoice_detail implemented (header joins shipment for voyage context; import/export customer
+      branch; SATUAN-resolved line items via K_INVOICE). Baseline regenerated with the working page; the Laravel port targets
+      the fixed behavior. Regression tests: tests/test_invoice_detail.py.'
+  - id: KG-6
+    title: (FIXED 2026-09-22) Customer-role dashboard used to return 500 (broken filtered SQL)
+    detail: 'get_summary(company_filter=...) concatenated the company condition without a preceding '' AND '' separator ("WHERE
+      u.DATE != ''''(UPPER(...") -> SQL syntax error for every customer-role user on the home page. Fixed by adding the separator
+      to all three filtered count queries. Baseline regenerated with the working page. Regression tests: tests/test_invoice_detail.py.'
+raci_matrix:
+  F-01:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+    reviewer: C
+    writer: I
+    devops: I
+  F-02:
+    leader: A
+    developer: R
+    tester: C
+    architect: C
+    devops: C
+    writer: I
+  F-03:
+    leader: A
+    developer: R
+    tester: R
+    reviewer: C
+    architect: C
+    writer: I
+  F-04:
+    leader: A
+    developer: R
+    tester: R
+    reviewer: C
+  F-05:
+    leader: A
+    developer: R
+    tester: R
+    reviewer: C
+  F-05d:
+    leader: A
+    developer: R
+    tester: R
+    reviewer: C
+  F-06:
+    leader: A
+    developer: R
+    tester: R
+  F-06d:
+    leader: A
+    developer: R
+    tester: R
+  F-07:
+    leader: A
+    developer: R
+    tester: R
+  F-08:
+    leader: A
+    developer: R
+    tester: R
+  F-09:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+  F-10:
+    leader: A
+    developer: R
+    devops: R
+    tester: C
+  F-11:
+    leader: A
+    devops: R
+    developer: R
+    tester: C
+    writer: C
+  F-12:
+    leader: A
+    developer: R
+    devops: C
+    tester: C
+  F-13:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+    writer: C
+  F-14:
+    leader: A
+    writer: R
+    developer: R
+    tester: C
+    reviewer: C
+  F-15:
+    leader: A
+    developer: R
+    tester: R
+    devops: C
+  F-16:
+    leader: A
+    developer: R
+    tester: C
+    writer: C
+  F-17:
+    leader: A
+    developer: R
+    tester: R
+    reviewer: C
+  F-22:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+    reviewer: C
+    writer: I
+    devops: I
+  F-23:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+    reviewer: C
+    writer: I
+    devops: I
+  F-24:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+    reviewer: C
+    writer: I
+    devops: I
+  F-25:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+    reviewer: C
+    writer: I
+    devops: I
+  F-26:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+    reviewer: C
+    writer: I
+    devops: I
+  F-27:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+    reviewer: C
+    writer: I
+    devops: I
+  F-28:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+    reviewer: C
+    writer: I
+    devops: I
+  F-29:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+    reviewer: C
+    writer: I
+    devops: I
+  F-30:
+    leader: A
+    developer: R
+    tester: R
+    architect: C
+    reviewer: C
+    writer: I
+    devops: I
+  F-31:
+    leader: A
+    developer: I
+    tester: C
+    architect: C
+    reviewer: C
+    writer: I
+    devops: I
+  F-32:
+    leader: A
+    developer: R
+    tester: C
+    architect: C
+    reviewer: C
+    writer: C
+    devops: I

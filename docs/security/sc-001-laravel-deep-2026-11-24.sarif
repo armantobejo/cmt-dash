@@ -1,0 +1,1240 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Strix",
+          "informationUri": "https://strix.ai",
+          "rules": [
+            {
+              "id": "CWE-352",
+              "name": "Missing CSRF Token Enforcement on /set-db and /set-lang State-Changing Routes",
+              "shortDescription": {
+                "text": "Missing CSRF Token Enforcement on /set-db and /set-lang State-Changing Routes"
+              },
+              "fullDescription": {
+                "text": "The state-changing routes `POST /set-db` and `POST /set-lang` in the CMT Dashboard Laravel application do not enforce the Laravel CSRF token. A request that omits the `_token` field entirely is processed identically to a valid one and mutates the caller's server-side session state, whereas `POST /login` correctly rejects tokenless requests with HTTP 419. This allows a cross-site request to change the active database/tenant context and the interface language of an authenticated user."
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              },
+              "help": {
+                "text": "The state-changing routes `POST /set-db` and `POST /set-lang` in the CMT Dashboard Laravel application do not enforce the Laravel CSRF token. A request that omits the `_token` field entirely is processed identically to a valid one and mutates the caller's server-side session state, whereas `POST /login` correctly rejects tokenless requests with HTTP 419. This allows a cross-site request to change the active database/tenant context and the interface language of an authenticated user.\n\nAn attacker who lures an authenticated user to a malicious page can silently change that user's active dataset/branch selection (`cmt_db`) and interface language. Because the selected database drives which dataset the dashboard reads, a forced switch can cause the victim to view or operate on a different branch's data than intended, enabling data-scoping confusion and unintended cross-branch data exposure in downstream views. Integrity impact is limited to the victim's session-scoped selection state; the attacker gains no direct read access on their own.\n\nEnsure `/set-db` and `/set-lang` are registered inside the `web` middleware group so that `App\\Http\\Middleware\\VerifyCsrfToken` applies to them, matching the protection already enforced on `/login`. Do not add these routes to the `$except` list. Additionally, restrict `db_name` to an explicit server-side allowlist of the seven known dataset codes (CME, CMT, CSM, DATA, INIT, MAL, SBY) and reject any other value, and validate `lang` against the supported set (id, en, zh), so that the session value can never carry attacker-chosen content.",
+                "markdown": "The state-changing routes `POST /set-db` and `POST /set-lang` in the CMT Dashboard Laravel application do not enforce the Laravel CSRF token. A request that omits the `_token` field entirely is processed identically to a valid one and mutates the caller's server-side session state, whereas `POST /login` correctly rejects tokenless requests with HTTP 419. This allows a cross-site request to change the active database/tenant context and the interface language of an authenticated user.\n\nAn attacker who lures an authenticated user to a malicious page can silently change that user's active dataset/branch selection (`cmt_db`) and interface language. Because the selected database drives which dataset the dashboard reads, a forced switch can cause the victim to view or operate on a different branch's data than intended, enabling data-scoping confusion and unintended cross-branch data exposure in downstream views. Integrity impact is limited to the victim's session-scoped selection state; the attacker gains no direct read access on their own.\n\nEnsure `/set-db` and `/set-lang` are registered inside the `web` middleware group so that `App\\Http\\Middleware\\VerifyCsrfToken` applies to them, matching the protection already enforced on `/login`. Do not add these routes to the `$except` list. Additionally, restrict `db_name` to an explicit server-side allowlist of the seven known dataset codes (CME, CMT, CSM, DATA, INIT, MAL, SBY) and reject any other value, and validate `lang` against the supported set (id, en, zh), so that the session value can never carry attacker-chosen content."
+              },
+              "properties": {
+                "security-severity": "3.1",
+                "tags": [
+                  "security",
+                  "CWE-352",
+                  "stride:T",
+                  "stride:S"
+                ]
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/352.html"
+            },
+            {
+              "id": "strix-coverage/reconnaissance-tech-fingerprinting-and-security-headers",
+              "name": "Reconnaissance / tech fingerprinting and security headers",
+              "shortDescription": {
+                "text": "Coverage: Reconnaissance / tech fingerprinting and security headers"
+              },
+              "fullDescription": {
+                "text": "Coverage of Reconnaissance / tech fingerprinting and security headers across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of Reconnaissance / tech fingerprinting and security headers across the assessed attack surface.",
+                "markdown": "Coverage of Reconnaissance / tech fingerprinting and security headers across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/broken-access-control-injection-into-db-connection-selection",
+              "name": "Broken access control / injection into DB connection selection",
+              "shortDescription": {
+                "text": "Coverage: Broken access control / injection into DB connection selection"
+              },
+              "fullDescription": {
+                "text": "Coverage of Broken access control / injection into DB connection selection across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of Broken access control / injection into DB connection selection across the assessed attack surface.",
+                "markdown": "Coverage of Broken access control / injection into DB connection selection across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/rce-path-traversal-ssrf-via-legacy-data-bridge",
+              "name": "RCE / path traversal / SSRF via legacy data bridge",
+              "shortDescription": {
+                "text": "Coverage: RCE / path traversal / SSRF via legacy data bridge"
+              },
+              "fullDescription": {
+                "text": "Coverage of RCE / path traversal / SSRF via legacy data bridge across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of RCE / path traversal / SSRF via legacy data bridge across the assessed attack surface.",
+                "markdown": "Coverage of RCE / path traversal / SSRF via legacy data bridge across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/information-disclosure-hidden-path-discovery",
+              "name": "Information disclosure / hidden path discovery",
+              "shortDescription": {
+                "text": "Coverage: Information disclosure / hidden path discovery"
+              },
+              "fullDescription": {
+                "text": "Coverage of Information disclosure / hidden path discovery across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of Information disclosure / hidden path discovery across the assessed attack surface.",
+                "markdown": "Coverage of Information disclosure / hidden path discovery across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/weak-default-credentials",
+              "name": "Weak / default credentials",
+              "shortDescription": {
+                "text": "Coverage: Weak / default credentials"
+              },
+              "fullDescription": {
+                "text": "Coverage of Weak / default credentials across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of Weak / default credentials across the assessed attack surface.",
+                "markdown": "Coverage of Weak / default credentials across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/bola-bfla-on-administrative-routes",
+              "name": "BOLA / BFLA on administrative routes",
+              "shortDescription": {
+                "text": "Coverage: BOLA / BFLA on administrative routes"
+              },
+              "fullDescription": {
+                "text": "Coverage of BOLA / BFLA on administrative routes across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of BOLA / BFLA on administrative routes across the assessed attack surface.",
+                "markdown": "Coverage of BOLA / BFLA on administrative routes across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/path-traversal-sensitive-file-exposure",
+              "name": "Path traversal / sensitive file exposure",
+              "shortDescription": {
+                "text": "Coverage: Path traversal / sensitive file exposure"
+              },
+              "fullDescription": {
+                "text": "Coverage of Path traversal / sensitive file exposure across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of Path traversal / sensitive file exposure across the assessed attack surface.",
+                "markdown": "Coverage of Path traversal / sensitive file exposure across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/js-bundle-analysis-sourcemap-and-secret-leakage",
+              "name": "JS bundle analysis / sourcemap and secret leakage",
+              "shortDescription": {
+                "text": "Coverage: JS bundle analysis / sourcemap and secret leakage"
+              },
+              "fullDescription": {
+                "text": "Coverage of JS bundle analysis / sourcemap and secret leakage across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of JS bundle analysis / sourcemap and secret leakage across the assessed attack surface.",
+                "markdown": "Coverage of JS bundle analysis / sourcemap and secret leakage across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/content-route-discovery",
+              "name": "content/route discovery",
+              "shortDescription": {
+                "text": "Coverage: content/route discovery"
+              },
+              "fullDescription": {
+                "text": "Coverage of content/route discovery across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of content/route discovery across the assessed attack surface.",
+                "markdown": "Coverage of content/route discovery across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/rce-command-injection-ssrf-path-traversal-via-foxpro-sync-handler",
+              "name": "RCE / command injection / SSRF / path traversal via FoxPro sync handler",
+              "shortDescription": {
+                "text": "Coverage: RCE / command injection / SSRF / path traversal via FoxPro sync handler"
+              },
+              "fullDescription": {
+                "text": "Coverage of RCE / command injection / SSRF / path traversal via FoxPro sync handler across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of RCE / command injection / SSRF / path traversal via FoxPro sync handler across the assessed attack surface.",
+                "markdown": "Coverage of RCE / command injection / SSRF / path traversal via FoxPro sync handler across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/auth-bypass-injection-reaching-sync-handler",
+              "name": "auth bypass / injection reaching sync handler",
+              "shortDescription": {
+                "text": "Coverage: auth bypass / injection reaching sync handler"
+              },
+              "fullDescription": {
+                "text": "Coverage of auth bypass / injection reaching sync handler across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of auth bypass / injection reaching sync handler across the assessed attack surface.",
+                "markdown": "Coverage of auth bypass / injection reaching sync handler across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/command-injection-path-traversal-ssrf-in-foxpro-sync-import-handler",
+              "name": "command injection / path traversal / SSRF in FoxPro sync import handler",
+              "shortDescription": {
+                "text": "Coverage: command injection / path traversal / SSRF in FoxPro sync import handler"
+              },
+              "fullDescription": {
+                "text": "Coverage of command injection / path traversal / SSRF in FoxPro sync import handler across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of command injection / path traversal / SSRF in FoxPro sync import handler across the assessed attack surface.",
+                "markdown": "Coverage of command injection / path traversal / SSRF in FoxPro sync import handler across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/additional-file-upload-or-sync-import-endpoints-accepting-attacker-input",
+              "name": "additional file-upload or sync import endpoints accepting attacker input",
+              "shortDescription": {
+                "text": "Coverage: additional file-upload or sync import endpoints accepting attacker input"
+              },
+              "fullDescription": {
+                "text": "Coverage of additional file-upload or sync import endpoints accepting attacker input across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of additional file-upload or sync import endpoints accepting attacker input across the assessed attack surface.",
+                "markdown": "Coverage of additional file-upload or sync import endpoints accepting attacker input across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/lfi-path-traversal-bypassing-storage-deny-rule-to-read-env-or-logs",
+              "name": "LFI / path traversal bypassing /storage deny rule to read .env or logs",
+              "shortDescription": {
+                "text": "Coverage: LFI / path traversal bypassing /storage deny rule to read .env or logs"
+              },
+              "fullDescription": {
+                "text": "Coverage of LFI / path traversal bypassing /storage deny rule to read .env or logs across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of LFI / path traversal bypassing /storage deny rule to read .env or logs across the assessed attack surface.",
+                "markdown": "Coverage of LFI / path traversal bypassing /storage deny rule to read .env or logs across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/rce-path-traversal-ssrf-via-legacy-data-bridge-pre-auth-surface",
+              "name": "RCE / path traversal / SSRF via legacy data bridge (pre-auth surface)",
+              "shortDescription": {
+                "text": "Coverage: RCE / path traversal / SSRF via legacy data bridge (pre-auth surface)"
+              },
+              "fullDescription": {
+                "text": "Coverage of RCE / path traversal / SSRF via legacy data bridge (pre-auth surface) across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of RCE / path traversal / SSRF via legacy data bridge (pre-auth surface) across the assessed attack surface.",
+                "markdown": "Coverage of RCE / path traversal / SSRF via legacy data bridge (pre-auth surface) across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/sql-injection-path-dsn-injection-idor-via-tenant-selector",
+              "name": "SQL injection / path/DSN injection / IDOR via tenant selector",
+              "shortDescription": {
+                "text": "Coverage: SQL injection / path/DSN injection / IDOR via tenant selector"
+              },
+              "fullDescription": {
+                "text": "Coverage of SQL injection / path/DSN injection / IDOR via tenant selector across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of SQL injection / path/DSN injection / IDOR via tenant selector across the assessed attack surface.",
+                "markdown": "Coverage of SQL injection / path/DSN injection / IDOR via tenant selector across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/sql-injection-in-username-password",
+              "name": "SQL injection in username/password",
+              "shortDescription": {
+                "text": "Coverage: SQL injection in username/password"
+              },
+              "fullDescription": {
+                "text": "Coverage of SQL injection in username/password across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of SQL injection in username/password across the assessed attack surface.",
+                "markdown": "Coverage of SQL injection in username/password across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/rate-limit-bypass-credential-brute-force",
+              "name": "Rate-limit bypass / credential brute force",
+              "shortDescription": {
+                "text": "Coverage: Rate-limit bypass / credential brute force"
+              },
+              "fullDescription": {
+                "text": "Coverage of Rate-limit bypass / credential brute force across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of Rate-limit bypass / credential brute force across the assessed attack surface.",
+                "markdown": "Coverage of Rate-limit bypass / credential brute force across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/session-forgery-tampering",
+              "name": "Session forgery / tampering",
+              "shortDescription": {
+                "text": "Coverage: Session forgery / tampering"
+              },
+              "fullDescription": {
+                "text": "Coverage of Session forgery / tampering across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of Session forgery / tampering across the assessed attack surface.",
+                "markdown": "Coverage of Session forgery / tampering across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/lfi-path-traversal-template-injection-xss",
+              "name": "LFI / path traversal / template injection / XSS",
+              "shortDescription": {
+                "text": "Coverage: LFI / path traversal / template injection / XSS"
+              },
+              "fullDescription": {
+                "text": "Coverage of LFI / path traversal / template injection / XSS across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of LFI / path traversal / template injection / XSS across the assessed attack surface.",
+                "markdown": "Coverage of LFI / path traversal / template injection / XSS across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/default-weak-credentials",
+              "name": "Default / weak credentials",
+              "shortDescription": {
+                "text": "Coverage: Default / weak credentials"
+              },
+              "fullDescription": {
+                "text": "Coverage of Default / weak credentials across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of Default / weak credentials across the assessed attack surface.",
+                "markdown": "Coverage of Default / weak credentials across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/reflected-stored-xss-ssti-header-injection",
+              "name": "Reflected/stored XSS, SSTI, header injection",
+              "shortDescription": {
+                "text": "Coverage: Reflected/stored XSS, SSTI, header injection"
+              },
+              "fullDescription": {
+                "text": "Coverage of Reflected/stored XSS, SSTI, header injection across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of Reflected/stored XSS, SSTI, header injection across the assessed attack surface.",
+                "markdown": "Coverage of Reflected/stored XSS, SSTI, header injection across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            },
+            {
+              "id": "strix-coverage/information-disclosure",
+              "name": "Information disclosure",
+              "shortDescription": {
+                "text": "Coverage: Information disclosure"
+              },
+              "fullDescription": {
+                "text": "Coverage of Information disclosure across the assessed attack surface."
+              },
+              "defaultConfiguration": {
+                "level": "none"
+              },
+              "help": {
+                "text": "Coverage of Information disclosure across the assessed attack surface.",
+                "markdown": "Coverage of Information disclosure across the assessed attack surface."
+              },
+              "properties": {
+                "tags": [
+                  "coverage"
+                ]
+              }
+            }
+          ],
+          "version": "1.7.1"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CWE-352",
+          "ruleIndex": 0,
+          "level": "note",
+          "message": {
+            "text": "Missing CSRF Token Enforcement on /set-db and /set-lang State-Changing Routes\n\nThe state-changing routes `POST /set-db` and `POST /set-lang` in the CMT Dashboard Laravel application do not enforce the Laravel CSRF token. A request that omits the `_token` field entirely is processed identically to a valid one and mutates the caller's server-side session state, whereas `POST /login` correctly rejects tokenless requests with HTTP 419. This allows a cross-site request to change the active database/tenant context and the interface language of an authenticated user."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "SECURITY.md"
+                }
+              }
+            },
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "http://host.docker.internal:8002",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "primaryLocationLineHash": "a267be0ff279ebbbeaa8fc5577e1c696f7e27d8d1ce79c91b9f19a8970ea8a91"
+          },
+          "properties": {
+            "security-severity": "3.1",
+            "strix_vuln_class_hash": "6f1bed5a1317cb91137aee3e0d1952966789b5d09d2555dd4d96013c74135092",
+            "synthetic_location": true,
+            "strix": {
+              "id": "vuln-0001",
+              "severity": "low",
+              "cvss": 3.1,
+              "timestamp": "2026-11-24 06:14:33 UTC",
+              "target": "http://host.docker.internal:8002",
+              "cwe": "CWE-352",
+              "impact": "An attacker who lures an authenticated user to a malicious page can silently change that user's active dataset/branch selection (`cmt_db`) and interface language. Because the selected database drives which dataset the dashboard reads, a forced switch can cause the victim to view or operate on a different branch's data than intended, enabling data-scoping confusion and unintended cross-branch data exposure in downstream views. Integrity impact is limited to the victim's session-scoped selection state; the attacker gains no direct read access on their own.",
+              "technical_analysis": "The application is a server-rendered Laravel (PHP 8.2.28) app. All three state-changing forms (`/login`, `/set-db`, `/set-lang`) render a hidden `_token` field, and `POST /login` enforces it: a tokenless or garbage-token login request returns HTTP 419 with a 6665-byte body, while a valid token returns HTTP 200. This proves `VerifyCsrfToken` middleware is active and functioning on the login route.\n\nIn contrast, `POST /set-db` and `POST /set-lang` do not enforce it. Sending the body `db_name=SBY` (Content-Length: 11, no `_token` field at all) returns HTTP 303 and the server responds with `Set-Cookie: cmt_db=SBY`, changing the previously-active database from `CMT` to `SBY`. A follow-up `GET /login` confirms the new state: the dropdown item carrying `class=\"dropdown-item active\"` is now `SBY` instead of `CMT`. The same behaviour was observed for `POST /set-lang` with body `lang=en` (no token): the page thereafter renders `<html lang=\"en\">` and the Bahasa Indonesia string `Masuk` disappears; the value is whitelist-validated so it is not an injection vector.\n\nThe routes therefore appear to have been placed outside the `web` middleware group that applies `VerifyCsrfToken`, or the token check was explicitly exempted. Because both routes are reachable pre-authentication and store their value in the session, a tokenless cross-site POST succeeds whenever the browser attaches the session cookie.",
+              "remediation_steps": "Ensure `/set-db` and `/set-lang` are registered inside the `web` middleware group so that `App\\Http\\Middleware\\VerifyCsrfToken` applies to them, matching the protection already enforced on `/login`. Do not add these routes to the `$except` list. Additionally, restrict `db_name` to an explicit server-side allowlist of the seven known dataset codes (CME, CMT, CSM, DATA, INIT, MAL, SBY) and reject any other value, and validate `lang` against the supported set (id, en, zh), so that the session value can never carry attacker-chosen content.",
+              "counterevidence": "The session cookie `cmt-dashboard-session` is set with `SameSite=Lax`, which prevents the cookie from being sent on cross-site `POST` requests, so a plain cross-site form POST from an unrelated origin would not carry the session and the session state would not be mutated for an authenticated victim. This materially limits the straightforward exploit path. What remains demonstrated is that the server performs no CSRF-token validation on these two routes at all (tokenless, garbage-token and cross-session-token requests are all accepted with 303 and mutate state), which is a genuine defence-in-depth failure and becomes directly exploitable if the cookie is ever relaxed to `SameSite=None`, if a browser/legacy client ignores SameSite, or if the value can be delivered via a top-level GET. The exploit was executed only in a same-site context (no Origin/Referer simulation of a cross-site origin was possible in the test harness).",
+              "confidence": "high",
+              "severity_change_conditions": "Confirmation that the session cookie is delivered on a cross-site request (e.g. SameSite relaxed, or the state change reachable via a top-level GET navigation) would raise this from a defence-in-depth CSRF gap to a directly exploitable cross-site state-change; conversely, if `db_name` is additionally validated against a server-side allowlist before it reaches any database connection, the downstream impact would drop to language/UI-only and the severity would fall to low.",
+              "poc": {
+                "description": "1. Establish a session by requesting `GET /login`; note the server-issued `cmt-dashboard-session` and `XSRF-TOKEN` cookies and the `_token` value in the login form.\n2. Confirm the initial state: `GET /login` shows the `CMT` database entry carrying `class=\"dropdown-item active\"`.\n3. Send `POST /set-db` with the body `db_name=SBY` and no `_token` field at all.\n4. Observe HTTP 303 and a `Set-Cookie: cmt_db=SBY` response header.\n5. Re-request `GET /login`: the `SBY` entry now carries `class=\"dropdown-item active\"` and `CMT` no longer does, proving the session state changed without any CSRF token.\n6. Repeat with `POST /set-lang` body `lang=en` and no token: the response is HTTP 303 and the page subsequently renders `<html lang=\"en\">`.\n7. Control: `POST /login` with no `_token` (or a garbage token) returns HTTP 419, showing the token check is enforced elsewhere.",
+                "script_available": true
+              }
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/reconnaissance-tech-fingerprinting-and-security-headers",
+          "ruleIndex": 1,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "Reconnaissance / tech fingerprinting and security headers — No issue identified: GET / and /login (guest entry, headers, cookies, CSP)\n\nLaravel on PHP/8.2.28, session cookie HttpOnly+SameSite=Lax, CSP with frame-ancestors 'self', X-Frame-Options SAMEORIGIN, nosniff all present. Only informational leaks: X-Powered-By version and CSP 'unsafe-inline' in script-src."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "GET / and /login (guest entry, headers, cookies, CSP)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "no_issue_found",
+              "risk_area": "Reconnaissance / tech fingerprinting and security headers",
+              "surface": "GET / and /login (guest entry, headers, cookies, CSP)",
+              "recorded_by": "Recon Mapper",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/broken-access-control-injection-into-db-connection-selection",
+          "ruleIndex": 2,
+          "kind": "open",
+          "level": "none",
+          "message": {
+            "text": "Broken access control / injection into DB connection selection — Requires further review: POST /set-db (db_name parameter)\n\nUnauthenticated POST /set-db accepts arbitrary db_name with CSRF not validated (_token=bad and omitted both returned 303); value echoed verbatim into plaintext cmt_db cookie (1-yr expiry). However read-side enforces fixed allowlist {CME,CMT,CSM,DATA,INIT,MAL,SBY}: invalid values and forged cookies all resolve to CMT; protected routes ignore cmt_db and redirect to /login. SQL probes (' AND 1=1/2--, extractvalue, cast(1/0), 1;SELECT 1, path/DSN) all returned 303 with no error/leak. Post-authenticated dashboard sink not reachable without credentials, so SQLi/DNS/IDOR via set-db cannot be confirmed or fully ruled out."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /set-db (db_name parameter)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "needs_follow_up",
+              "risk_area": "Broken access control / injection into DB connection selection",
+              "surface": "POST /set-db (db_name parameter)",
+              "recorded_by": "Root Agent",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/rce-path-traversal-ssrf-via-legacy-data-bridge",
+          "ruleIndex": 3,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "RCE / path traversal / SSRF via legacy data bridge — Ruled out: POST /sync (FoxPro synchronisation endpoint)\n\nResolved by downstream testing: unauthenticated POST /sync returns 419 (VerifyCsrfToken) for every body variant (none/JSON/form/multipart/XML), and returns 303 to /login after a valid guest session + CSRF token. The handler never executes pre-auth, so injection payloads (;id, |id, $(sleep 5), path traversal, UNC/SSRF) all produced the identical 303 redirect and reached no sink. The authenticated handler remains an open item tracked separately."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /sync (FoxPro synchronisation endpoint)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "RCE / path traversal / SSRF via legacy data bridge",
+              "surface": "POST /sync (FoxPro synchronisation endpoint)",
+              "recorded_by": "Root Agent",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/information-disclosure-hidden-path-discovery",
+          "ruleIndex": 4,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "Information disclosure / hidden path discovery — Ruled out: Content discovery: /.env, /.git, /telescope, /horizon, /_ignition, /api, /docs\n\nffuf against 4751-word common.txt plus targeted list (/.env, /.git/config, /telescope, /horizon, /_ignition/*, /composer.json, /actuator, /docs, /swagger, /api) returned only /.htaccess (200). /storage/logs/laravel.log returns 403 (exists, blocked). Caveat: enumeration ran during proxy 502 bursts so results are incomplete rather than conclusive."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Content discovery: /.env, /.git, /telescope, /horizon, /_ignition, /api, /docs"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "Information disclosure / hidden path discovery",
+              "surface": "Content discovery: /.env, /.git, /telescope, /horizon, /_ignition, /api, /docs",
+              "recorded_by": "Recon Mapper",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/weak-default-credentials",
+          "ruleIndex": 5,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "Weak / default credentials — No issue identified: POST /login credential testing\n\n19 common credential pairs tried against POST /login with fresh CSRF token each attempt; all returned 200 (failed render), and a Laravel throttle returned 429 from the 6th attempt onward. Throttle is the operative control at this location."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /login credential testing"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "no_issue_found",
+              "risk_area": "Weak / default credentials",
+              "surface": "POST /login credential testing",
+              "recorded_by": "Recon Mapper",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/bola-bfla-on-administrative-routes",
+          "ruleIndex": 6,
+          "kind": "open",
+          "level": "none",
+          "message": {
+            "text": "BOLA / BFLA on administrative routes — Requires further review: GET /admin and GET /users (authenticated routes)\n\nBoth redirect to /login (302 and 303 respectively) without a session; no unauthenticated body or data leak. Authorized behavior inside these routes untestable — no credentials obtained. Gap: authentication required, and login is throttled to 5 attempts."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "GET /admin and GET /users (authenticated routes)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "needs_follow_up",
+              "risk_area": "BOLA / BFLA on administrative routes",
+              "surface": "GET /admin and GET /users (authenticated routes)",
+              "recorded_by": "Recon Mapper",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/path-traversal-sensitive-file-exposure",
+          "ruleIndex": 7,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "Path traversal / sensitive file exposure — No issue identified: /.htaccess and /storage/logs/laravel.log exposure\n\n/.htaccess returns 200 with 740B of Laravel public/.htaccess rewrite rules; /storage/logs/laravel.log returns 403 confirming the log exists but is web-server-blocked. Disclosure alone gives no restricted data; only becomes material if paired with traversal that bypasses the log deny-rule."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/.htaccess and /storage/logs/laravel.log exposure"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "no_issue_found",
+              "risk_area": "Path traversal / sensitive file exposure",
+              "surface": "/.htaccess and /storage/logs/laravel.log exposure",
+              "recorded_by": "Recon Mapper",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/js-bundle-analysis-sourcemap-and-secret-leakage",
+          "ruleIndex": 8,
+          "kind": "notApplicable",
+          "level": "none",
+          "message": {
+            "text": "JS bundle analysis / sourcemap and secret leakage — Not applicable: JavaScript bundles and client-side routes\n\nNo first-party JS is served — every script tag is a pinned CDN dependency (bootstrap 5.3.3 bundle, bootstrap-icons 1.11.3). No sourcemaps, no client bundles, no hardcoded secrets, no client-side routes. All links/forms in fetched HTML enumerated: actions /login, /set-db, /set-lang only."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "JavaScript bundles and client-side routes"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "not_applicable",
+              "risk_area": "JS bundle analysis / sourcemap and secret leakage",
+              "surface": "JavaScript bundles and client-side routes",
+              "recorded_by": "Recon Mapper",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/content-route-discovery",
+          "ruleIndex": 9,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "content/route discovery — No issue identified: /workspace/routes-discovered.txt\n\nFull content/route discovery re-run: laravel-cmt (123), common.txt (4751), extension fuzz, /index.php path-confusion. Only known 7 routes + /.htaccess + robots.txt. No unauthenticated data leak, no new endpoint, no BFLA method bypass. 404 filtered by body marker (hash unstable due to live footer timestamp)."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/workspace/routes-discovered.txt"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "no_issue_found",
+              "risk_area": "content/route discovery",
+              "surface": "/workspace/routes-discovered.txt",
+              "recorded_by": "Content Discovery Hunter",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/rce-command-injection-ssrf-path-traversal-via-foxpro-sync-handler",
+          "ruleIndex": 10,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "RCE / command injection / SSRF / path traversal via FoxPro sync handler — Ruled out: POST /sync (unauthenticated, no CSRF)\n\nVerifyCsrfToken middleware returns 419 (Page Expired) for every unauthenticated POST variant — no body, empty JSON, form, multipart, XML. Control verified at route level; handler body never reached pre-auth. Baseline exchange id 6004/response 1148; exploit exchange id 6025/response 1163."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /sync (unauthenticated, no CSRF)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "RCE / command injection / SSRF / path traversal via FoxPro sync handler",
+              "surface": "POST /sync (unauthenticated, no CSRF)",
+              "recorded_by": "Sync Bridge Hunter",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/auth-bypass-injection-reaching-sync-handler",
+          "ruleIndex": 11,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "auth bypass / injection reaching sync handler — Ruled out: POST /sync (guest session + valid CSRF token)\n\nAuth middleware redirects all non-authenticated POST /sync to /login with 303 (exchange 6025, response 1163). Injection payloads (;id, |id, $(sleep 5), `id`, path traversal, SSRF/UNC) all return identical 303 → handler never executes. Control named: auth middleware at /sync route, runs before handler on every path."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /sync (guest session + valid CSRF token)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "auth bypass / injection reaching sync handler",
+              "surface": "POST /sync (guest session + valid CSRF token)",
+              "recorded_by": "Sync Bridge Hunter",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/command-injection-path-traversal-ssrf-in-foxpro-sync-import-handler",
+          "ruleIndex": 12,
+          "kind": "open",
+          "level": "none",
+          "message": {
+            "text": "command injection / path traversal / SSRF in FoxPro sync import handler — Requires further review: POST /sync authenticated-session surface\n\nNo credentials provided / obtainable (login throttle 5→429). Handler body unreachable without authenticated session; cannot confirm or rule out injection inside the handler. Auth-validated surface is a genuine open gap, not a controlled-safe surface."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /sync authenticated-session surface"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "needs_follow_up",
+              "risk_area": "command injection / path traversal / SSRF in FoxPro sync import handler",
+              "surface": "POST /sync authenticated-session surface",
+              "recorded_by": "Sync Bridge Hunter",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/additional-file-upload-or-sync-import-endpoints-accepting-attacker-input",
+          "ruleIndex": 13,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "additional file-upload or sync import endpoints accepting attacker input — No issue identified: /sync sibling routes (sync/upload, sync/import, sync/run, sync/start, sync/status, etc.)\n\nFocused fuzz of ~60 sync-related paths: sync/upload and sync/import return Laravel 404 (custom 9301 B themed view); all others 404/ERR (transport flap). No additional sync import/upload route exists."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "/sync sibling routes (sync/upload, sync/import, sync/run, sync/start, sync/status, etc.)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "no_issue_found",
+              "risk_area": "additional file-upload or sync import endpoints accepting attacker input",
+              "surface": "/sync sibling routes (sync/upload, sync/import, sync/run, sync/start, sync/status, etc.)",
+              "recorded_by": "Sync Bridge Hunter",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/lfi-path-traversal-bypassing-storage-deny-rule-to-read-env-or-logs",
+          "ruleIndex": 14,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "LFI / path traversal bypassing /storage deny rule to read .env or logs — Ruled out: GET /.htaccess, /storage/logs/laravel.log, encoded traversal to .env\n\n.htaccess 200 (740 B) confirms document root is Laravel public/ (already known disclosure, low observation only). All traversal variants (../, %2e%2e, double-encode, ..;/, Windows \\, encoded slashes) return Laravel 404 or Apache native 404 (542/546 B) — web server never serves outside public/. /storage/logs/laravel.log returns 403 consistently; no bypass found. No .env read achieved."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "GET /.htaccess, /storage/logs/laravel.log, encoded traversal to .env"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "LFI / path traversal bypassing /storage deny rule to read .env or logs",
+              "surface": "GET /.htaccess, /storage/logs/laravel.log, encoded traversal to .env",
+              "recorded_by": "Sync Bridge Hunter",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/rce-path-traversal-ssrf-via-legacy-data-bridge-pre-auth-surface",
+          "ruleIndex": 15,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "RCE / path traversal / SSRF via legacy data bridge (pre-auth surface) — Ruled out: POST /sync (FoxPro synchronisation endpoint)\n\nUnauthenticated POST /sync (no body / JSON / form / multipart / XML) all return 419 CSRF first, then 303 /login after valid CSRF + guest session. Handler never executes pre-auth. Injection payloads (;id, |id, sleep, ../../etc/passwd, \\\\share, file:///etc/passwd) return identical 303 redirect — sink not reached."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /sync (FoxPro synchronisation endpoint)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "RCE / path traversal / SSRF via legacy data bridge (pre-auth surface)",
+              "surface": "POST /sync (FoxPro synchronisation endpoint)",
+              "recorded_by": "Root Agent",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/sql-injection-path-dsn-injection-idor-via-tenant-selector",
+          "ruleIndex": 16,
+          "kind": "open",
+          "level": "none",
+          "message": {
+            "text": "SQL injection / path/DSN injection / IDOR via tenant selector — Requires further review: POST /set-db (db_name parameter, unauthenticated)\n\nMerged into the canonical /set-db row. Consistent result across two independent agents: the endpoint is unauthenticated and accepts arbitrary db_name with CSRF unenforced (value written verbatim to a plaintext 1-year cmt_db cookie), but the read side enforces a fixed 7-value allowlist {CME,CMT,CSM,DATA,INIT,MAL,SBY} — invalid values and forged cookies all resolve to CMT, and protected routes ignore cmt_db. SQL payloads (' AND 1=1/2--, extractvalue, cast(1/0), 1;SELECT 1) and path/DSN payloads all returned a plain 303 with no error, trace, or DB-name leak. Post-authentication sink unresolved for lack of credentials."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /set-db (db_name parameter, unauthenticated)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "needs_follow_up",
+              "risk_area": "SQL injection / path/DSN injection / IDOR via tenant selector",
+              "surface": "POST /set-db (db_name parameter, unauthenticated)",
+              "recorded_by": "Root Agent",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/sql-injection-in-username-password",
+          "ruleIndex": 17,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "SQL injection in username/password — Ruled out: POST /login\n\nProbe matrix executed against POST /login via authenticated CSRF-token harvest: `admin'--`, `' OR 1=1--`, `admin' OR '1'='1`, `admin'#`, `admin' AND 1=1#` vs `admin' AND 1=2#` (balanced pair), `admin' AND SLEEP(15)#`, `'||'`, and password-field injection. Every payload returned HTTP 200 with an identical 9578-byte login-failure body, zero SQL error markers, no boolean differential, and no timing delta from SLEEP(15). Control: benign admin/admin also 200/9578. Login authenticates via Laravel Eloquent binding (parameterised), so injection payloads are treated as literal strings. Raw results in /workspace/sqlin/results.jsonl."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /login"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "SQL injection in username/password",
+              "surface": "POST /login",
+              "recorded_by": "Root Agent",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/rate-limit-bypass-credential-brute-force",
+          "ruleIndex": 18,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "Rate-limit bypass / credential brute force — Ruled out: POST /login throttle\n\n5 consecutive failed attempts from one client returned 200 x5 then 429 (6675-byte body); rotating `X-Forwarded-For`/`X-Real-IP` per attempt still produced 429 on the 3rd attempt in a separate run, so the counter is keyed to the real socket IP and the forwarding headers are not trusted. Throttle intact."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /login throttle"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "Rate-limit bypass / credential brute force",
+              "surface": "POST /login throttle",
+              "recorded_by": "Auth and Session Hunter",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/session-forgery-tampering",
+          "ruleIndex": 19,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "Session forgery / tampering — Ruled out: cmt-dashboard-session cookie\n\nFlipping one character inside the Laravel-encrypted cookie payload did not produce a forged-accepted session; the server discarded the tampered value and re-issued a fresh `cmt-dashboard-session` (200, no state carried over). Cookie is encrypted + MAC'd as expected."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "cmt-dashboard-session cookie"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "Session forgery / tampering",
+              "surface": "cmt-dashboard-session cookie",
+              "recorded_by": "Auth and Session Hunter",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/lfi-path-traversal-template-injection-xss",
+          "ruleIndex": 20,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "LFI / path traversal / template injection / XSS — Ruled out: POST /set-lang lang parameter\n\nValues `../../../../etc/passwd`, `id/../../../etc/passwd`, `...%00`, `php://filter/...`, `nonexist`, and `\\x00` all left the page at the default `id` locale with no file-read, error, or reflection. Only exact `en` switched the locale, and payloads `\" onload=alert(1)`, `\"><script>`, `id\"><img onerror=...>` were rejected (stayed `id`) — the parameter is validated against the supported locale set, so it neither reaches a file path nor is echoed into markup."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /set-lang lang parameter"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "LFI / path traversal / template injection / XSS",
+              "surface": "POST /set-lang lang parameter",
+              "recorded_by": "Auth and Session Hunter",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/default-weak-credentials",
+          "ruleIndex": 21,
+          "kind": "open",
+          "level": "none",
+          "message": {
+            "text": "Default / weak credentials — Requires further review: POST /login credentials\n\nBlocked, not clean: POST /login has a 5-attempt-then-429 throttle keyed to the real socket IP (X-Forwarded-For/X-Real-IP rotation does NOT bypass — proven by an independent agent), and the target sustains only ~0.3 req/s with multi-minute down windows. Only `admin/admin` and `admin/password` were attempted (both rejected); the remainder of the high-value list (admin/admin123, admin/123456, admin/cmt, cmt/cmt, user/user, test/test, Indonesian variants) was never run because each reset window yields so few attempts. No credential was obtained, so the entire authenticated surface (/admin, /users, sidebar nav, post-login dashboard) remains unmapped — this is the single largest gap in the assessment."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "POST /login credentials"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "needs_follow_up",
+              "risk_area": "Default / weak credentials",
+              "surface": "POST /login credentials",
+              "recorded_by": "Root Agent",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/reflected-stored-xss-ssti-header-injection",
+          "ruleIndex": 22,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "Reflected/stored XSS, SSTI, header injection — Ruled out: http://host.docker.internal:8002 (guest surface: /, /login, /set-db, /set-lang, 404 page)\n\nTested all discoverable inputs (path segments, query strings, form fields username/password/db_name/lang/_token, headers Referer/User-Agent/Accept-Language/Host/X-Forwarded-For/X-Forwarded-Host) with unique canary tokens and XSS/HTML/JS payloads; no verbatim reflection found. Custom 404 page static (9301B) — requested path/query never reflected. CRLF injection in lang/db_name/username produces no injected Set-Cookie or Location headers. SSTI probes {{7*7}}, ${7*7}, #{7*7}, <%=7*7%> render literally, no 49 evaluation. Cookie values cmt_lang/cmt_db not reflected in HTML. CSP includes 'unsafe-inline' but no injection vector found. Allowlist on db_name (7 known values) and lang (id/en/zh) fall back to default."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "http://host.docker.internal:8002 (guest surface: /, /login, /set-db, /set-lang, 404 page)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "Reflected/stored XSS, SSTI, header injection",
+              "surface": "http://host.docker.internal:8002 (guest surface: /, /login, /set-db, /set-lang, 404 page)",
+              "recorded_by": "Injection and XSS Hunter",
+              "source": "agent_reported"
+            }
+          }
+        },
+        {
+          "ruleId": "strix-coverage/information-disclosure",
+          "ruleIndex": 23,
+          "kind": "pass",
+          "level": "none",
+          "message": {
+            "text": "Information disclosure — Ruled out: http://host.docker.internal:8002 (info disclosure surface: /storage/logs/laravel.log, .env variants, .git, composer.lock, artisan, index.php bypasses, /well-known)\n\n/.htaccess 200 (740 B, rewrite rules only — deployment artifact, no secrets). /.env 404, /.env.bak/.old/.save/.local/.production/.example 404, /composer.json/.lock 404, /.git/HEAD/.config 404, /artisan 404, /server.php 303 redirect, /vendor/autoload.php 404, /bootstrap/cache/config.php 404, /routes/web.php 404, /index.php/.env 404, /index.php/storage/logs/laravel.log 403 (blocked), /storage/logs/laravel.log 403 (blocked; nginx deny rule, no bypass via null-byte/dot-dot/index.php). /robots.txt empty, /sitemap.xml 404, /.well-known/security.txt 404. No secrets or restricted files disclosed."
+          },
+          "locations": [
+            {
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "http://host.docker.internal:8002 (info disclosure surface: /storage/logs/laravel.log, .env variants, .git, composer.lock, artisan, index.php bypasses, /well-known)"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "strix": {
+              "coverage_outcome": "ruled_out",
+              "risk_area": "Information disclosure",
+              "surface": "http://host.docker.internal:8002 (info disclosure surface: /storage/logs/laravel.log, .env variants, .git, composer.lock, artisan, index.php bypasses, /well-known)",
+              "recorded_by": "Injection and XSS Hunter",
+              "source": "agent_reported"
+            }
+          }
+        }
+      ],
+      "invocations": [
+        {
+          "executionSuccessful": false,
+          "toolExecutionNotifications": [
+            {
+              "level": "warning",
+              "message": {
+                "text": "1 agent(s) did not finish cleanly (Login SQLi and Credential Hunter); any surface they held is under-covered."
+              }
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "syntheticLocationCount": 1
+      }
+    }
+  ]
+}

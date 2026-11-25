@@ -1,0 +1,304 @@
+{
+    "captured_at": "2026-11-24T15:47:42.681168Z",
+    "domains": {
+        "auth": {
+            "status": 200,
+            "headers": {
+                "content-type": [
+                    "text/html; charset=utf-8"
+                ],
+                "cache-control": [
+                    "no-cache, private"
+                ],
+                "date": [
+                    "Tue, 24 Nov 2026 15:47:29 GMT"
+                ],
+                "x-content-type-options": [
+                    "nosniff"
+                ],
+                "x-frame-options": [
+                    "SAMEORIGIN"
+                ],
+                "content-security-policy": [
+                    "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                ],
+                "set-cookie": [
+                    "XSRF-TOKEN=eyJpdiI6ImpyMmFabWZtY29qOEFwYjZsanJyR0E9PSIsInZhbHVlIjoiUndWcWwySnZTM0hqUFhTY1VsRENNem9VMmJqZzNDMmlVKzZlVmxLVlVEWHBVc3Y2NXh6aVZ2dXFqVzhRNUYxcDlpWFVwbVM5U2dmMERPUzFZMWRVKzZJMjNPMXZMZFliZ3ZZcTRsSGFWdUpTOGwvQXRMS3lZOU1xSTNVY3llZjkiLCJtYWMiOiI5MDQ1ZGIxODAwZDExNjFkMDI2YmEzM2UxNzNhMTYyY2EzM2NmMmVmMGUwMGM3MjFmYWQ1MDY4NTk4MDUzMzhlIiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:29 GMT; Max-Age=7200; path=/; samesite=lax",
+                    "cmt-dashboard-session=eyJpdiI6IlZJQW9nYzJ3Ky9vL1pJRlVnY0FvMEE9PSIsInZhbHVlIjoiQUpHSUlQbDdIVVE2UnFWRmUyZzZkZnorUmJqZWV1MVpTT0lsNXlZdVpCUGN4OGhVVWZ2M2xuY0hkVWNSVVlsbWlwTnlsOUtrRGpOa3IrOE81cGlFM2doZU5vYnBadG12VE1lTlgxTTk5R0M2MllkUUt4T3ducWV1V1grS3I3aVUiLCJtYWMiOiI3YWRhNDAwMWRlYTY5OGFlMjA2ZjUwZjEyYjc1ZTRjZDI2ZmZlY2FkNTIwZjA4OTI0ZTgxYjVmZTkxYzU0ODNlIiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:29 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+                ]
+            },
+            "body": "<!DOCTYPE html>\n<html lang=\"id\" data-coreui-theme=\"dark\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>CMT Dashboard</title>\n    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">\n    <link href=\"https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css\" rel=\"stylesheet\">\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n    <link href=\"https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap\" rel=\"stylesheet\">\n</head>\n<body>\n    <div class=\"sidebar sidebar-dark sidebar-narrow bg-dark border-end\" id=\"sidebar\">\n        <div class=\"sidebar-header px-3 py-3 d-flex align-items-center\">\n            <i class=\"bi bi-box-seam fs-4 me-2 text-info\"></i>\n            <h6 class=\"m-0 fw-semibold\">CMT Dash</h6>\n        </div>\n        <ul class=\"sidebar-nav\">\n                    </ul>\n    </div>\n    <div class=\"wrapper\" id=\"main-content\">\n        <header class=\"header header-sticky mb-3 border-bottom\">\n            <div class=\"container-fluid px-3 px-md-4\">\n                <div class=\"header-content d-flex align-items-center justify-content-between py-2\">\n                    <div class=\"d-flex align-items-center gap-2\">\n                        <button class=\"header-toggler\" id=\"sidebar-toggle\" type=\"button\" aria-label=\"Toggle navigation\">\n                            <i class=\"bi bi-list fs-5\"></i>\n                        </button>\n                                            </div>\n                    <div class=\"d-flex align-items-center gap-2\">\n                                                    <a href=\"/login\" class=\"btn btn-sm btn-primary\">Masuk</a>\n                                                                        <div class=\"dropdown\">\n                            <button class=\"btn btn-sm btn-outline-info dropdown-toggle\" type=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n                                <i class=\"bi bi-database me-1\"></i>CMT\n                           </button>\n                            <ul class=\"dropdown-menu dropdown-menu-end\">\n                                                                <li>\n                                    <form method=\"post\" action=\"/set-db\" class=\"m-0\">\n                                        <input type=\"hidden\" name=\"db_name\" value=\"CME\">\n                                        <button class=\"dropdown-item \" type=\"submit\">\n                                            <i class=\"bi bi-database me-1\"></i>CME\n                                        </button>\n                                   </form>\n                               </li>\n                                                                <li>\n                                    <form method=\"post\" action=\"/set-db\" class=\"m-0\">\n                                        <input type=\"hidden\" name=\"db_name\" value=\"CMT\">\n                                        <button class=\"dropdown-item active\" type=\"submit\">\n                                            <i class=\"bi bi-database-check me-1\"></i>CMT\n                                        </button>\n                                   </form>\n                               </li>\n                                                                <li>\n                                    <form method=\"post\" action=\"/set-db\" class=\"m-0\">\n                                        <input type=\"hidden\" name=\"db_name\" value=\"CSM\">\n                                        <button class=\"dropdown-item \" type=\"submit\">\n                                            <i class=\"bi bi-database me-1\"></i>CSM\n                                        </button>\n                                   </form>\n                               </li>\n                                                                <li>\n                                    <form method=\"post\" action=\"/set-db\" class=\"m-0\">\n                                        <input type=\"hidden\" name=\"db_name\" value=\"DATA\">\n                                        <button class=\"dropdown-item \" type=\"submit\">\n                                            <i class=\"bi bi-database me-1\"></i>DATA\n                                        </button>\n                                   </form>\n                               </li>\n                                                                <li>\n                                    <form method=\"post\" action=\"/set-db\" class=\"m-0\">\n                                        <input type=\"hidden\" name=\"db_name\" value=\"INIT\">\n                                        <button class=\"dropdown-item \" type=\"submit\">\n                                            <i class=\"bi bi-database me-1\"></i>INIT\n                                        </button>\n                                   </form>\n                               </li>\n                                                                <li>\n                                    <form method=\"post\" action=\"/set-db\" class=\"m-0\">\n                                        <input type=\"hidden\" name=\"db_name\" value=\"MAL\">\n                                        <button class=\"dropdown-item \" type=\"submit\">\n                                            <i class=\"bi bi-database me-1\"></i>MAL\n                                        </button>\n                                   </form>\n                               </li>\n                                                                <li>\n                                    <form method=\"post\" action=\"/set-db\" class=\"m-0\">\n                                        <input type=\"hidden\" name=\"db_name\" value=\"SBY\">\n                                        <button class=\"dropdown-item \" type=\"submit\">\n                                            <i class=\"bi bi-database me-1\"></i>SBY\n                                        </button>\n                                   </form>\n                               </li>\n                                                           </ul>\n                       </div>\n                                               <div class=\"dropdown\">\n                            <button class=\"btn btn-sm btn-outline-secondary dropdown-toggle\" type=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\">\n                                ID\n                           </button>\n                            <ul class=\"dropdown-menu dropdown-menu-end\">\n                                                                <li>\n                                    <form method=\"post\" action=\"/set-lang\" class=\"m-0\">\n                                        <input type=\"hidden\" name=\"_token\" value=\"A4xvTR7mok9TOsk8jSYTRcyklmsV1YichlRmq5KP\" autocomplete=\"off\">                                        <input type=\"hidden\" name=\"lang\" value=\"id\">\n                                        <button class=\"dropdown-item active\" type=\"submit\">Bahasa Indonesia</button>\n                                   </form>\n                               </li>\n                                                                <li>\n                                    <form method=\"post\" action=\"/set-lang\" class=\"m-0\">\n                                        <input type=\"hidden\" name=\"_token\" value=\"A4xvTR7mok9TOsk8jSYTRcyklmsV1YichlRmq5KP\" autocomplete=\"off\">                                        <input type=\"hidden\" name=\"lang\" value=\"en\">\n                                        <button class=\"dropdown-item \" type=\"submit\">English</button>\n                                   </form>\n                               </li>\n                                                                <li>\n                                    <form method=\"post\" action=\"/set-lang\" class=\"m-0\">\n                                        <input type=\"hidden\" name=\"_token\" value=\"A4xvTR7mok9TOsk8jSYTRcyklmsV1YichlRmq5KP\" autocomplete=\"off\">                                        <input type=\"hidden\" name=\"lang\" value=\"zh\">\n                                        <button class=\"dropdown-item \" type=\"submit\">中文</button>\n                                   </form>\n                               </li>\n                                                           </ul>\n                       </div>\n                        <button id=\"theme-toggle\" class=\"btn btn-sm btn-outline-secondary\" type=\"button\">Light</button>\n                    </div>\n                </div>\n            </div>\n        </header>\n        <div class=\"body flex-grow-1 px-3 px-md-4 py-3\">\n                <h2>Login</h2>\n\n    \n    \n    <form method=\"post\" action=\"/login\">\n        <input type=\"hidden\" name=\"_token\" value=\"A4xvTR7mok9TOsk8jSYTRcyklmsV1YichlRmq5KP\" autocomplete=\"off\">        <label for=\"username\">Username</label>\n        <input id=\"username\" name=\"username\" type=\"text\" autofocus autocomplete=\"username\">\n\n        <label for=\"password\">Password</label>\n        <input id=\"password\" name=\"password\" type=\"password\" autocomplete=\"current-password\">\n\n        <p><button type=\"submit\" class=\"btn\">Log in</button></p>\n    </form>\n        </div>\n        <footer class=\"footer px-3 px-md-4 py-3 small text-body-secondary border-top mt-auto\">\n            Data tersinkron dari sistem FoxPro • <span id=\"sync-time\">2026-11-24 15:45</span>\n       </footer>\n    </div>\n    <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js\"></script>\n</body>\n</html>\n",
+            "error": null
+        },
+        "rbac": {
+            "status": 303,
+            "headers": {
+                "cache-control": [
+                    "no-cache, private"
+                ],
+                "date": [
+                    "Tue, 24 Nov 2026 15:47:30 GMT"
+                ],
+                "location": [
+                    "http://localhost/login"
+                ],
+                "content-type": [
+                    "text/html; charset=utf-8"
+                ],
+                "x-content-type-options": [
+                    "nosniff"
+                ],
+                "x-frame-options": [
+                    "SAMEORIGIN"
+                ],
+                "content-security-policy": [
+                    "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                ],
+                "set-cookie": [
+                    "XSRF-TOKEN=eyJpdiI6IlN6ZXVMNzB3UmIvSlAwTGdSd3A4N1E9PSIsInZhbHVlIjoiTjE4Y0JKSjdhSzRHQThLdW1PcUJJY1FkNzlzejJWTS9UQmtKSXFnVkViT1E1bG1FQWFGK2tXMzVIUjBRdWdRMVRENWNDMlp2NjJoQXVQS0RoWi9VOGZLWVliMXY5ZS9TMC9EUXhLRUNpZmVQQU8ySkJzdEZKMlNabnlRVXo0L1oiLCJtYWMiOiIzMDVjZTRmOTMyNTk1ZWVlOWJjYjIxN2QxNTZhZTVlODNlMjMwYzcxN2Q3Njc1MmVmMzRjMDU4ZDFmNWY4NTU4IiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:30 GMT; Max-Age=7200; path=/; samesite=lax",
+                    "cmt-dashboard-session=eyJpdiI6ImRGQkxqczM0ajM2ZWQ3ajBNK0lITEE9PSIsInZhbHVlIjoieFlJSkgzS0xIRzRxTjlwU1RyU3QxOVJOcCt4a1kwYmJZTTl1aCthTHBOWWNwVjhQQzMvejJKeCt2VG1UNUE4WmdWMlluNDdaKzd2MXFnZ1cvTHp1OEo4RzN1Y3lPMldvTVNac0xyQTlIbnVvYmtHMEZxQmt2VXA1U0t3L2F4WWEiLCJtYWMiOiJlYTM1NTJjMTE2MDAzNzRkYjYwYjRjMDFmZmFmMjhjMjM2MjQ4Y2U2NjExMDI1NDUwZDFiZmNkOGZkZDRjOWMwIiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:30 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+                ]
+            },
+            "body": "<!DOCTYPE html>\n<html>\n    <head>\n        <meta charset=\"UTF-8\" />\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\n\n        <title>Redirecting to http://localhost/login</title>\n    </head>\n    <body>\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\n    </body>\n</html>",
+            "error": null
+        },
+        "dashboard": {
+            "status": 303,
+            "headers": {
+                "cache-control": [
+                    "no-cache, private"
+                ],
+                "date": [
+                    "Tue, 24 Nov 2026 15:47:31 GMT"
+                ],
+                "location": [
+                    "http://localhost/login"
+                ],
+                "content-type": [
+                    "text/html; charset=utf-8"
+                ],
+                "x-content-type-options": [
+                    "nosniff"
+                ],
+                "x-frame-options": [
+                    "SAMEORIGIN"
+                ],
+                "content-security-policy": [
+                    "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                ],
+                "set-cookie": [
+                    "XSRF-TOKEN=eyJpdiI6IjBZc2xaRnJHaDJSVmR5WktyVWMza1E9PSIsInZhbHVlIjoiaVhiemY0N0ZUNXpCU3BpUnhwcis3SUVWMWJVNWJxN0lIaUtiYy9hZEJQNDhJZEV5U0xVZE91M29vTitnbkZraXJlZU85S3dqc1lFOVNNREo0YUczQ0VtRjlTWTU0ZXUrM09tNkZuR2d1L0s2OUVsUVc5KytHak5qTE9sSnI0MkEiLCJtYWMiOiIzYmViNzNlODU4NGYzOGZiYWI5NDc5ZTdhMDE0MDczYmYwYTdiYzNhMGQ3YWIwNzUwZmIwZmFlOTk4MGQ0OGM5IiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:31 GMT; Max-Age=7200; path=/; samesite=lax",
+                    "cmt-dashboard-session=eyJpdiI6Im40UkhmY3hKTVhrdlJWcGNhOTBkUmc9PSIsInZhbHVlIjoiTk9jckpFYy8vNjBnY3haeGVrNXFrR2k5L0lFZVVDUTAwVHlSdm9yUUtZakt4eHI2TVowT2o5aTYrdm9UTW03VUZwcy9xWmdkdThKUk9JN3RVekE5alJoTEM5d1NneTlTdVdIUS9oNkU4Um9IaWFZVnZCaVUwZm5CdzRJV0tCZUkiLCJtYWMiOiIyNDQ0OWMwNmRjNTgxMGE2MmFkMTNkOGY2OGIxYWRmZDUxY2EzOThiNDU1NGRiNWYzZTZiYzBiZGQ4ZmVlNDU3IiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:31 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+                ]
+            },
+            "body": "<!DOCTYPE html>\n<html>\n    <head>\n        <meta charset=\"UTF-8\" />\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\n\n        <title>Redirecting to http://localhost/login</title>\n    </head>\n    <body>\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\n    </body>\n</html>",
+            "error": null
+        },
+        "shipments": {
+            "status": 303,
+            "headers": {
+                "cache-control": [
+                    "no-cache, private"
+                ],
+                "date": [
+                    "Tue, 24 Nov 2026 15:47:32 GMT"
+                ],
+                "location": [
+                    "http://localhost/login"
+                ],
+                "content-type": [
+                    "text/html; charset=utf-8"
+                ],
+                "x-content-type-options": [
+                    "nosniff"
+                ],
+                "x-frame-options": [
+                    "SAMEORIGIN"
+                ],
+                "content-security-policy": [
+                    "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                ],
+                "set-cookie": [
+                    "XSRF-TOKEN=eyJpdiI6IklsZDhzbU9wVE9HWXB6ZXpmdmNTY0E9PSIsInZhbHVlIjoiTXlUbzcydFJOOXJLazRoKzg2bWw1YXhYcmRidnpVbUo0ZTdzVWNUNTlwV3ViTThnMkkrMDBJUWpIOFBibG42Nm53SEpGZjFRaXVxNVJlUEI4TGtjalpsMURBZlNQYUxvZW0wNWVKK1Vrc2MxQlpDdERvNnlLaU55d0JoNktaNkgiLCJtYWMiOiJkYWVjN2RhNDAwOGEwYmQ4NjQ3YzYzNDFkOTMyMTQzNGU0MTczYWZiYzQ5NGYyNWRiYmE0MzZhM2IwMDdkODJkIiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:32 GMT; Max-Age=7200; path=/; samesite=lax",
+                    "cmt-dashboard-session=eyJpdiI6ImN3QlRMSHdxbGVHQlM4MFpNbmh1RWc9PSIsInZhbHVlIjoiYnBGZ2dRcit3N1NOSXhwNDFqU1pzRVE2eEZLSmNXNDlqa3k5QWNZN1JyU3B0VndEZlgydVVHSmR5cjE1UUFOTXpzYm0zOUs5VjNxNlo0aUNWWEJaQzZveDlwbitVVk5jcnp2Ykpock4wZnNHSHhwUDN6OXljbHJuL0NMdGpoWFQiLCJtYWMiOiJlZWM1YjFkYThjNzlmNzZkOTMyYjg4N2JkZmY2ZWY2YjA3MmI5NDgyNmZkMTA4MTQ2MmQ5NGRlNzE3NzRmYzQyIiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:32 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+                ]
+            },
+            "body": "<!DOCTYPE html>\n<html>\n    <head>\n        <meta charset=\"UTF-8\" />\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\n\n        <title>Redirecting to http://localhost/login</title>\n    </head>\n    <body>\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\n    </body>\n</html>",
+            "error": null
+        },
+        "shipment_detail": {
+            "status": 303,
+            "headers": {
+                "cache-control": [
+                    "no-cache, private"
+                ],
+                "date": [
+                    "Tue, 24 Nov 2026 15:47:33 GMT"
+                ],
+                "location": [
+                    "http://localhost/login"
+                ],
+                "content-type": [
+                    "text/html; charset=utf-8"
+                ],
+                "x-content-type-options": [
+                    "nosniff"
+                ],
+                "x-frame-options": [
+                    "SAMEORIGIN"
+                ],
+                "content-security-policy": [
+                    "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                ],
+                "set-cookie": [
+                    "XSRF-TOKEN=eyJpdiI6IkU0S2EyTGxtUkg0bWowSWNpQXBwOEE9PSIsInZhbHVlIjoiMjFUdFV1N3ZEcC9zTXN3Wk4xSkJFVnhubmlzM3J6SHRKTVlxMTUwL0ppbmM0eVgwekFtT3hhdm9wMlI1WjErakxhS2xIcjhaY2ZVK3l3ZE9nZytxSStzY1N6V1NuNlJZSVBmU2JXREF6U2VzNGxhY0ptSXk4RDlHS1pQNHRJbGUiLCJtYWMiOiJkZDgyMDQyMWMzYWE5YzJkNjI2MGVkM2ZmN2Y4YWMyMDU2NTVmMTc4MWJiN2E2MjY5Y2FlYTQxNTUxYTJmN2ZkIiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:33 GMT; Max-Age=7200; path=/; samesite=lax",
+                    "cmt-dashboard-session=eyJpdiI6Ild5d0wwN1o1dURTRnpsSXFFSFhzenc9PSIsInZhbHVlIjoiT0prUDBrSHpUMUZSa0Y1OVB5TFlkZE5jN3BmMFc1R0pZcVVYS0tjQjBwZzlXZnZuS0ZGSS9hUDFiWUJaSlh4RlU4VTJmaVd0c2pWVStEY1BYdGdIdlMxWWE1N2YyN041dC9TUnpPaS9qNUw5cElJTFIrblJwQzBBT0M1UmVqUloiLCJtYWMiOiIyNTNhYTUzMjVmMmE5ZmI5NzNhNGNiYzA5ZDI0MDRjZjcwY2E0MjQ5OGI2ZWVhMjI0NWU0M2I1ZmMwMWM0NGUzIiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:33 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+                ]
+            },
+            "body": "<!DOCTYPE html>\n<html>\n    <head>\n        <meta charset=\"UTF-8\" />\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\n\n        <title>Redirecting to http://localhost/login</title>\n    </head>\n    <body>\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\n    </body>\n</html>",
+            "error": null
+        },
+        "invoices": {
+            "status": 303,
+            "headers": {
+                "cache-control": [
+                    "no-cache, private"
+                ],
+                "date": [
+                    "Tue, 24 Nov 2026 15:47:33 GMT"
+                ],
+                "location": [
+                    "http://localhost/login"
+                ],
+                "content-type": [
+                    "text/html; charset=utf-8"
+                ],
+                "x-content-type-options": [
+                    "nosniff"
+                ],
+                "x-frame-options": [
+                    "SAMEORIGIN"
+                ],
+                "content-security-policy": [
+                    "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'"
+                ],
+                "set-cookie": [
+                    "XSRF-TOKEN=eyJpdiI6Ii9DUVJkS2NSZmtZazFTN0JObGg0aWc9PSIsInZhbHVlIjoicHZrZ0JCVkJBbmtKWHkveFhTM1VKdzdYMm00YnkydVEzclBxRUt3THRyMGo3N1BkQUpSZ3RWZlA0OCtaZUhBRTluc3MyWVV0OXQ0eG5SN0Fqc01TVkY3ZlJCNk1zakFXbUdrYVZLRzU3ZHRydWxYSjNtL3lOQXNJcm96TjFOYjEiLCJtYWMiOiJmOWM3MzgyYjczNTk1MjJmZDY2NzZmNWIzYmE1N2U3YjQ2MzQ3YTRkYzJiYjZlYjdmYjhiMzBhYmI5NDgyZGNhIiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:33 GMT; Max-Age=7200; path=/; samesite=lax",
+                    "cmt-dashboard-session=eyJpdiI6IlAyYVBycEZKWkNDOS9GYWMxL25iVEE9PSIsInZhbHVlIjoiVjlnQ05BVEFBWHJta00za1YxRlpwejE0NlVYbHZzcklaT0NRUnIrMFN6S3hzc25aZUoxY1EvbGJqUGdENkJ6cVAza3UzSmdmYXVnd1ZOcjBiL0lZczJBOXdrOTBUMEYyUHlzT2ZrQ0hzYU1wTWtRSXlkM1c3OVhCM1Q5cW1qSloiLCJtYWMiOiJkZjMyN2EwMjVkNTQ4M2RmZDUyMjM3YzE2MTkyNzA4YThkNmQ2YTg1ZGI3Yzc3Njk5ZDYwNjYzNDBhMjkzODBiIiwidGFnIjoiIn0%3D; expires=Tue, 24 Nov 2026 17:47:33 GMT; Max-Age=7200; path=/; httponly; samesite=lax"
+                ]
+            },
+            "body": "<!DOCTYPE html>\n<html>\n    <head>\n        <meta charset=\"UTF-8\" />\n        <meta http-equiv=\"refresh\" content=\"0;url='http://localhost/login'\" />\n\n        <title>Redirecting to http://localhost/login</title>\n    </head>\n    <body>\n        Redirecting to <a href=\"http://localhost/login\">http://localhost/login</a>.\n    </body>\n</html>",
+            "error": null
+        },
+        "ledger_sales": {
+            "status": "missing",
+            "route": "/opr-costs?ref=REF-TRISCO-001",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /opr-costs?ref=REF-TRISCO-001"
+        },
+        "data_quality": {
+            "status": "missing",
+            "route": "/drcn?ref=REF-TRISCO-001",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /drcn?ref=REF-TRISCO-001"
+        },
+        "apis": {
+            "status": 200,
+            "headers": {
+                "cache-control": [
+                    "no-cache, private"
+                ],
+                "date": [
+                    "Tue, 24 Nov 2026 15:47:35 GMT"
+                ],
+                "content-type": [
+                    "application/json"
+                ],
+                "access-control-allow-origin": [
+                    "*"
+                ]
+            },
+            "body": "{\"status\":\"ok\"}",
+            "error": null
+        },
+        "projects_jobs_summary": {
+            "status": "missing",
+            "route": "/projects-jobs/summary",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /projects-jobs/summary"
+        },
+        "projects_jobs_detail": {
+            "status": "missing",
+            "route": "/projects-jobs/detail?ref=REF-TRISCO-001",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /projects-jobs/detail?ref=REF-TRISCO-001"
+        },
+        "ar_reports": {
+            "status": "missing",
+            "route": "/aging-a-r",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /aging-a-r"
+        },
+        "ap_reports": {
+            "status": "missing",
+            "route": "/aging-a-p",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /aging-a-p"
+        },
+        "finance_reports": {
+            "status": "missing",
+            "route": "/listing-journal",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /listing-journal"
+        },
+        "statement_of_account": {
+            "status": "missing",
+            "route": "/statement-of-account",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /statement-of-account"
+        },
+        "listing_reference": {
+            "status": "missing",
+            "route": "/rate-by-destination",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /rate-by-destination"
+        },
+        "performance_tracker": {
+            "status": "missing",
+            "route": "/by-shipper",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /by-shipper"
+        },
+        "miscellaneous_views": {
+            "status": "missing",
+            "route": "/petty-cash-request",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /petty-cash-request"
+        },
+        "ship_finance_ap_journalism": {
+            "status": "missing",
+            "route": "/saging",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /saging"
+        },
+        "volume_lifting_gross_profit": {
+            "status": "missing",
+            "route": "/volume-report",
+            "headers": [],
+            "body": "",
+            "error": "report page not implemented: /volume-report"
+        }
+    }
+}

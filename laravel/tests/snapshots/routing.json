@@ -1,0 +1,394 @@
+{
+    "api_routes": {
+        "GET|HEAD /api/health": {
+            "controller": "App\\Http\\Controllers\\ApiHealthController@health",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "api"
+            ],
+            "name": null,
+            "uri": "api/health"
+        },
+        "GET|HEAD /api/summary": {
+            "controller": "App\\Http\\Controllers\\ApiSummaryController@summary",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "api",
+                "App\\Http\\Middleware\\CmtSession"
+            ],
+            "name": null,
+            "uri": "api/summary"
+        },
+        "GET|HEAD /api/sync-status": {
+            "controller": "App\\Http\\Controllers\\ApiSyncStatusController@syncStatus",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "api",
+                "App\\Http\\Middleware\\CmtSession"
+            ],
+            "name": null,
+            "uri": "api/sync-status"
+        },
+        "POST /api/capture/p5": {
+            "controller": "App\\Http\\Controllers\\CaptureController@capture",
+            "methods": [
+                "POST"
+            ],
+            "middleware": [
+                "api",
+                "web",
+                "auth",
+                "throttle:60,1"
+            ],
+            "name": "capture.p5",
+            "uri": "api/capture/p5"
+        }
+    },
+    "named_routes": {
+        "capture.p5": "/api/capture/p5",
+        "default-livewire.update": "/livewire-1c4e7f3c/update",
+        "ledger.accounts": "/ledger",
+        "ledger.detail": "/ledger/detail",
+        "ledger.entries.index": "/ledger/entries",
+        "ledger.entries.show": "/ledger/entries/{id}",
+        "ledger.show": "/ledger/{id}",
+        "ledger.store": "/ledger",
+        "livewire.preview-file": "/livewire-1c4e7f3c/preview-file/{filename}",
+        "livewire.upload-file": "/livewire-1c4e7f3c/upload-file",
+        "login": "/login",
+        "sales.index": "/sales",
+        "storage.local": "/storage/{path}",
+        "storage.local.upload": "/storage/{path}"
+    },
+    "route_counts": {
+        "api": 4,
+        "web": 25
+    },
+    "unknown_route": {
+        "is_html": true,
+        "status": 404
+    },
+    "web_routes": {
+        "GET|HEAD //": {
+            "controller": "App\\Http\\Controllers\\DashboardController@index",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.auth"
+            ],
+            "name": null,
+            "uri": "/"
+        },
+        "GET|HEAD /data-quality": {
+            "controller": "App\\Http\\Controllers\\DashboardController@dataQuality",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:superadmin"
+            ],
+            "name": null,
+            "uri": "data-quality"
+        },
+        "GET|HEAD /data-quality/detail": {
+            "controller": "App\\Http\\Controllers\\DashboardController@dataQualityDetail",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:superadmin"
+            ],
+            "name": null,
+            "uri": "data-quality/detail"
+        },
+        "GET|HEAD /invoices": {
+            "controller": "App\\Http\\Controllers\\DashboardController@invoices",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.auth"
+            ],
+            "name": null,
+            "uri": "invoices"
+        },
+        "GET|HEAD /invoices/detail": {
+            "controller": "App\\Http\\Controllers\\DashboardController@invoiceDetail",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.auth"
+            ],
+            "name": null,
+            "uri": "invoices/detail"
+        },
+        "GET|HEAD /ledger": {
+            "controller": "App\\Http\\Controllers\\LedgerController@accounts",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:management"
+            ],
+            "name": "ledger.accounts",
+            "uri": "ledger"
+        },
+        "GET|HEAD /ledger/detail": {
+            "controller": "App\\Http\\Controllers\\LedgerController@detail",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:management"
+            ],
+            "name": "ledger.detail",
+            "uri": "ledger/detail"
+        },
+        "GET|HEAD /ledger/entries": {
+            "controller": "App\\Http\\Controllers\\LedgerController@entriesIndex",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:management"
+            ],
+            "name": "ledger.entries.index",
+            "uri": "ledger/entries"
+        },
+        "GET|HEAD /ledger/entries/{id}": {
+            "controller": "App\\Http\\Controllers\\LedgerController@entriesShow",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:management"
+            ],
+            "name": "ledger.entries.show",
+            "uri": "ledger/entries/{id}"
+        },
+        "GET|HEAD /ledger/{id}": {
+            "controller": "App\\Http\\Controllers\\LedgerController@entriesShow",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:management"
+            ],
+            "name": "ledger.show",
+            "uri": "ledger/{id}"
+        },
+        "GET|HEAD /login": {
+            "controller": "App\\Http\\Controllers\\AuthController@showLogin",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web"
+            ],
+            "name": "login",
+            "uri": "login"
+        },
+        "GET|HEAD /sales": {
+            "controller": "App\\Http\\Controllers\\SalesController@sales",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.auth"
+            ],
+            "name": "sales.index",
+            "uri": "sales"
+        },
+        "GET|HEAD /shipments": {
+            "controller": "App\\Http\\Controllers\\DashboardController@shipments",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.auth"
+            ],
+            "name": null,
+            "uri": "shipments"
+        },
+        "GET|HEAD /shipments/detail": {
+            "controller": "App\\Http\\Controllers\\DashboardController@shipmentDetail",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.auth"
+            ],
+            "name": null,
+            "uri": "shipments/detail"
+        },
+        "GET|HEAD /users": {
+            "controller": "App\\Http\\Controllers\\UserAdminController@index",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:admin"
+            ],
+            "name": null,
+            "uri": "users"
+        },
+        "GET|HEAD /users/{user_id}/edit": {
+            "controller": "App\\Http\\Controllers\\UserAdminController@edit",
+            "methods": [
+                "GET",
+                "HEAD"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:admin"
+            ],
+            "name": null,
+            "uri": "users/{user_id}/edit"
+        },
+        "POST /ledger": {
+            "controller": "App\\Http\\Controllers\\LedgerController@entriesStore",
+            "methods": [
+                "POST"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:management"
+            ],
+            "name": "ledger.store",
+            "uri": "ledger"
+        },
+        "POST /login": {
+            "controller": "App\\Http\\Controllers\\AuthController@login",
+            "methods": [
+                "POST"
+            ],
+            "middleware": [
+                "web",
+                "throttle:5,1"
+            ],
+            "name": null,
+            "uri": "login"
+        },
+        "POST /logout": {
+            "controller": "App\\Http\\Controllers\\AuthController@logout",
+            "methods": [
+                "POST"
+            ],
+            "middleware": [
+                "web"
+            ],
+            "name": null,
+            "uri": "logout"
+        },
+        "POST /set-db": {
+            "controller": "App\\Http\\Controllers\\SetDbController@setDb",
+            "methods": [
+                "POST"
+            ],
+            "middleware": [
+                "web"
+            ],
+            "name": null,
+            "uri": "set-db"
+        },
+        "POST /set-lang": {
+            "controller": "App\\Http\\Controllers\\SetDbController@setLang",
+            "methods": [
+                "POST"
+            ],
+            "middleware": [
+                "web"
+            ],
+            "name": null,
+            "uri": "set-lang"
+        },
+        "POST /sync": {
+            "controller": "App\\Http\\Controllers\\DashboardController@sync",
+            "methods": [
+                "POST"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:management"
+            ],
+            "name": null,
+            "uri": "sync"
+        },
+        "POST /users/new": {
+            "controller": "App\\Http\\Controllers\\UserAdminController@store",
+            "methods": [
+                "POST"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:admin"
+            ],
+            "name": null,
+            "uri": "users/new"
+        },
+        "POST /users/{user_id}/delete": {
+            "controller": "App\\Http\\Controllers\\UserAdminController@destroy",
+            "methods": [
+                "POST"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:superadmin"
+            ],
+            "name": null,
+            "uri": "users/{user_id}/delete"
+        },
+        "POST /users/{user_id}/edit": {
+            "controller": "App\\Http\\Controllers\\UserAdminController@update",
+            "methods": [
+                "POST"
+            ],
+            "middleware": [
+                "web",
+                "cmt.role:admin"
+            ],
+            "name": null,
+            "uri": "users/{user_id}/edit"
+        }
+    }
+}

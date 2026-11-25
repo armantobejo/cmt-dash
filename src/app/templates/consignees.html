@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-3 align-items-center">
+  <div class="col"><h3 class="mb-0">{{ _t('List Consignee/ Notify') }}</h3><span class="text-body-secondary small">{{ consignees.total }} rows</span></div>
+</div>
+<div class="card">
+  {% from 'macros.html' import filter_bar, paginator %}
+  <div class="card-header d-flex justify-content-between align-items-center gap-2">
+      <span>{{ _t('Consignees') }}</span>
+      {{ filter_bar(action='/consignees', search_value=search, search_placeholder=_t('Search code or name'), sort=sort, sort_dir=sort_dir) }}
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead><tr>
+        {% macro sort_header(key, label) %}
+        {% set next_dir = 'asc' if (sort == key and sort_dir == 'desc') else 'desc' %}
+        <th scope="col">
+          <a href="?q={{ search|urlencode }}&sort={{ key }}&dir={{ next_dir }}" class="text-decoration-none text-reset">
+            {{ label }}
+            {% if sort == key %}<i class="bi bi-chevron-{% if sort_dir == 'desc' %}down{% else %}up{% endif %} small"></i>{% endif %}
+          </a>
+        </th>
+        {% endmacro %}
+        {{ sort_header('code', _t('Code')) }}
+        {{ sort_header('name', _t('Name')) }}
+        <th>{{ _t('Address') }}</th>
+        <th>{{ _t('Tel') }}</th>
+      </tr></thead>
+      <tbody>
+        {% for r in consignees.rows %}
+        <tr><td class="font-monospace">{{ r.KD_CONSIG }}</td><td>{{ r.NAME or '-' }}</td><td>{{ r.ADDRESS1 or '-' }}</td><td>{{ r.TELP or '-' }}</td></tr>
+        {% endfor %}
+        {% if not consignees.rows %}<tr><td colspan="4" class="text-center text-body-secondary py-4">{{ _t('No data') }}</td></tr>{% endif %}
+      </tbody>
+    </table>
+  </div>
+  {% if consignees.pages > 1 %}
+  <div class="card-footer d-flex justify-content-between align-items-center">
+    <span class="text-body-secondary small">{{ _t('Page') }} {{ consignees.page }} / {{ consignees.pages }}</span>
+    {{ paginator(consignees.page, consignees.pages, page_nums, q=search, sort=sort, sort_dir=sort_dir) }}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

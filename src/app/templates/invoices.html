@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-3 align-items-center">
+    <div class="col">
+        <h3 class="mb-0">{{ _t('Invoices') }}</h3>
+        <span class="text-body-secondary small">{{ invoices.total }} {{ _t('results') }}</span>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header px-3 py-2">
+        <form method="get" action="/invoices" class="d-flex gap-2">
+            <div class="input-group input-group-sm" style="max-width:320px">
+                <input type="text" name="q" class="form-control" placeholder="{{ _t('Search') }}…" value="{{ search }}">
+                <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+            </div>
+            <input type="hidden" name="sort" value="{{ sort }}">
+            <input type="hidden" name="dir" value="{{ sort_dir }}">
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>
+                        {% set next_dir = 'asc' if sort == 'reference' and sort_dir == 'desc' else 'desc' %}
+                        <a href="/invoices?q={{ search }}&sort=reference&dir={{ next_dir }}" class="text-decoration-none text-body">
+                            {{ _t('Ref.') }} {% if sort == 'reference' %}<i class="bi bi-chevron-{% if sort_dir == 'desc' %}down{% else %}up{% endif %} small"></i>{% endif %}
+                        </a>
+                    </th>
+                    <th>{{ _t('Kind') }}</th>
+                    <th>{{ _t('Customer') }}</th>
+                    <th>{{ _t('Shipper') }}</th>
+                    <th>
+                        {% set next_dir = 'asc' if sort == 'date' and sort_dir == 'desc' else 'desc' %}
+                        <a href="/invoices?q={{ search }}&sort=date&dir={{ next_dir }}" class="text-decoration-none text-body">
+                            {{ _t('Date') }} {% if sort == 'date' %}<i class="bi bi-chevron-{% if sort_dir == 'desc' %}down{% else %}up{% endif %} small"></i>{% endif %}
+                        </a>
+                    </th>
+                    <th>{{ _t('No. Invoice') }}</th>
+                    <th class="text-end">{{ _t('Amount (USD)') }}</th>
+                    <th class="text-end">{{ _t('Amount (IDR)') }}</th>
+                    <th class="text-end">{{ _t('Paid (USD)') }}</th>
+                    <th class="text-end">{{ _t('Paid (IDR)') }}</th>
+                    <th>{{ _t('Status') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inv in invoices.rows %}
+                <tr onclick="window.location='/invoices/detail?k={{ inv.K_INVOICE }}'" style="cursor:pointer">
+                    <td><a href="/shipments/detail?ref={{ inv.REFSHITMEN|urlencode }}" class="text-decoration-none" onclick="event.stopPropagation()">{{ inv.REFSHITMEN or '-' }}</a></td>
+                    <td>
+                        {% if inv.EI == 'I' %}
+                            <span class="badge bg-info-subtle text-info">{{ _t('Import') }}</span>
+                        {% elif inv.EI == 'E' %}
+                            <span class="badge bg-success-subtle text-success">{{ _t('Export') }}</span>
+                        {% else %}
+                            {{ inv.EI or '-' }}
+                        {% endif %}
+                    </td>
+                    <td>{{ inv.CUSTOMER or '-' }}</td>
+                    <td>{% if inv.SHIPPER_CODE %}{{ inv.SHIPPER_CODE }}{% if inv.SHIPPER_NAME %} · {{ inv.SHIPPER_NAME }}{% endif %}{% else %}-{% endif %}</td>
+                    <td class="text-nowrap">{{ inv.DATEOFISSU or '-' }}</td>
+                    <td><a href="/invoices/detail?k={{ inv.K_INVOICE }}" class="fw-semibold text-primary text-decoration-none" onclick="event.stopPropagation()">{{ inv.NOINVOICE }}</a></td>
+                    <td class="text-end">{{ inv.GRAND_USD|money('usd') }}</td>
+                    <td class="text-end">{{ inv.GRAND_RP|money('idr') }}</td>
+                    <td class="text-end">{{ inv.BYR_USD|money('usd') }}</td>
+                    <td class="text-end">{{ inv.BYR_RP|money('idr') }}</td>
+                    <td>
+                        {% set paid_usd = inv.BYR_USD or 0 %}
+                        {% set paid_idr = inv.BYR_RP or 0 %}
+                        {% if paid_usd > 0 or paid_idr > 0 %}
+                            <span class="badge bg-success-subtle text-success">{{ _t('Paid') }}</span>
+                        {% else %}
+                            <span class="badge bg-warning-subtle text-warning">{{ _t('Unpaid') }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="11" class="text-center p-4 text-muted-custom">{{ _t('No invoices.') }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if invoices.pages > 1 %}
+    <div class="card-footer d-flex justify-content-between align-items-center py-2">
+        <span class="small text-body-secondary">
+            {{ _t('Page') }} {{ invoices.page }} / {{ invoices.pages }}
+        </span>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {% if invoices.page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="/invoices?q={{ search }}&sort={{ sort }}&dir={{ sort_dir }}&page={{ invoices.page - 1 }}">&laquo;</a>
+                </li>
+                {% endif %}
+                {% for pn in page_nums %}
+                <li class="page-item {% if pn == invoices.page %}active{% endif %}">
+                    <a class="page-link" href="/invoices?q={{ search }}&sort={{ sort }}&dir={{ sort_dir }}&page={{ pn }}">{{ pn }}</a>
+                </li>
+                {% endfor %}
+                {% if invoices.page < invoices.pages %}
+                <li class="page-item">
+                    <a class="page-link" href="/invoices?q={{ search }}&sort={{ sort }}&dir={{ sort_dir }}&page={{ invoices.page + 1 }}">&raquo;</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

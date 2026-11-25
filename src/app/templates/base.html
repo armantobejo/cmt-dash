@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="{{ _lang }}" data-coreui-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMT Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/coreui/css/coreui.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="/static/theme.css?v={{ asset_ver }}" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar sidebar-dark sidebar-narrow bg-dark border-end" id="sidebar" data-coreui="sidebar">
+        <div class="sidebar-header px-3 py-3 d-flex align-items-center">
+            <i class="bi bi-box-seam fs-4 me-2 text-info"></i>
+            <h6 class="m-0 fw-semibold">CMT Dash</h6>
+        </div>
+        <ul class="sidebar-nav" data-coreui="navigation">
+            {% if user and user.authenticated %}
+                {# ── Home Dashboard ── #}
+                <li class="nav-item"><a href="/" class="nav-link {% if active_page == 'home' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('Home Dashboard') }}"><i class="nav-icon bi bi-grid-1x2-fill"></i> <span class="d-narrow-none">{{ _t('Home Dashboard') }}</span></a></li>
+
+                {# ── Sales ── #}
+                <li class="nav-item"><a href="/sales" class="nav-link {% if active_page == 'sales' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('Sales') }}"><i class="nav-icon bi bi-graph-up"></i> <span class="d-narrow-none">{{ _t('Sales') }}</span></a></li>
+
+                {# ── Shipments ── #}
+                                                <li class="nav-item"><a href="/shipments" class="nav-link {% if active_page == 'shipments' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('Shipments') }}"><i class="nav-icon bi bi-truck"></i> <span class="d-narrow-none">{{ _t('Shipments') }}</span></a></li>
+
+                                {# ── Projects/Jobs (F-22/F-23) ── #}
+                                <li class="nav-item"><a href="/projects-jobs" class="nav-link {% if active_page == 'projects_jobs' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('Projects/Jobs') }}"><i class="nav-icon bi bi-folder2-open"></i> <span class="d-narrow-none">{{ _t('Projects/Jobs') }}</span></a></li>
+
+                                                {# ── Reference (F-28) ── #}
+                                                <li class="nav-group {% if active_page in ('agents','shippers','consignees','accounts') %}show{% endif %}">
+                                                    <a class="nav-group-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#ref-group">
+                                                        <i class="nav-icon bi bi-list-ul"></i>
+                                                        <span class="d-narrow-none">{{ _t('Reference Data') }}</span>
+                                                    </a>
+                                                    <ul class="nav-group-items collapse {% if active_page in ('agents','shippers','consignees','accounts') %}show{% endif %}" id="ref-group">
+                                                        <li class="nav-item"><a href="/agents" class="nav-link {% if active_page == 'agents' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('List Agent') }}"><i class="nav-icon bi bi-person-badge"></i> <span class="d-narrow-none">{{ _t('List Agent') }}</span></a></li>
+                                                        <li class="nav-item"><a href="/shippers" class="nav-link {% if active_page == 'shippers' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('List Shipper/ Forwarder') }}"><i class="nav-icon bi bi-truck-front"></i> <span class="d-narrow-none">{{ _t('List Shipper/ Forwarder') }}</span></a></li>
+                                                        <li class="nav-item"><a href="/consignees" class="nav-link {% if active_page == 'consignees' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('List Consignee/ Notify') }}"><i class="nav-icon bi bi-person-lines-fill"></i> <span class="d-narrow-none">{{ _t('List Consignee/ Notify') }}</span></a></li>
+                                                        <li class="nav-item"><a href="/accounts" class="nav-link {% if active_page == 'accounts' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('List Account') }}"><i class="nav-icon bi bi-journal-text"></i> <span class="d-narrow-none">{{ _t('List Account') }}</span></a></li>
+                                                    </ul>
+                                                </li>
+
+                                {# ── Accounting & Finance (group) ── #}
+                <li class="nav-group {% if active_page in ('invoices','ledger') %}show{% endif %}">
+                    <a class="nav-group-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#accfin-group">
+                        <i class="nav-icon bi bi-cash-stack"></i>
+                        <span class="d-narrow-none">{{ _t('Accounting & Finance') }}</span>
+                    </a>
+                    <ul class="nav-group-items collapse {% if active_page in ('invoices','ledger') %}show{% endif %}" id="accfin-group">
+                        <li class="nav-item"><a href="/aging/ar" class="nav-link {% if active_page == 'aging_ar' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('A/R Aging') }}"><i class="nav-icon bi bi-clock-history"></i> <span class="d-narrow-none">{{ _t('A/R Aging') }}</span></a></li>
+                        <li class="nav-item"><a href="/aging/ap" class="nav-link {% if active_page == 'aging_ap' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('A/P Aging') }}"><i class="nav-icon bi bi-clock-history"></i> <span class="d-narrow-none">{{ _t('A/P Aging') }}</span></a></li>
+                        <li class="nav-item"><a href="/ar-receipt" class="nav-link {% if active_page == 'ar_receipt' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('A/R Receipt') }}"><i class="nav-icon bi bi-receipt"></i> <span class="d-narrow-none">{{ _t('A/R Receipt') }}</span></a></li>
+                        <li class="nav-item"><a href="/ap-payment" class="nav-link {% if active_page == 'ap_payment' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('A/P Payment') }}"><i class="nav-icon bi bi-cash-stack"></i> <span class="d-narrow-none">{{ _t('A/P Payment') }}</span></a></li>
+                        <li class="nav-item"><a href="/statement-of-account" class="nav-link {% if active_page == 'statement_of_account' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('Statement of Account') }}"><i class="nav-icon bi bi-file-earmark-text"></i> <span class="d-narrow-none">{{ _t('Statement of Account') }}</span></a></li>
+                        <li class="nav-item"><a href="/ledger" class="nav-link {% if active_page == 'ledger' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('Ledger') }}"><i class="nav-icon bi bi-journal-bookmark"></i> <span class="d-narrow-none">{{ _t('Ledger') }}</span></a></li>
+                    </ul>
+                </li>
+
+                                {# ── Reports (group) ── #}
+                                <li class="nav-group {% if active_page in ('performance','gross_profit','rate_by_destination') %}show{% endif %}">
+                                    <a class="nav-group-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#reports-group">
+                                        <i class="nav-icon bi bi-bar-chart"></i>
+                                        <span class="d-narrow-none">{{ _t('Reports') }}</span>
+                                    </a>
+                                    <ul class="nav-group-items collapse {% if active_page in ('performance','gross_profit','rate_by_destination') %}show{% endif %}" id="reports-group">
+                                        <li class="nav-item"><a href="/performance" class="nav-link {% if active_page == 'performance' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('Performance Tracker') }}"><i class="nav-icon bi bi-graph-up-arrow"></i> <span class="d-narrow-none">{{ _t('Performance Tracker') }}</span></a></li>
+                                        <li class="nav-item"><a href="/gross-profit" class="nav-link {% if active_page == 'gross_profit' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('Gross Profit & Loss') }}"><i class="nav-icon bi bi-cash-stack"></i> <span class="d-narrow-none">{{ _t('Gross Profit & Loss') }}</span></a></li>
+                                        <li class="nav-item"><a href="/rate-by-destination" class="nav-link {% if active_page == 'rate_by_destination' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('Rate by Destination') }}"><i class="nav-icon bi bi-geo-alt"></i> <span class="d-narrow-none">{{ _t('Rate by Destination') }}</span></a></li>
+                                    </ul>
+                                </li>
+
+                                {# ── Admin (group) ── #}
+                {% if user.role in ('superadmin', 'admin') %}
+                <li class="nav-group {% if active_page in ('admin', 'users', 'data_quality') %}show{% endif %}">
+                    <a class="nav-group-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#admin-group">
+                        <i class="nav-icon bi bi-gear"></i>
+                        <span class="d-narrow-none">{{ _t('Admin') }}</span>
+                    </a>
+                    <ul class="nav-group-items collapse {% if active_page == 'admin' %}show{% endif %}" id="admin-group">
+                        <li class="nav-item"><a href="/users" class="nav-link {% if active_page == 'users' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('Users') }}"><i class="nav-icon bi bi-people"></i> <span class="d-narrow-none">{{ _t('Users') }}</span></a></li>
+                        <li class="nav-item"><a href="/data-quality" class="nav-link {% if active_page == 'data_quality' %}active{% endif %}" data-coreui-toggle="tooltip" data-coreui-placement="right" title="{{ _t('Data Quality') }}"><i class="nav-icon bi bi-clipboard-check"></i> <span class="d-narrow-none">{{ _t('Data Quality') }}</span></a></li>
+                    </ul>
+                </li>
+                {% endif %}
+            {% endif %}
+        </ul>
+    </div>
+    <div class="wrapper" id="main-content">
+        <header class="header header-sticky mb-3 border-bottom">
+            <div class="container-fluid px-3 px-md-4">
+                <div class="header-content d-flex align-items-center justify-content-between py-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="header-toggler" id="sidebar-toggle" type="button" aria-label="Toggle navigation">
+                            <i class="bi bi-list fs-5"></i>
+                        </button>
+                        {% if user and user.authenticated and user.role in ('superadmin','admin','management') %}
+                        <form method="post" action="/sync" class="m-0" onsubmit="return cmSyncSubmit(this)">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                            <button id="sync-btn" type="submit" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-arrow-repeat me-1"></i><span id="sync-btn-label">{{ _t('Sync') }}</span>
+                            </button>
+                        </form>
+                        <div id="sync-result" class="small ms-2"
+                             data-progress="{{ _t('Syncing') }}"
+                             data-ok="{{ _t('Sync OK') }}"
+                             data-denied="{{ _t('Access denied') }}"
+                             data-fail="{{ _t('Failed') }}"
+                             data-unknown="{{ _t('unknown') }}">
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        {% if user and user.authenticated %}
+                            <span class="small text-body-secondary">{{ user.display_name }}</span>
+                            <form method="post" action="/logout" class="m-0">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary" title="{{ _t('Logout') }}">
+                                    <i class="bi bi-box-arrow-right" aria-label="Logout"></i>
+                                </button>
+                           </form>
+                        {% else %}
+                            <a href="/login" class="btn btn-sm btn-primary">{{ _t('Login') }}</a>
+                        {% endif %}
+                        {% if available_dbs | length > 1 %}
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-info dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-database me-1"></i>{{ active_db_name }}
+                           </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                {% for db in available_dbs %}
+                                <li>
+                                    <form method="post" action="/set-db" class="m-0">
+                                        <input type="hidden" name="db_name" value="{{ db.name }}">
+                                        <button class="dropdown-item {% if db.name == active_db_name %}active{% endif %}" type="submit">
+                                            <i class="bi bi-database{% if db.name == active_db_name %}-check{% endif %} me-1"></i>{{ db.name }}
+                                        </button>
+                                   </form>
+                               </li>
+                                {% endfor %}
+                           </ul>
+                       </div>
+                       {% endif %}
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ {'id':'ID','en':'EN','zh':'ZH'}[_lang] }}
+                           </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                {% for code, label in [('id','Bahasa Indonesia'),('en','English'),('zh','中文')] %}
+                                <li>
+                                    <form method="post" action="/set-lang" class="m-0">
+                                        <input type="hidden" name="lang" value="{{ code }}">
+                                        <button class="dropdown-item {% if code == _lang %}active{% endif %}" type="submit">{{ label }}</button>
+                                   </form>
+                               </li>
+                                {% endfor %}
+                           </ul>
+                       </div>
+                        <button id="theme-toggle" class="btn btn-sm btn-outline-secondary" type="button">Light</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <div class="body flex-grow-1 px-3 px-md-4 py-3">
+            {% block content %}{% endblock %}
+        </div>
+        <footer class="footer px-3 px-md-4 py-3 small text-body-secondary border-top mt-auto">
+            {{ _t('Data synced from FoxPro system') }} • <span id="sync-time">{{ sync_time }}</span>
+       </footer>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/coreui/js/coreui.bundle.min.js"></script>
+    <script src="/static/layout.js?v={{ asset_ver }}"></script>
+</body>
+</html>

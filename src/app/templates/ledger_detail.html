@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% macro _idr_amount(row) -%}
+    {%- set ccy = (row.CURRENCY or '')|upper -%}
+    {%- if ccy in ('RP', 'IDR', 'RP.') -%}
+        {{ row.JUMLAH|money('idr') }}
+    {%- else -%}
+        {{ row.JUMLAH|money }} <span class="text-body-secondary small">@{{ row.EXRATE|int }}</span>
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro amt(usd, idr) -%}
+    {% if usd is none and idr is none %}-{% else %}{% if usd is not none %}{{ usd|money }}{% else %}{{ idr|money('idr') }}{% endif %}{% endif %}
+{%- endmacro %}
+
+{% block content %}
+{# --- Account info header card --- #}
+<div class="row mb-3 align-items-center">
+    <div class="col">
+        <h3 class="mb-0">
+            <a href="/ledger" class="text-decoration-none text-body">{{ _t('Chart of Accounts') }}</a>
+            <i class="bi bi-chevron-right mx-1 small text-muted"></i>
+            <span class="text-body-secondary">{{ detail.account.KD_ACCOUNT }}</span>
+        </h3>
+        <span class="fs-5 fw-semibold">{{ detail.account.NM_ACCOUNT or '' }}</span>
+        <span class="ms-2">
+            {% if detail.account.TYPE == 'G' %}
+                <span class="badge bg-secondary-subtle text-secondary">{{ _t('Group') }}</span>
+            {% else %}
+                <span class="badge bg-info-subtle text-info">{{ _t('Detail') }}</span>
+            {% endif %}
+        </span>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body py-2">
+        <div class="d-flex flex-wrap gap-4 small">
+            <div><span class="text-body-secondary">{{ _t('Code') }}:</span> <strong class="font-monospace">{{ detail.account.KD_ACCOUNT }}</strong></div>
+            <div><span class="text-body-secondary">{{ _t('Normal Bal') }}:</span> <strong>{{ detail.account.SLD_NORMAL or '-' }}</strong></div>
+            <div><span class="text-body-secondary">{{ _t('Active') }}:</span>
+                {% if detail.account.ACTIVE == 'Y' %}
+                    <span class="badge bg-success-subtle text-success">{{ _t('Active') }}</span>
+                {% else %}
+                    <span class="badge bg-danger-subtle text-danger">{{ _t('Inactive') }}</span>
+                {% endif %}
+            </div>
+            <div><span class="text-body-secondary">{{ _t('Total Entries') }}:</span> <strong>{{ detail.total }}</strong></div>
+        </div>
+    </div>
+</div>
+
+{# --- Filter bar + entries table --- #}
+<div class="card">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <span class="fw-semibold">{{ _t('Journal Entries') }}</span>
+        <form method="get" action="/ledger/detail" class="d-flex gap-2 m-0">
+            <input type="hidden" name="k" value="{{ k }}">
+            <input type="hidden" name="sort" value="{{ sort }}">
+            <input type="hidden" name="dir" value="{{ sort_dir }}">
+            <div class="d-flex align-items-center gap-1">
+                <label class="text-body-secondary small mb-0">{{ _t('From') }}</label>
+                <input type="date" name="from" class="form-control form-control-sm" style="width:150px" value="{{ date_from }}">
+            </div>
+            <div class="d-flex align-items-center gap-1">
+                <label class="text-body-secondary small mb-0">{{ _t('To') }}</label>
+                <input type="date" name="to" class="form-control form-control-sm" style="width:150px" value="{{ date_to }}">
+            </div>
+            <div class="input-group input-group-sm" style="max-width:220px">
+                <input type="text" name="q" class="form-control" placeholder="{{ _t('Search ref or desc') }}…" value="{{ search }}">
+            </div>
+            <button class="btn btn-sm btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    {% macro sort_header(key, label) %}
+                    {% set next_dir = 'asc' if (sort == key and sort_dir == 'desc') else 'desc' %}
+                    <th>
+                        <a href="?k={{ k }}&q={{ search|urlencode }}&from={{ date_from }}&to={{ date_to }}&sort={{ key }}&dir={{ next_dir }}"
+                           class="text-decoration-none text-body">
+                            {{ label }}
+                            {% if sort == key %}<i class="bi bi-chevron-{% if sort_dir == 'desc' %}down{% else %}up{% endif %} small"></i>{% endif %}
+                        </a>
+                    </th>
+                    {% endmacro %}
+                    {{ sort_header('date', _t('Date')) }}
+                    {{ sort_header('modul', _t('Module')) }}
+                    <th>{{ _t('Ref No') }}</th>
+                    <th>{{ _t('Description') }}</th>
+                    <th class="text-end">{{ _t('Debit') }} (Rp)</th>
+                    <th class="text-end">{{ _t('Credit') }} (Rp)</th>
+                    <th class="text-center">{{ _t('Ccy') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in detail.rows %}
+                <tr>
+                    <td class="text-nowrap">{{ row.TANGGAL or '-' }}</td>
+                    <td>
+                        {% if row.MODUL == 'INV' %}
+                            <span class="badge bg-info-subtle text-info">{{ row.MODUL }}</span>
+                        {% elif row.MODUL == 'OPR' %}
+                            <span class="badge bg-warning-subtle text-warning">{{ row.MODUL }}</span>
+                        {% elif row.MODUL in ('AP', 'BYR', 'TRM', 'AR', 'AR-AGENT', 'AP-AGENT') %}
+                            <span class="badge bg-success-subtle text-success">{{ row.MODUL }}</span>
+                        {% elif row.MODUL in ('DCFCL', 'DNF') %}
+                            <span class="badge bg-danger-subtle text-danger">{{ row.MODUL }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary">{{ row.MODUL }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="font-monospace small">{{ row.REF_NO or '-' }}</td>
+                    <td>{{ row.URAIAN or '-' }}</td>
+                    <td class="text-end text-nowrap">
+                        {% if row.DK == 'D' %}{{ _idr_amount(row) }}{% endif %}
+                    </td>
+                    <td class="text-end text-nowrap">
+                        {% if row.DK == 'K' %}{{ _idr_amount(row) }}{% endif %}
+                    </td>
+                    <td class="text-center">{{ row.CURRENCY or '-' }}</td>
+                </tr>
+                {% endfor %}
+                {% if not detail.rows %}
+                <tr><td colspan="7" class="text-center text-body-secondary py-4">{{ _t('No journal entries found.') }}</td></tr>
+                {% endif %}
+            </tbody>
+            {% if detail.rows %}
+            <tfoot>
+                <tr class="fw-bold border-top">
+                    <td colspan="4" class="text-end">{{ _t('Page Total') }}</td>
+                    <td class="text-end text-nowrap">{{ detail.debit|money('idr') }}</td>
+                    <td class="text-end text-nowrap">{{ detail.credit|money('idr') }}</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+            {% endif %}
+        </table>
+    </div>
+    {% if detail.pages > 1 %}
+    <div class="card-footer d-flex justify-content-between align-items-center">
+        <span class="text-body-secondary small">
+            {{ _t('Page') }} {{ detail.page }} / {{ detail.pages }} &middot; {{ detail.total }} {{ _t('entries') }}
+        </span>
+        <nav>
+            <ul class="pagination pagination-sm mb-0">
+                {% for p in page_nums %}
+                <li class="page-item {{ 'active' if p == detail.page }}">
+                    <a class="page-link" href="?k={{ k }}&q={{ search|urlencode }}&from={{ date_from }}&to={{ date_to }}&sort={{ sort }}&dir={{ sort_dir }}&page={{ p }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

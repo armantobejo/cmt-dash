@@ -1,0 +1,398 @@
+{
+    "api_health": {
+        "status": "ok"
+    },
+    "api_summary_anon": {
+        "detail": "Unauthorized"
+    },
+    "api_summary_shape": {
+        "invoices": 2,
+        "keys": [
+            "shipments",
+            "imports",
+            "exports",
+            "invoices",
+            "voyages",
+            "recent_shipments"
+        ],
+        "recent_count": 3,
+        "shipments": 3
+    },
+    "api_sync_status_shape": {
+        "keys": [
+            "last_sync",
+            "stale",
+            "age_seconds"
+        ],
+        "stale_is_bool": true
+    },
+    "dashboard": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "page_nums",
+            "search",
+            "sort",
+            "sort_dir",
+            "summary",
+            "sync_time",
+            "t",
+            "top_customers",
+            "unpaid",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "dashboard"
+    },
+    "data_quality": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_company",
+            "active_db_name",
+            "active_page",
+            "anomalies",
+            "available_dbs",
+            "sync_time",
+            "t",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "data_quality"
+    },
+    "invoices": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "invoices",
+            "page_nums",
+            "search",
+            "sort",
+            "sort_dir",
+            "sync_time",
+            "t",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "invoices"
+    },
+    "invoices_search": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "invoices",
+            "page_nums",
+            "search",
+            "sort",
+            "sort_dir",
+            "sync_time",
+            "t",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "invoices"
+    },
+    "invoices_sort": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "invoices",
+            "page_nums",
+            "search",
+            "sort",
+            "sort_dir",
+            "sync_time",
+            "t",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "invoices"
+    },
+    "known_defect_detail_pages": {
+        "ledger_detail": 200,
+        "shipment_detail": 200
+    },
+    "ledger": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "accounts",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "search",
+            "sort",
+            "sortDir",
+            "sync_time",
+            "t",
+            "typeFilter",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "ledger"
+    },
+    "ledger_sort": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "accounts",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "search",
+            "sort",
+            "sortDir",
+            "sync_time",
+            "t",
+            "typeFilter",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "ledger"
+    },
+    "ledger_type_filter": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "accounts",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "search",
+            "sort",
+            "sortDir",
+            "sync_time",
+            "t",
+            "typeFilter",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "ledger"
+    },
+    "login_failure": {
+        "error": "Username or password incorrect",
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "error",
+            "sync_time",
+            "t",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "login"
+    },
+    "login_missing_field": {
+        "detail": [
+            {
+                "input": null,
+                "loc": [
+                    "body",
+                    "username"
+                ],
+                "msg": "Field required",
+                "type": "missing"
+            }
+        ]
+    },
+    "login_page": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "sync_time",
+            "t",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "login"
+    },
+    "login_success": {
+        "has_session_cookie": true,
+        "keys": [],
+        "location": "/",
+        "status": 302,
+        "view": null
+    },
+    "sales": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "period",
+            "summary",
+            "sync_time",
+            "t",
+            "top_customers",
+            "top_salesman",
+            "trend",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "sales"
+    },
+    "shipment_detail_missing_ref": {
+        "detail": [
+            {
+                "input": null,
+                "loc": [
+                    "query",
+                    "ref"
+                ],
+                "msg": "Field required",
+                "type": "missing"
+            }
+        ]
+    },
+    "shipments": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "invoice_filter",
+            "page_nums",
+            "search",
+            "shipments",
+            "sort",
+            "sort_dir",
+            "sync_time",
+            "t",
+            "type_filter",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "shipments"
+    },
+    "shipments_search": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "invoice_filter",
+            "page_nums",
+            "search",
+            "shipments",
+            "sort",
+            "sort_dir",
+            "sync_time",
+            "t",
+            "type_filter",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "shipments"
+    },
+    "shipments_sort": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "invoice_filter",
+            "page_nums",
+            "search",
+            "shipments",
+            "sort",
+            "sort_dir",
+            "sync_time",
+            "t",
+            "type_filter",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "shipments"
+    },
+    "shipments_type_filter": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "invoice_filter",
+            "page_nums",
+            "search",
+            "shipments",
+            "sort",
+            "sort_dir",
+            "sync_time",
+            "t",
+            "type_filter",
+            "user"
+        ],
+        "location": null,
+        "status": 200,
+        "view": "shipments"
+    },
+    "users_page": {
+        "has_session_cookie": false,
+        "keys": [
+            "_lang",
+            "active_db_name",
+            "active_page",
+            "available_dbs",
+            "cmtUser",
+            "editing",
+            "error",
+            "sync_time",
+            "t",
+            "user",
+            "users"
+        ],
+        "location": null,
+        "roles": [
+            "admin",
+            "customer",
+            "management",
+            "staff",
+            "superadmin"
+        ],
+        "status": 200,
+        "usernames": [
+            "admin1",
+            "cust1",
+            "manager1",
+            "staff1",
+            "root"
+        ],
+        "view": "users"
+    }
+}

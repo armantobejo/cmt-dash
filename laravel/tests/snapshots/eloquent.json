@@ -1,0 +1,61 @@
+{
+    "ledger_entry_array_keys": {
+        "keys": [
+            "account_code",
+            "debit",
+            "credit",
+            "transaction_date"
+        ]
+    },
+    "ledger_entry_config": {
+        "casts": {
+            "credit": "decimal:2",
+            "debit": "decimal:2",
+            "transaction_date": "date"
+        },
+        "connection": "default",
+        "fillable": [
+            "account_code",
+            "debit",
+            "credit",
+            "reference",
+            "transaction_date"
+        ],
+        "table": "gl_ledger_entries"
+    },
+    "ledger_entry_persistence": {
+        "count_for_key": 1,
+        "exists_after_create": true
+    },
+    "ledger_entry_query": {
+        "bindings": [
+            "1101"
+        ],
+        "row_count": 1,
+        "sql": [
+            "select * from \"gl_ledger_entries\" where \"account_code\" = ? order by \"transaction_date\" desc limit 10"
+        ]
+    },
+    "ledger_entry_row": {
+        "account_code": "1101",
+        "credit": "0.00",
+        "debit": "125.50",
+        "id": 1,
+        "reference": "REF-TRISCO-001",
+        "transaction_date": "2026-01-07"
+    },
+    "user_model_config": {
+        "fillable": [
+            "name",
+            "email",
+            "password"
+        ],
+        "hidden": [
+            "password",
+            "remember_token"
+        ],
+        "is_model": true,
+        "notifiable": true,
+        "table": "users"
+    }
+}

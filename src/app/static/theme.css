@@ -1,0 +1,323 @@
+/* ── Design tokens ── */
+:root {
+    --color-accent: #6a5fc1;
+    --color-import: #6a5fc1;
+    --color-export: #db6d28;
+    --color-domestic: #2ba86f;
+    --color-trucking: #8aab2f;
+    --color-breakbulk: #d4567a;
+
+    /* Deliberate app typeface: IBM Plex Sans (falls back to system stack). */
+    --font-app: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    /* Sidebar polish tokens */
+    --sidebar-header-height: 3.5rem;
+    --sidebar-section-gap: 0.5rem;
+    --sidebar-item-gap: 2px;
+    --sidebar-active-bar: 3px;
+    --sidebar-active-bg: rgba(106, 95, 193, 0.22);
+    --sidebar-active-icon: #b3aaf2;
+    --sidebar-group-divider: rgba(255,255,255,0.06);
+    --sidebar-transition: 120ms ease;
+}
+
+/* Light mode: darken colors that are too washed out on white. */
+[data-coreui-theme="light"] .badge-import { background: #5a4fb0; color: #fff; }
+[data-coreui-theme="light"] .badge-export { background: #c55a1a; color: #fff; }
+[data-coreui-theme="light"] .badge-domestic { background: #d4f5e4; color: #1a6b42; }
+[data-coreui-theme="light"] .badge-trucking { background: #e8f5c4; color: #5a7a1a; }
+[data-coreui-theme="light"] .badge-breakbulk { background: #fce4ec; color: #a83050; }
+
+body {
+    font-size: 1rem;
+    font-family: var(--font-app);
+}
+
+/* Consistent muted text color for stat labels, descriptions, and empty states. */
+.text-muted-custom {
+    color: var(--cui-secondary-color);
+}
+
+/* Money columns: align digits with tabular figures. */
+.table .text-end {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Sidebar polish ── */
+
+/* Header: smaller, top-accent bar, tidy spacing */
+.sidebar-header {
+    margin-top: var(--sidebar-section-gap);
+    border-top: 2px solid var(--color-accent);
+    padding-top: 0.6rem;
+    padding-bottom: 0.4rem;
+    min-height: var(--sidebar-header-height);
+}
+.sidebar-header .nav-icon {
+    font-size: 1.3rem;
+}
+.sidebar-header h6 {
+    font-size: 0.85rem;
+    letter-spacing: 0.3px;
+    opacity: 0.9;
+}
+
+/* Nav items: tighter vertical rhythm, no CoreUI default padding bloat */
+.sidebar-nav .nav-item {
+    margin-bottom: var(--sidebar-item-gap);
+}
+.sidebar-nav .nav-link {
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+    border-radius: 0;
+    transition: color var(--sidebar-transition), background-color var(--sidebar-transition);
+}
+.sidebar-nav .nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.06);
+}
+
+/* Active state: accent-tinted fill + left accent bar — the tint, not just
+   the bar, is what makes the current page pop against plain hover rows. */
+.sidebar-nav .nav-link.active {
+    color: #fff;
+    background: var(--sidebar-active-bg);
+    border-left: var(--sidebar-active-bar) solid var(--color-accent);
+    padding-left: calc(0.5rem - var(--sidebar-active-bar));
+}
+.sidebar-nav .nav-link.active .nav-icon {
+    color: var(--sidebar-active-icon);
+}
+
+/* Icon runtime alignment: ONE icon size for every sidebar level — main
+   items, group toggles, and sub-items all share this box. */
+.sidebar-nav .nav-icon {
+    font-size: 1.1rem;
+    width: 1.2rem;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* Group toggle: reads as section header, not a button */
+.nav-group-toggle {
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+    margin-top: var(--sidebar-section-gap);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255,255,255,0.55);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-radius: 0;
+    transition: color var(--sidebar-transition), background-color var(--sidebar-transition);
+}
+.nav-group-toggle:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.04);
+}
+
+/* Group divider line */
+.nav-group {
+    border-top: 1px solid var(--sidebar-group-divider);
+    padding-top: 0;
+}
+
+/* Revealed sub-menu: subtle inset tint so the children read as a nested
+   block, not a continuation of the main list. */
+.nav-group-items.show {
+    background: rgba(255,255,255,0.03);
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+/* Sub-items: refined sizing + indent. Single source of truth — this block was
+   previously defined twice with conflicting padding and active-bar colors. */
+.nav-group-items .nav-link {
+    color: var(--cui-secondary-color);
+    font-size: 0.875rem;
+    padding-left: 1.5rem;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    transition: color var(--sidebar-transition);
+}
+.nav-group-items .nav-link:hover,
+.nav-group-items .nav-link.active {
+    color: #fff;
+}
+.nav-group-items .nav-link.active {
+    border-left: var(--sidebar-active-bar) solid var(--color-accent);
+    padding-left: calc(1.5rem - var(--sidebar-active-bar));
+}
+[data-coreui-theme="light"] .nav-group-items .nav-link {
+    color: #6c757d;
+}
+[data-coreui-theme="light"] .nav-group-items .nav-link:hover,
+[data-coreui-theme="light"] .nav-group-items .nav-link.active {
+    color: #1a1a2e;
+}
+[data-coreui-theme="light"] .nav-group-items .nav-link.active {
+    border-left-color: var(--color-accent);
+}
+
+/* Light theme: same three behaviors, re-derived for a light surface. */
+[data-coreui-theme="light"] .sidebar-nav .nav-link.active {
+    color: #1a1a2e;
+    background: var(--sidebar-active-bg);
+}
+[data-coreui-theme="light"] .sidebar-nav .nav-link.active .nav-icon {
+    color: var(--color-accent);
+}
+[data-coreui-theme="light"] .nav-group-items.show {
+    background: rgba(0,0,0,0.03);
+}
+
+/* Light theme: adjust for light bg */
+[data-coreui-theme="light"] .sidebar-header {
+    border-top-color: rgba(0,0,0,0.15);
+}
+[data-coreui-theme="light"] .sidebar-header .nav-icon {
+    color: rgba(0,0,0,0.7);
+}
+[data-coreui-theme="light"] .sidebar-header h6 {
+    color: rgba(0,0,0,0.85);
+}
+[data-coreui-theme="light"] .sidebar-nav .nav-link:hover {
+    background: rgba(0,0,0,0.04);
+}
+[data-coreui-theme="light"] .nav-group-toggle {
+    color: rgba(0,0,0,0.5);
+}
+[data-coreui-theme="light"] .nav-group-toggle:hover {
+    background: rgba(0,0,0,0.04);
+}
+[data-coreui-theme="light"] .nav-group {
+    border-top-color: rgba(0,0,0,0.08);
+}
+
+/* Hide "CMT Dash" text when sidebar is collapsed to narrow mode. */
+.sidebar.sidebar-narrow .sidebar-header h6 {
+    display: none;
+}
+
+/* Stat cards on the index page. Used by templates/index.html. */
+.stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    display: block;
+}
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--cui-secondary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-top: 6px;
+}
+.stat-card {
+    padding: 1.25rem 0.75rem;
+    text-align: center;
+    background: var(--cui-card-bg, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--cui-border-color);
+    border-radius: var(--cui-border-radius);
+}
+
+
+/* Custom shipment-kind badges used in the recent-shipments table.
+   White text sits on tinted-badge backgrounds; these carry a font-weight
+   bump and text-shadow so contrast clears WCAG AA at badge sizes. */
+.badge-import { background: var(--color-import); color: #fff; }
+.badge-export { background: var(--color-export); color: #fff; font-weight: 700; text-shadow: 0 1px 1px rgba(0,0,0,.45); }
+.badge-domestic { background: var(--color-domestic); color: #000; }
+.badge-trucking { background: var(--color-trucking); color: #000; }
+.badge-breakbulk { background: var(--color-breakbulk); color: #fff; font-weight: 700; text-shadow: 0 1px 1px rgba(0,0,0,.45); }
+
+/* Override CoreUI's narrow-mode CSS that hides ALL nav-group-items (even expanded ones). */
+.sidebar-narrow .nav-group.show .nav-group-items,
+.sidebar-narrow-unfoldable:not(:hover) .nav-group.show .nav-group-items {
+    height: auto !important;
+    padding: var(--cui-sidebar-nav-group-items-padding-y) var(--cui-sidebar-nav-group-items-padding-x) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: visible;
+}
+
+/* Tables inside card bodies scroll horizontally on narrow screens instead of
+   stretching the page (mobile horizontal-scroll fix). Mirrors the manual
+   .table-responsive wrapper used in users.html. */
+.card-body > .table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Header toolbar wraps instead of forcing the page wide on small screens. */
+.header-content {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+}
+
+/* Filter forms in card headers wrap their controls instead of stretching the
+   card (mobile horizontal-scroll fix, pairs with the table rule above). */
+.card-header form.d-flex {
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+}
+
+/* Touch targets: 44px hit area on coarse pointers (phones/tablets). Mouse
+   users keep the compact desktop sizing. */
+@media (pointer: coarse) {
+    .header-content .btn,
+    .card-header form .btn,
+    .card-header form .form-select,
+    .card-header form .form-control {
+        min-height: 44px;
+    }
+    .table thead th a {
+        display: inline-block;
+        padding: 0.6rem 0.25rem;
+    }
+}
+
+/* DN/CN row backgrounds in shipment detail — theme-aware via Bootstrap's RGB vars. */
+.dn-row {
+    background: rgba(var(--bs-success-rgb), 0.10);
+}
+.cn-row {
+    background: rgba(var(--bs-danger-rgb), 0.10);
+}
+
+@media (min-width: 992px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 1030; /* Above wrapper, below modals */
+  }
+  .wrapper {
+    margin-left: var(--cui-sidebar-width, 16rem);
+  }
+  .sidebar.sidebar-narrow ~ .wrapper {
+    margin-left: var(--cui-sidebar-narrow-width, 4.25rem);
+  }
+}
+
+/* Data-quality anomaly rows: real links need no extra cursor/hover rules. */
+
+/* Data-quality detail table: footer auto-sum row (page totals for the
+   amount columns). Sits directly under the last data row of the page. */
+.dq-total-row td {
+    border-top: 2px solid var(--color-accent);
+    background: rgba(106, 95, 193, 0.08);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+[data-coreui-theme="light"] .dq-total-row td {
+    background: rgba(106, 95, 193, 0.06);
+}
+
