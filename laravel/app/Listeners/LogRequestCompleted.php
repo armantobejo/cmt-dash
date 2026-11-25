@@ -21,7 +21,8 @@ class LogRequestCompleted
             $username = $this->auth->username ?? $this->auth->getUsername() ?? '';
         }
 
-        Log::channel('cmt.access')->debug('request', [
+        $channels = config('logging.channels');
+        Log::build($channels['cmt.access'])->debug('request', [
             'event' => 'request',
             'request_id' => $request->attributes->get('cmt_request_id', ''),
             'method' => $request->getMethod(),

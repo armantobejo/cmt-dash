@@ -6,7 +6,7 @@
 
 ## Description
 
-Refer to PRD.md for details
+Laravel rebuild to full parity (cutover when ready per PRD).
 
 ## Stop Condition
 
@@ -29,7 +29,28 @@ If the stop condition appears to be met, the leader should raise a motion for th
 
 Assign tasks by profile name (e.g. `assignee='yevna'`). The system routes to the matched profile — roles are not assignees.
 
-**Last heartbeat:** 2026-11-25T06:34:03.259342+00:00
+## Active Discussions
+
+- `[t_a7268fd9]` SC-001 gate unblock: verify CMT-2026-001 MEDIUM fix and re-r (steps 0/30, discussing)
+
+## Kanban Summary
+
+- Triage: 0 | Todo: 2 | Ready (queued): 0 | Running: 1 | Blocked: 25 | In review: 0 | Done: 418
+
+**Todo tasks:**
+- `t_892eb484` assignee=bejo — Fix SC-001 CRITICAL vuln-0001 on Laravel auth
+- `t_a7268fd9` assignee=bejo — [Motion] SC-001 gate unblock: verify CMT-2026-001 MEDIUM fix
+
+**Running tasks:**
+- `t_b59596ae` assignee=hasna — Deploy SC-001 fix via CI/CD
+
+**Blocked tasks:**
+- `t_d754b8f8` assignee=yevna — P5: Run parity compare and report diff
+- `t_067f8433` assignee=yervant — Complete P5 parity gate: capture + self-compare + doctored-f
+- `t_6cd0bd4c` assignee=yervant — Build A/R receipt & A/P payment report pages (F-24/F-25)
+- `t_32a4bbf6` assignee=yervant — P5: implement Laravel-side parity capture harness (unblocks 
+- `t_0120c10e` assignee=yevna — SC-001: re-run Strix pentest against Laravel build
+- ... +20 more
 
 ## Workflow
 
