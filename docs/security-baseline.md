@@ -1,8 +1,8 @@
 # Security Baseline — CMT Dashboard
 
 **Status**: HARDENED — findings F1–F8 resolved (T002, T010–T015, T045, YAGNI cut #6).
-**Strix pentest**: DEFERRED by owner (2026-08-10): "no need to pen-test now, it's still in early stage".
-**Next action**: Re-run pipeline Stage 6 (strix) when the app reaches feature-complete / pre-launch.
+**Strix pentest**: RUN 2026-11-25 against the Laravel build (commit `64cf455`) — **0 Critical, 0 High**; 3 Medium + KG-1 remediated in `01aa2e8`. See `docs/security/sc-001-run-2026-11-25.md`.
+**Next action**: SC-001 severity criterion cleared; re-run Strix before live cutover to confirm remediation.
 
 ---
 
@@ -45,6 +45,14 @@ reproducible builds.
 
 ## 4. Deferred / Open Work
 
-- [ ] T040 / T046: Strix deep pentest — **attempted 2026-11-22 vs `http://127.0.0.1:8002`; blocked: LLM relay exhausted (402 insufficient credit balance).** Manual re-verification confirms vuln-0001 CRITICAL OPEN (`admin:admin` at `POST /login`). Gate remains BLOCKED. See `docs/security/sc-001-laravel-strix-retry-2026-11-22.md`.
-- [x] T042: Manual smoke test — **DONE 2026-11-22**: login probe confirms `admin:admin` accepted on Laravel; `/api/summary` absent on Laravel.
-- [x] T043: Final security-baseline refresh — this edit.
+- [x] T040 / T046: Strix deep pentest — superseded by the successful authenticated run below. The earlier 2026-11-22 attempt was blocked (LLM relay 402); its `admin:admin` observation predates the default-credential fix and is no longer valid.
+- [x] T042: Manual smoke test — **DONE 2026-11-25**: `admin:admin` and `superadmin:superadmin` now REJECTED; provisioned creds accepted; unauth `/api/summary` returns 401. See `docs/security/sc-001-run-2026-11-25.md`.
+- [x] T043: Security-baseline refresh — this edit.
+- [x] T046 (retry): Strix authenticated pentest — **DONE 2026-11-25 vs `http://127.0.0.1:8091` (commit `64cf455`)**: LLM relay restored (`ai.pro.my.id` via `:8099` proxy); 951 LLM turns, 55 surfaces. **0 Critical, 0 High.** Three Medium reported and independently reproduced. Default credentials now REJECTED. See `docs/security/sc-001-run-2026-11-25.md`; raw run in `laravel/strix_runs/host-docker-internal-8091_24ec/`.
+- [x] SC-001 Medium disposition — **FIXED in commit `01aa2e8`**, verified against the live Laravel build on `http://127.0.0.1:8091`:
+  - `vuln-0001` IP-keyed login throttle → cross-account lockout (CWE-307) — per-`(lowercase(username), ip)` bucket + IP-wide 60/min backstop in `AppServiceProvider::boot()`. `throttle_poc.py`: 5 failures against distinct usernames followed by a valid login returns 200, not 429.
+  - `vuln-0002` open redirect / Host-header injection on `/set-db`, `/set-lang` (CWE-601) — `SetDbController::switchResponse()` now returns `new RedirectResponse('/', 303)`; `Referer: https://evil.example/phish` and `Host: evil.example` both yield `Location: /`.
+  - `vuln-0003` unauthenticated cross-site `cmt_db` tenant switch, no CSRF token or role gate (CWE-639) — both routes removed from `validateCsrfTokens(except:)`; `@csrf` present in both switcher forms; no-token POST returns 419. Values remain whitelisted by `CompanyDbManager::isValidName()`; routes stay public for KG-3.
+  - KG-1: `/shipments/detail` cross-tenant read — `DashboardController::shipmentDetail()` now applies the same `customerCompany` guard as `invoiceDetail()`. Customer `Trisco` requesting a foreign shipment ref returns 303; own ref returns 200. Recorded as a **parity decision** in `docs/decisions/p5-parity-diff-contract.md` (KG-1 retired from `known_gaps` → `fixed_bugs`), not a security acceptance.
+  - Verification: `python sc001_verify.py http://127.0.0.1:8091 '<pw>'` exits 0; `sc001_remediation_check.py` (workspace `t_0e9c77a7`) all six checks PASS; `CompanyDbSwitcherTest` 12/12. Re-run Strix before live cutover to confirm remediation.
+
