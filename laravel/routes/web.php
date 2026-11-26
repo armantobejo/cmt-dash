@@ -13,8 +13,9 @@ use Illuminate\Support\Facades\Route;
 // Named `login` so framework middleware (Filament's panel Authenticate) can
 // redirect guests to the app's one login page instead of a vendor login form.
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-// Security: throttle login attempts. 5 per minute per IP.
-Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+// Security: 5 failures/min per (username, IP) — see AppServiceProvider's
+// named `login` limiter — plus a generous IP-wide backstop.
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:login');
 Route::post('/logout', [AuthController::class, 'logout']);
 
 // ── Company DB + language switchers (public POST — KG-3 parity) ─────────────

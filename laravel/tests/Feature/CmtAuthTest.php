@@ -150,7 +150,7 @@ class CmtAuthTest extends TestCase
         $this->seedEnv('staff1:staff-pw:staff');
         $this->artisan('migrate');
 
-        // 5 attempts allowed per minute per IP.
+        // 5 attempts allowed per minute per (username, IP).
         for ($i = 0; $i < 5; $i++) {
             $this->post('/login', ['username' => 'staff1', 'password' => 'wrong'])
                 ->assertStatus(200)
@@ -160,6 +160,37 @@ class CmtAuthTest extends TestCase
         // 6th attempt within the same minute is rate limited.
         $this->post('/login', ['username' => 'staff1', 'password' => 'wrong'])
             ->assertStatus(429);
+    }
+
+    /** SC-001-R1 (CWE-307): a drained bucket must not lock out another account. */
+    public function test_login_throttle_is_keyed_by_username_not_ip_alone(): void
+    {
+        $this->seedEnv('alpha:alpha-pw:staff,beta:beta-pw:staff');
+        $this->artisan('migrate');
+
+        // The reported exploit: 5 failures spread over 5 different usernames.
+        for ($i = 0; $i < 5; $i++) {
+            $this->post('/login', ['username' => "ghost{$i}", 'password' => 'wrong'])
+                ->assertStatus(200);
+        }
+
+        // A valid login for an unrelated account from the same IP still works.
+        $this->post('/login', ['username' => 'beta', 'password' => 'beta-pw'])
+            ->assertStatus(302)
+            ->assertRedirect('/');
+
+        // The per-username bucket still applies: 5 failures exhaust alpha only.
+        for ($i = 0; $i < 5; $i++) {
+            $this->post('/login', ['username' => 'alpha', 'password' => 'wrong'])
+                ->assertStatus(200);
+        }
+        $this->post('/login', ['username' => 'alpha', 'password' => 'wrong'])
+            ->assertStatus(429);
+
+        // beta remains usable while alpha is throttled.
+        $this->post('/login', ['username' => 'beta', 'password' => 'beta-pw'])
+            ->assertStatus(302)
+            ->assertRedirect('/');
     }
 
     public function test_anonymous_home_redirects_to_login(): void
