@@ -50,7 +50,9 @@ class SetDbController extends Controller
 
     protected function switchResponse(Request $request, string $cookieName, string $value): RedirectResponse
     {
-        $response = redirect()->to($request->headers->get('referer', '/'), 303);
+        // Security (CWE-601): never derive the destination from Referer/Host.
+        // A fixed relative path is same-origin regardless of request headers.
+        $response = new RedirectResponse('/', 303);
 
         return $response->withCookie(cookie(
             $cookieName,

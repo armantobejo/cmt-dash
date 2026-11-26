@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -88,6 +91,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // SC-001 (CWE-307): failures against one username must not lock out a
+        // different account sharing the same egress IP. Per-(username, IP)
+        // bucket for the real limit, plus a generous IP-wide backstop.
+        RateLimiter::for('login', function (\Illuminate\Http\Request $request): array {
+            return [
+                Limit::perMinute(5)->by(Str::lower((string) $request->input('username')).'|'.$request->ip()),
+                Limit::perMinute(60)->by('ip:'.$request->ip()),
+            ];
+        });
+
         // CMT_USERS seeding at boot (Python UserStore.__init__ parity);
         // idempotent, no-op when CMT_USERS is unset. Guarded BEFORE resolving
         // CmtAuth: boot-time resolution would cache the singleton with the

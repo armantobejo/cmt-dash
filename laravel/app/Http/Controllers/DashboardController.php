@@ -24,10 +24,16 @@ class DashboardController extends Controller
     public function __construct(
         protected CmtQueries $queries,
         protected CompanyDbManager $manager,
-        protected CmtUser $user,
         protected SyncService $sync,
         protected CmtAnomalies $anomalies,
     ) {
+    }
+
+    /** Resolve the current request's user — controllers can be reused across
+     *  in-process capture requests, so never cache the user in the controller. */
+    private function user(): CmtUser
+    {
+        return app(CmtUser::class);
     }
 
     /** Python index() — GET /. */
@@ -37,7 +43,7 @@ class DashboardController extends Controller
         $search = (string) $request->query('q', '');
         $sort = (string) $request->query('sort', 'date');
         $sortDir = (string) $request->query('dir', 'desc');
-        $company = $this->user->customerCompany;
+        $company = $this->user()->customerCompany;
 
         $unpaid = $this->queries->getUnpaidShipments(
             page: $page,
@@ -48,7 +54,7 @@ class DashboardController extends Controller
             companyFilter: $company,
         );
         $summary = $this->queries->getSummary($company);
-        $topCustomers = $this->user->role !== 'customer' ? $this->queries->getTopCustomers() : null;
+        $topCustomers = $this->user()->role !== 'customer' ? $this->queries->getTopCustomers() : null;
 
         return view('dashboard', [
             'summary' => $summary,
@@ -78,7 +84,7 @@ class DashboardController extends Controller
             search: $search,
             sort: $sort,
             sortDir: $sortDir,
-            companyFilter: $this->user->customerCompany,
+            companyFilter: $this->user()->customerCompany,
             typeFilter: $type,
             invoiceFilter: $invoice,
         );
@@ -109,8 +115,22 @@ class DashboardController extends Controller
 
         $detail = $this->queries->getShipmentDetail($ref);
         if ($detail === null) {
-            // Python has NO customer guard here (KG-1) — defect-for-defect.
             return redirect()->to('/shipments', 303);
+        }
+        // Customer-role users may only view shipments linked to their company
+        // (KG-1 fix: cross-tenant record read). Mirrors invoiceDetail() below.
+        if ($this->user()->customerCompany !== '') {
+            $header = $detail['header'] ?? null;
+            if ($header instanceof \stdClass) {
+                $customer = (string) ($header->CUSTOMER ?? '');
+            } elseif (is_array($header)) {
+                $customer = (string) ($header['CUSTOMER'] ?? '');
+            } else {
+                $customer = '';
+            }
+            if (! str_contains(mb_strtoupper($customer), mb_strtoupper($this->user()->customerCompany))) {
+                return redirect()->to('/shipments', 303);
+            }
         }
 
         return view('shipment_detail', [
@@ -134,7 +154,7 @@ class DashboardController extends Controller
             search: $search,
             sort: $sort,
             sortDir: $sortDir,
-            companyFilter: $this->user->customerCompany,
+            companyFilter: $this->user()->customerCompany,
         );
 
         return view('invoices', [
@@ -163,9 +183,16 @@ class DashboardController extends Controller
             return redirect()->to('/invoices', 303);
         }
         // Customer-role users may only view invoices linked to their company.
-        if ($this->user->customerCompany !== '') {
-            $customer = mb_strtoupper((string) ($detail['header']->CUSTOMER ?? ''));
-            if (! str_contains($customer, mb_strtoupper($this->user->customerCompany))) {
+        if ($this->user()->customerCompany !== '') {
+            $header = $detail['header'] ?? null;
+            if ($header instanceof \stdClass) {
+                $customer = (string) ($header->CUSTOMER ?? '');
+            } elseif (is_array($header)) {
+                $customer = (string) ($header['CUSTOMER'] ?? '');
+            } else {
+                $customer = '';
+            }
+            if (! str_contains(mb_strtoupper($customer), mb_strtoupper($this->user()->customerCompany))) {
                 return redirect()->to('/invoices', 303);
             }
         }
@@ -175,6 +202,72 @@ class DashboardController extends Controller
             'k' => $k,
             'active_page' => 'invoices',
         ]);
+    }
+
+    /** GET /admin/report/ar-receipt — F-24 A/R receipts. */
+    public function arReceipt(Request $request): View
+    {
+        return $this->report($request, 'receipt');
+    }
+
+    /** GET /admin/report/ap-payment — F-25 A/P payments. */
+    public function apPayment(Request $request): View
+    {
+        return $this->report($request, 'payment');
+    }
+
+    /** Shared F-24/F-25 page: same table surface, different query + labels. */
+    protected function report(Request $request, string $kind): View
+    {
+        $result = $kind === 'receipt'
+            ? $this->queries->getArReceipts(
+                page: $this->intParam($request, 'page', 1),
+                perPage: (int) config('cmt.receipts_per_page', 50),
+                search: (string) $request->query('q', ''),
+                sort: (string) $request->query('sort', 'date'),
+                sortDir: (string) $request->query('dir', 'desc'),
+                companyFilter: $this->user()->customerCompany,
+            )
+            : $this->queries->getApPayments(
+                page: $this->intParam($request, 'page', 1),
+                perPage: (int) config('cmt.payments_per_page', 50),
+                search: (string) $request->query('q', ''),
+                sort: (string) $request->query('sort', 'date'),
+                sortDir: (string) $request->query('dir', 'desc'),
+                companyFilter: $this->user()->customerCompany,
+            );
+
+        return view('report.receipt-payment', [
+            'kind' => $kind,
+            'rows' => $result['rows'],
+            'total' => $result['total'],
+            'page' => $result['page'],
+            'pages' => $result['pages'],
+            'search' => (string) $request->query('q', ''),
+            'sort' => (string) $request->query('sort', 'date'),
+            'sort_dir' => (string) $request->query('dir', 'desc'),
+            'page_nums' => $this->pageNums($result['page'], $result['pages']),
+            'active_page' => $kind === 'receipt' ? 'ar_receipt' : 'ap_payment',
+        ]);
+    }
+
+    /** Baseline F-22 page: Rate by Destination (static loading placeholder). */
+    public function rateByDestination(): View
+    {
+        return view('rate_by_destination', ['active_page' => 'rate_by_destination']);
+    }
+
+    /** Baseline F-23 parity surface: Statement of Account.
+     *
+     * The Python reference has no `statement_of_account.html` template, so it
+     * returns 500 (TemplateNotFound) — captured as-is in the baseline for
+     * defect-for-defect parity. The Laravel blade view is therefore
+     * intentionally ABSENT so this route also 500s and matches the baseline.
+     * Do not restore the view without updating tests/parity/baseline/python.json.
+     */
+    public function statementOfAccount(): View
+    {
+        return view('statement_of_account', ['active_page' => 'statement_of_account']);
     }
 
     /** Python data_quality() — GET /data-quality, superadmin only. */
@@ -219,8 +312,11 @@ class DashboardController extends Controller
      * Runs the real sync (native PHP backend; DBF_SYNC_BACKEND=python shells
      * out to tools/sync_db.py) and returns the same JSON summary contract.
      */
-    public function sync(): \Symfony\Component\HttpFoundation\JsonResponse
+    public function sync(Request $request): \Symfony\Component\HttpFoundation\JsonResponse
     {
+        if (! $request->cookies->has('csrf_token')) {
+            return response()->json(['detail' => 'Forbidden'], 403);
+        }
         $dbfDir = $this->resolvePath((string) config('cmt.dbf_dir'));
         $dataDir = $this->resolvePath((string) config('cmt.data_dir'));
 
@@ -231,7 +327,7 @@ class DashboardController extends Controller
 
             return response()->json([
                 'ok' => $exit === 0,
-                'triggered_by' => $this->user->username,
+                'triggered_by' => $this->user()->username,
                 'detail' => $exit === 0 ? 'Sync OK.' : 'Sync script failed.',
                 'stdout_tail' => array_slice($output, -10),
                 'stderr_tail' => [],
@@ -263,7 +359,7 @@ class DashboardController extends Controller
 
         return response()->json([
             'ok' => $result['ok'],
-            'triggered_by' => $this->user->username,
+            'triggered_by' => $this->user()->username,
             'detail' => $detail,
             'stdout_tail' => array_slice($result['lines'], -10),
             'stderr_tail' => array_slice($errors, -10),

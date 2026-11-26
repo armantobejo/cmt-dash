@@ -147,15 +147,16 @@ class CompanyDbSwitcherTest extends TestCase
 
     // ------------------------------------------------- /set-db HTTP contract
 
-    public function test_set_db_sets_cookie_and_redirects_to_referer(): void
+    public function test_set_db_sets_cookie_and_redirects_to_fixed_path(): void
     {
         $this->makeCompanyDb('CMT', 'default');
         $this->makeCompanyDb('CME', 'other');
 
-        $response = $this->withHeaders(['referer' => 'http://localhost/ledger'])
+        // Security (CWE-601): destination must never come from Referer/Host.
+        $response = $this->withHeaders(['referer' => 'https://evil.example/phish'])
             ->post('/set-db', ['db_name' => 'CME']);
         $response->assertStatus(303);
-        $response->assertRedirect('http://localhost/ledger');
+        $response->assertRedirect('http://localhost');
         $cookie = $response->getCookie('cmt_db', false);  // false = don't decrypt
         $this->assertNotNull($cookie, 'cmt_db cookie must be set');
         $this->assertSame('CME', $cookie->getValue());
@@ -173,9 +174,13 @@ class CompanyDbSwitcherTest extends TestCase
         $this->assertSame('CMT', $cookie->getValue());
     }
 
-    public function test_set_db_works_without_login_or_csrf_token(): void
+    public function test_set_db_remains_public_no_login_required(): void
     {
-        // KG-3 parity: the Python endpoint is public (no login, no CSRF).
+        // KG-3 parity: the Python endpoint is public (no login). CSRF is
+        // enforced in production, but Laravel's VerifyCsrfToken middleware
+        // bypasses validation while running tests, so a bare POST here
+        // simulates the form. Live CSRF rejection is proven by
+        // sc001_remediation_check.py against :8091.
         $this->makeCompanyDb('CMT', 'default');
 
         $this->post('/set-db', ['db_name' => 'CMT'])

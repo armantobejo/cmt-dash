@@ -34,11 +34,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'cmt.role' => CmtRole::class,
         ]);
 
-        // KG-3 parity: /set-db (and /set-lang) are PUBLIC POST endpoints
-        // in the Python app — no login, no CSRF token. Reproduce exactly.
+        // /set-db and /set-lang stay public (KG-3), but ARE CSRF-protected:
+        // a cross-site POST must not switch a victim's cmt_db tenant (CWE-639).
+        // Both switcher forms carry @csrf.
         $middleware->validateCsrfTokens(except: [
-            'set-db',
-            'set-lang',
             'api/capture/p5',
         ]);
 
